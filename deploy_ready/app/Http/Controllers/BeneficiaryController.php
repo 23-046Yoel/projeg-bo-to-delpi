@@ -1,0 +1,88 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Beneficiary;
+use Illuminate\Http\Request;
+
+class BeneficiaryController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $beneficiaries = Beneficiary::latest()->paginate(10);
+        return view('beneficiaries.index', compact('beneficiaries'));
+    }
+
+    public function create()
+    {
+        $groups = \App\Models\BeneficiaryGroup::where('sppg_id', auth()->user()->sppg_id)->get();
+        return view('beneficiaries.create', compact('groups'));
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'beneficiary_group_id' => 'required|exists:beneficiary_groups,id',
+            'category' => 'required|string|max:255',
+            'parent_name' => 'nullable|string|max:255',
+            'guardian_phone' => 'nullable|string|max:20',
+            'gender' => 'nullable|in:L,P',
+            'dob' => 'nullable|date',
+            'weight' => 'nullable|numeric|min:0',
+            'height' => 'nullable|numeric|min:0',
+            'allergies' => 'nullable|string',
+            'address' => 'nullable|string',
+        ]);
+
+        Beneficiary::create(array_merge($validated, [
+            'sppg_id' => auth()->user()->sppg_id,
+            'origin' => \App\Models\BeneficiaryGroup::find($request->beneficiary_group_id)->name
+        ]));
+
+        return redirect()->route('beneficiaries.index')->with('success', 'Penerima berhasil ditambahkan.');
+    }
+
+    public function show(Beneficiary $beneficiary)
+    {
+        return view('beneficiaries.show', compact('beneficiary'));
+    }
+
+    public function edit(Beneficiary $beneficiary)
+    {
+        $groups = \App\Models\BeneficiaryGroup::where('sppg_id', auth()->user()->sppg_id)->get();
+        return view('beneficiaries.edit', compact('beneficiary', 'groups'));
+    }
+
+    public function update(Request $request, Beneficiary $beneficiary)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'beneficiary_group_id' => 'required|exists:beneficiary_groups,id',
+            'category' => 'required|string|max:255',
+            'parent_name' => 'nullable|string|max:255',
+            'guardian_phone' => 'nullable|string|max:20',
+            'gender' => 'nullable|in:L,P',
+            'dob' => 'nullable|date',
+            'weight' => 'nullable|numeric|min:0',
+            'height' => 'nullable|numeric|min:0',
+            'allergies' => 'nullable|string',
+            'address' => 'nullable|string',
+        ]);
+
+        $beneficiary->update(array_merge($validated, [
+            'origin' => \App\Models\BeneficiaryGroup::find($request->beneficiary_group_id)->name
+        ]));
+
+        return redirect()->route('beneficiaries.index')->with('success', 'Data penerima berhasil diperbarui.');
+    }
+
+    public function destroy(Beneficiary $beneficiary)
+    {
+        $beneficiary->delete();
+        return redirect()->route('beneficiaries.index')->with('success', 'Penerima berhasil dihapus.');
+    }
+}
