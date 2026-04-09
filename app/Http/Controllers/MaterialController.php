@@ -12,7 +12,13 @@ class MaterialController extends Controller
      */
     public function index()
     {
-        $materials = Material::latest()->paginate(10);
+        $query = Material::query();
+
+        if (auth()->check() && !auth()->user()->isAdmin() && auth()->user()->sppg_id) {
+            $query->where('sppg_id', auth()->user()->sppg_id);
+        }
+
+        $materials = $query->latest()->paginate(10);
         return view('materials.index', compact('materials'));
     }
 
@@ -25,18 +31,18 @@ class MaterialController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|in:raw,processed',
+            'category' => 'required|string',
             'unit' => 'nullable|string|max:50',
             'price' => 'numeric|min:0',
-            'grammage' => 'numeric|min:0',
             'stock' => 'numeric|min:0',
+            'expiry_date' => 'nullable|date',
         ]);
 
         Material::create(array_merge($validated, [
             'sppg_id' => auth()->user()->sppg_id
         ]));
 
-        return redirect()->route('materials.index')->with('success', 'Material created successfully.');
+        return redirect()->route('materials.index')->with('success', 'Bahan Baku berhasil ditambahkan.');
     }
 
     public function edit(Material $material)
@@ -48,15 +54,16 @@ class MaterialController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|in:raw,processed',
+            'category' => 'required|string',
             'unit' => 'nullable|string|max:50',
             'price' => 'numeric|min:0',
             'stock' => 'numeric|min:0',
+            'expiry_date' => 'nullable|date',
         ]);
 
         $material->update($validated);
 
-        return redirect()->route('materials.index')->with('success', 'Material updated successfully.');
+        return redirect()->route('materials.index')->with('success', 'Bahan Baku berhasil diperbarui.');
     }
 
     public function destroy(Material $material)

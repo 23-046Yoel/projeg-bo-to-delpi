@@ -18,8 +18,12 @@ class BeneficiaryController extends Controller
 
     public function create()
     {
-        $groups = \App\Models\BeneficiaryGroup::where('sppg_id', auth()->user()->sppg_id)->get();
-        return view('beneficiaries.create', compact('groups'));
+        $user = auth()->user();
+        $sppgs = \App\Models\Sppg::all();
+        $groups = \App\Models\BeneficiaryGroup::when($user->sppg_id && !$user->isAdmin(), function($q) use ($user) {
+            return $q->where('sppg_id', $user->sppg_id);
+        })->get();
+        return view('beneficiaries.create', compact('groups', 'sppgs'));
     }
 
     public function store(Request $request)
@@ -27,6 +31,7 @@ class BeneficiaryController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'beneficiary_group_id' => 'required|exists:beneficiary_groups,id',
+            'sppg_id' => 'nullable|exists:sppgs,id',
             'category' => 'required|string|max:255',
             'parent_name' => 'nullable|string|max:255',
             'guardian_phone' => 'nullable|string|max:20',
@@ -38,9 +43,10 @@ class BeneficiaryController extends Controller
             'address' => 'nullable|string',
         ]);
 
+        $group = \App\Models\BeneficiaryGroup::find($request->beneficiary_group_id);
         Beneficiary::create(array_merge($validated, [
-            'sppg_id' => auth()->user()->sppg_id,
-            'origin' => \App\Models\BeneficiaryGroup::find($request->beneficiary_group_id)->name
+            'sppg_id' => $validated['sppg_id'] ?? $group->sppg_id ?? auth()->user()->sppg_id,
+            'origin' => $group->name
         ]));
 
         return redirect()->route('beneficiaries.index')->with('success', 'Penerima berhasil ditambahkan.');
@@ -53,8 +59,12 @@ class BeneficiaryController extends Controller
 
     public function edit(Beneficiary $beneficiary)
     {
-        $groups = \App\Models\BeneficiaryGroup::where('sppg_id', auth()->user()->sppg_id)->get();
-        return view('beneficiaries.edit', compact('beneficiary', 'groups'));
+        $user = auth()->user();
+        $sppgs = \App\Models\Sppg::all();
+        $groups = \App\Models\BeneficiaryGroup::when($user->sppg_id && !$user->isAdmin(), function($q) use ($user) {
+            return $q->where('sppg_id', $user->sppg_id);
+        })->get();
+        return view('beneficiaries.edit', compact('beneficiary', 'groups', 'sppgs'));
     }
 
     public function update(Request $request, Beneficiary $beneficiary)

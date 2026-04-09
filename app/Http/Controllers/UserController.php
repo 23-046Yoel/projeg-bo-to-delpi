@@ -24,7 +24,9 @@ class UserController extends Controller
             User::ROLE_ASLAP => 'Aslap',
             User::ROLE_DRIVER => 'Driver',
             User::ROLE_HEAD => 'Head',
-            'volunteer' => 'Volunteer'
+            User::ROLE_VOLUNTEER => 'Volunteer',
+            User::ROLE_QC => 'Quality Control',
+            User::ROLE_NUTRITIONIST => 'Pengawas Gizi'
         ];
         return view('users.create', compact('sppgs', 'roles'));
     }
@@ -56,7 +58,9 @@ class UserController extends Controller
             User::ROLE_ASLAP => 'Aslap',
             User::ROLE_DRIVER => 'Driver',
             User::ROLE_HEAD => 'Head',
-            'volunteer' => 'Volunteer'
+            User::ROLE_VOLUNTEER => 'Volunteer',
+            User::ROLE_QC => 'Quality Control',
+            User::ROLE_NUTRITIONIST => 'Pengawas Gizi'
         ];
         return view('users.edit', compact('user', 'sppgs', 'roles'));
     }

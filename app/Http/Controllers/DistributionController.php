@@ -102,6 +102,8 @@ class DistributionController extends Controller
     {
         $request->validate([
             'departure_photo' => 'required|image|max:2048',
+            'latitude' => 'nullable|numeric',
+            'longitude' => 'nullable|numeric',
         ]);
 
         $path = $request->file('departure_photo')->store('distributions/departures', 'public');
@@ -110,7 +112,27 @@ class DistributionController extends Controller
             'status' => 'active',
             'departure_time' => now(),
             'departure_photo' => $path,
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude,
         ]);
+
+        // WhatsApp Monitoring
+        try {
+            $wa = app(\App\Services\WhatsAppService::class);
+            $bot = app(\App\Services\BoToPersonalityService::class);
+            $stops = $route->stops()->with('beneficiaryGroup')->get();
+            $routeNames = $stops->pluck('beneficiaryGroup.name')->implode(' -> ');
+            
+            $locationLink = "";
+            if ($request->latitude && $request->longitude) {
+                $locationLink = "\n📍 Lokasi: https://www.google.com/maps?q={$request->latitude},{$request->longitude}";
+            }
+
+            $msg = "*[LOGISTIK KELUAR]*\nDriver {$route->driver->name} telah berangkat dari SPPG dengan rute: {$routeNames}{$locationLink}";
+            $wa->sendMessage($wa->getMasterNumber(), $bot->medanize($msg));
+        } catch (\Exception $e) {
+            \Log::error("WA Depart Error: " . $e->getMessage());
+        }
 
         return back()->with('success', 'Waktu keberangkatan tercatat. Hati-hati di jalan!');
     }
@@ -131,6 +153,16 @@ class DistributionController extends Controller
             'handover_photo' => $handoverPath,
             'handover_doc_photo' => $docPath,
         ]);
+
+        // WhatsApp Monitoring
+        try {
+            $wa = app(\App\Services\WhatsAppService::class);
+            $bot = app(\App\Services\BoToPersonalityService::class);
+            $msg = "*[LOGISTIK TERIMA]*\nDriver {$stop->distributionRoute->driver->name} telah sampai di {$stop->beneficiaryGroup->name} dan menyerahkan {$stop->quantity} porsi.";
+            $wa->sendMessage($wa->getMasterNumber(), $bot->medanize($msg));
+        } catch (\Exception $e) {
+            \Log::error("WA Arrive Error: " . $e->getMessage());
+        }
 
         // Check if all stops are completed
         $route = $stop->distributionRoute;

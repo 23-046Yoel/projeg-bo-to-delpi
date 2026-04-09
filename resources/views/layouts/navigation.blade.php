@@ -82,7 +82,7 @@
             <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
             </svg>
-            <span class="font-bold tracking-tight">{{ __('Manajemen Sekolah') }}</span>
+            <span class="font-bold tracking-tight">{{ __('Manajemen Penerima Manfaat') }}</span>
         </x-nav-link>
 
         <x-nav-link :href="route('beneficiaries.index')" :active="request()->routeIs('beneficiaries.*')" class="py-3">
@@ -132,14 +132,14 @@
             <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
-            <span class="font-bold tracking-tight">{{ __('Pembayaran') }}</span>
+            <span class="font-bold tracking-tight">{{ __('Input Transaksi') }}</span>
         </x-nav-link>
 
         <x-nav-link :href="route('recap.index')" :active="request()->routeIs('recap.*')" class="py-3">
             <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
             </svg>
-            <span class="font-bold tracking-tight">{{ __('Rekap Harian') }}</span>
+            <span class="font-bold tracking-tight">{{ __('Dashboard Keuangan') }}</span>
         </x-nav-link>
 
         <x-nav-link :href="route('financial.index')" :active="request()->routeIs('financial.*')" class="py-3">

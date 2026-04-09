@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class News extends Model
 {
     protected $guarded = [];
+
+    public function sppg()
+    {
+        return $this->belongsTo(Sppg::class);
+    }
 }

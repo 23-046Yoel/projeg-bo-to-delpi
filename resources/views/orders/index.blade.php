@@ -36,9 +36,9 @@
 
                         <div class="pt-4 border-t border-white/10 mt-auto flex justify-between items-center">
                             <span class="text-[#d4af37] font-bold">Rp {{ number_format($order->total_amount) }}</span>
-                            <button class="text-white/40 hover:text-white transition-colors">
+                            <a href="{{ route('orders.show', $order) }}" class="text-white/40 hover:text-[#d4af37] transition-colors" title="Print PO">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                            </button>
+                            </a>
                         </div>
                     </div>
                     @endforeach

@@ -20,6 +20,9 @@ class User extends Authenticatable
     const ROLE_ASLAP = 'aslap';
     const ROLE_DRIVER = 'driver';
     const ROLE_HEAD = 'head';
+    const ROLE_VOLUNTEER = 'volunteer';
+    const ROLE_QC = 'qc';
+    const ROLE_NUTRITIONIST = 'nutritionist';
 
     public function isAdmin()
     {

@@ -18,10 +18,11 @@ class MaterialLogController extends Controller
         return view('material_logs.index', compact('logs'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
-        $materials = Material::all();
-        return view('material_logs.create', compact('materials'));
+        $materials = Material::where('sppg_id', auth()->user()->sppg_id)->get();
+        $prefilledMaterial = $request->query('material_name');
+        return view('material_logs.create', compact('materials', 'prefilledMaterial'));
     }
 
     public function edit(MaterialLog $materialLog)

@@ -3,7 +3,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <h2 class="font-black text-2xl text-royal-navy leading-tight tracking-tight uppercase font-playfair">
-                    {{ __('Executive Recap') }}
+                    {{ __('Dashboard Keuangan') }}
                 </h2>
                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1">{{ $date }}</p>
             </div>
@@ -62,18 +62,47 @@
                     </div>
                 </div>
 
-                <!-- Financial Stats -->
-                <div class="bg-royal-navy rounded-[2rem] shadow-xl p-8 text-white relative overflow-hidden">
-                    <div class="absolute bottom-0 right-0 w-32 h-32 bg-white/5 -mr-16 -mb-16 rounded-full"></div>
-                    <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.2em] mb-6">Arus Kas (Approved)</h3>
-                    <div class="mb-8">
-                        <span class="text-3xl font-black font-playfair tracking-tight">Rp {{ number_format($payments_total) }}</span>
-                        <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-2">{{ $payments_count }} Transaksi Cair</div>
+                <!-- Financial Dashboard Card -->
+                <div class="bg-royal-navy rounded-[2.5rem] shadow-2xl p-10 text-white relative overflow-hidden border border-white/5">
+                    <div class="absolute top-0 right-0 w-40 h-40 bg-gold/10 -mr-20 -mt-20 rounded-full blur-3xl"></div>
+                    <div class="relative z-10">
+                        <h3 class="text-[10px] font-black text-gold uppercase tracking-[0.3em] mb-8">Ikhtisar Kas SPPG</h3>
+                        
+                        <div class="space-y-8">
+                            <div>
+                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mb-2">Saldo Terakhir</p>
+                                <p class="text-4xl font-black font-playfair text-gold tracking-tight">Rp {{ number_format($currentBalance) }}</p>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 gap-6 pt-8 border-t border-white/10">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">Total Pemasukan</p>
+                                        <p class="text-lg font-black text-emerald-400">Rp {{ number_format($totalIn) }}</p>
+                                    </div>
+                                    <div class="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 11l5-5m0 0l5 5m-5-5v12"/></svg>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest mb-1">Total Pengeluaran</p>
+                                        <p class="text-lg font-black text-rose-400">Rp {{ number_format($totalOut) }}</p>
+                                    </div>
+                                    <div class="w-8 h-8 rounded-full bg-rose-500/10 flex items-center justify-center text-rose-400">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 13l-5 5m0 0l-5-5m5-5v12"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="pt-6">
+                                <a href="{{ route('payments.index') }}" class="flex items-center justify-center w-full py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl text-[10px] font-black text-gold uppercase tracking-widest transition-all group">
+                                    <span>Detail Transaksi</span>
+                                    <svg class="w-4 h-4 ml-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                    <a href="{{ route('payments.index') }}" class="inline-flex items-center text-[10px] font-black text-gold uppercase tracking-widest hover:translate-x-2 transition-transform">
-                        Detail Pembayaran
-                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-                    </a>
                 </div>
             </div>
 

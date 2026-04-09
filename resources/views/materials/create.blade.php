@@ -6,7 +6,7 @@
             </a>
             <div>
                 <h2 class="font-black text-2xl text-royal-navy leading-tight tracking-tight uppercase font-playfair">
-                    {{ __('Create Material') }}
+                    {{ __('Tambahkan Bahan Baku') }}
                 </h2>
                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1">Tambah Bahan Baku & Detail Harga</p>
             </div>
@@ -22,7 +22,7 @@
                         <div class="space-y-8">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div class="col-span-1 md:col-span-2">
-                                    <label for="name" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Material Name</label>
+                                    <label for="name" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Nama Bahan Baku</label>
                                     <input type="text" name="name" id="name" value="{{ old('name') }}" required
                                         class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy placeholder-gray-400 focus:bg-white focus:border-gold transition-all outline-none"
                                         placeholder="Contoh: Beras Premium">
@@ -30,19 +30,31 @@
                                 </div>
 
                                 <div>
-                                    <label for="type" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Category</label>
-                                    <select id="type" name="type" required class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
-                                        <option value="raw" {{ old('type') == 'raw' ? 'selected' : '' }}>Raw Material</option>
-                                        <option value="processed" {{ old('type') == 'processed' ? 'selected' : '' }}>Processed Material</option>
+                                    <label for="category" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Kategori</label>
+                                    <select id="category" name="category" required class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
+                                        <option value="Karbohidrat">Karbohidrat</option>
+                                        <option value="Protein Hewani">Protein Hewani</option>
+                                        <option value="Protein Nabati">Protein Nabati</option>
+                                        <option value="Buah">Buah</option>
+                                        <option value="Tambahan">Tambahan</option>
                                     </select>
-                                    @error('type') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
+                                    @error('category') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
                                 </div>
 
                                 <div>
                                     <label for="unit" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Satuan (Unit)</label>
-                                    <input type="text" name="unit" id="unit" value="{{ old('unit') }}" required
-                                        class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy placeholder-gray-400 focus:bg-white focus:border-gold transition-all outline-none"
-                                        placeholder="Contoh: Bal, Sak, Pcs">
+                                    <select id="unit_select" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none mb-2" onchange="if(this.value=='Other'){document.getElementById('unit_manual_container').classList.remove('hidden'); document.getElementById('unit').value='';}else{document.getElementById('unit_manual_container').classList.add('hidden'); document.getElementById('unit').value=this.value;}">
+                                        <option value="Kg">Kg</option>
+                                        <option value="Liter">Liter</option>
+                                        <option value="Bungkus">Bungkus</option>
+                                        <option value="Pcs">Pcs</option>
+                                        <option value="Gram">Gram</option>
+                                        <option value="Other">Lainnya...</option>
+                                    </select>
+                                    <input type="hidden" name="unit" id="unit" value="Kg">
+                                    <div id="unit_manual_container" class="hidden">
+                                        <input type="text" id="unit_manual" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none" placeholder="Ketik satuan manual..." oninput="document.getElementById('unit').value=this.value">
+                                    </div>
                                     @error('unit') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
                                 </div>
 
@@ -56,6 +68,12 @@
                                     @error('price') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
                                 </div>
 
+                                <div>
+                                    <label for="expiry_date" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Tanggal Kadaluarsa</label>
+                                    <input type="date" name="expiry_date" id="expiry_date" value="{{ old('expiry_date') }}"
+                                        class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
+                                    @error('expiry_date') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
+                                </div>
 
                                 <div class="col-span-1 md:col-span-2">
                                     <label for="stock" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Stok Awal</label>
@@ -67,7 +85,7 @@
 
                             <div class="pt-6">
                                 <button type="submit" class="w-full py-5 bg-royal-navy text-gold font-black text-xs uppercase tracking-[0.3em] rounded-2xl shadow-2xl shadow-royal-navy/20 hover:bg-royal-navy/90 hover:-translate-y-1 transition-all duration-300">
-                                    Simpan Bahan Baku
+                                    {{ __('Tambahkan Bahan Baku') }}
                                 </button>
                             </div>
                         </div>

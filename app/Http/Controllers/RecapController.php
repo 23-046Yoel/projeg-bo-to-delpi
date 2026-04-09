@@ -13,11 +13,16 @@ class RecapController extends Controller
     {
         $startDate = $request->input('start_date', $request->input('date', date('Y-m-d')));
         $endDate = $request->input('end_date', $startDate);
+        $sppgId = auth()->user()->sppg_id;
 
-        $payments = Payment::whereBetween('date', [$startDate, $endDate])->get();
-        $logs = MaterialLog::with('material')->whereBetween('date', [$startDate, $endDate])->get();
+        $totalIn = Payment::where('sppg_id', $sppgId)->sum('amount_in');
+        $totalOut = Payment::where('sppg_id', $sppgId)->sum('amount_out');
+        $currentBalance = Payment::where('sppg_id', $sppgId)->orderBy('id', 'desc')->value('balance') ?? 0;
 
-        $payments_total = $payments->sum('amount');
+        $payments = Payment::where('sppg_id', $sppgId)->whereBetween('date', [$startDate, $endDate])->get();
+        $logs = MaterialLog::with('material')->where('sppg_id', $sppgId)->whereBetween('date', [$startDate, $endDate])->get();
+
+        $payments_total = $payments->where('amount_out', '>', 0)->sum('amount_out');
         $payments_count = $payments->count();
         $logs_in = $logs->where('type', 'in')->count();
         $logs_out = $logs->where('type', 'out')->count();
@@ -68,7 +73,10 @@ class RecapController extends Controller
             'menus',
             'requirements',
             'dist_count',
-            'received_orders'
+            'received_orders',
+            'totalIn',
+            'totalOut',
+            'currentBalance'
         ));
     }
 }

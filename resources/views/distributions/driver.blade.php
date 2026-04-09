@@ -43,12 +43,14 @@
                 @if($activeRoute->status == 'planned')
                     <div class="glass p-8 rounded-[2rem] border-2 border-dashed border-gold/30">
                         <h4 class="text-center font-black text-royal-navy uppercase tracking-[0.2em] mb-6">Siap Berangkat?</h4>
-                        <form action="{{ route('distributions.depart', $activeRoute) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('distributions.depart', $activeRoute) }}" id="departForm" method="POST" enctype="multipart/form-data">
                             @csrf
+                            <input type="hidden" name="latitude" id="lat">
+                            <input type="hidden" name="longitude" id="lng">
                             <div class="space-y-4">
                                 <label class="block text-center cursor-pointer group">
                                     <div class="w-full py-10 bg-silk rounded-2xl border-2 border-transparent group-hover:border-gold transition-all relative overflow-hidden">
-                                        <input type="file" name="departure_photo" class="hidden" required onchange="this.form.submit()">
+                                        <input type="file" name="departure_photo" class="hidden" required onchange="handleDepart(this)">
                                         <svg class="w-10 h-10 text-gold-dark mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                         <p class="text-[10px] font-black text-royal-navy uppercase tracking-widest">Ambil Foto Berangkat</p>
                                     </div>
@@ -178,6 +180,27 @@
     </style>
 
     <script>
+        function handleDepart(input) {
+            if (input.files.length > 0) {
+                if ("geolocation" in navigator) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        document.getElementById('lat').value = position.coords.latitude;
+                        document.getElementById('lng').value = position.coords.longitude;
+                        document.getElementById('departForm').submit();
+                    }, function(error) {
+                        console.error("Error getting location: ", error);
+                        document.getElementById('departForm').submit();
+                    }, {
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 0
+                    });
+                } else {
+                    document.getElementById('departForm').submit();
+                }
+            }
+        }
+
         function toggleStopModal(stopId) {
             const modal = document.getElementById('handoverModal');
             const form = document.getElementById('handoverForm');

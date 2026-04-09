@@ -10,14 +10,15 @@ class MenuController extends Controller
 {
     public function index()
     {
-        $menus = Menu::withCount('dishes')->latest('date')->paginate(10);
+        $menus = Menu::orderBy('date', 'asc')->paginate(15);
         return view('menus.index', compact('menus'));
     }
 
     public function create()
     {
         $dishes = Dish::all();
-        return view('menus.create', compact('dishes'));
+        $sppgs = \App\Models\Sppg::all();
+        return view('menus.create', compact('dishes', 'sppgs'));
     }
 
     public function store(Request $request)
@@ -25,6 +26,7 @@ class MenuController extends Controller
         $validated = $request->validate([
             'date' => 'required|date',
             'content' => 'nullable|string',
+            'sppg_id' => 'nullable|exists:sppgs,id',
             'dishes' => 'required|array',
             'dishes.*.id' => 'required|exists:dishes,id',
             'dishes.*.portions' => 'required|integer|min:1',
@@ -33,7 +35,7 @@ class MenuController extends Controller
         $menu = Menu::create([
             'date' => $validated['date'],
             'content' => $validated['content'] ?? null,
-            'sppg_id' => auth()->user()->sppg_id
+            'sppg_id' => $validated['sppg_id'] ?? auth()->user()->sppg_id
         ]);
 
         foreach ($validated['dishes'] as $dishData) {

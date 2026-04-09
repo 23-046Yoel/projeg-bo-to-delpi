@@ -42,7 +42,7 @@
                                     <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-gray-300 group-focus-within:text-gold transition-colors">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                                     </div>
-                                    <x-text-input id="material_name" name="material_name" list="material-list" class="pl-14 w-full" :value="old('material_name')" required placeholder="Ketik nama bahan (contoh: Beras, Telur...)" />
+                                    <x-text-input id="material_name" name="material_name" list="material-list" class="pl-14 w-full" :value="old('material_name', $prefilledMaterial)" required placeholder="Ketik nama bahan (contoh: Beras, Telur...)" />
                                 </div>
                                 <datalist id="material-list">
                                     @foreach ($materials as $material)

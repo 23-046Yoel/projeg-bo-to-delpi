@@ -11,8 +11,14 @@ class OrderController extends Controller
 {
     public function index()
     {
-        $orders = \App\Models\Order::with('supplier')->latest()->get();
+        $orders = \App\Models\Order::with('supplier', 'items.material')->latest()->get();
         return view('orders.index', compact('orders'));
+    }
+
+    public function show(Order $order)
+    {
+        $order->load(['supplier', 'items.material']);
+        return view('orders.show', compact('order'));
     }
 
     public function create(Request $request)

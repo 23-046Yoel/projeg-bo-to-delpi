@@ -60,6 +60,8 @@
                                     <option value="{{ \App\Models\User::ROLE_ASLAP }}">Aslap (Asisten Lapangan)</option>
                                     <option value="{{ \App\Models\User::ROLE_WAREHOUSE }}">Warehouse (Gudang)</option>
                                     <option value="{{ \App\Models\User::ROLE_FINANCE }}">Finance</option>
+                                    <option value="{{ \App\Models\User::ROLE_QC }}">Quality Control</option>
+                                    <option value="{{ \App\Models\User::ROLE_NUTRITIONIST }}">Pengawas Gizi (Nutritionist)</option>
                                     <option value="{{ \App\Models\User::ROLE_ADMIN }}">Master Admin</option>
                                 </select>
                                 @error('role') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror

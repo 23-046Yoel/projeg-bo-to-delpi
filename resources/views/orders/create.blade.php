@@ -49,7 +49,7 @@
                                         <div class="col-span-4">
                                             <select name="items[{{ $idx }}][material_id]" required onchange="updatePrice(this)" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none">
                                                 @foreach($materials as $material)
-                                                    <option value="{{ $material->id }}" data-price="{{ $material->last_price }}" {{ $item['material_id'] == $material->id ? 'selected' : '' }}>
+                                                    <option value="{{ $material->id }}" data-price="{{ $material->price }}" data-unit="{{ $material->unit }}" {{ $item['material_id'] == $material->id ? 'selected' : '' }}>
                                                         {{ $material->name }}
                                                     </option>
                                                 @endforeach
@@ -59,7 +59,7 @@
                                             <input type="number" step="0.0001" name="items[{{ $idx }}][quantity]" value="{{ $item['quantity'] }}" required class="w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Qty">
                                         </div>
                                         <div class="col-span-2">
-                                            <input type="text" name="items[{{ $idx }}][unit]" value="{{ $item['unit'] }}" required class="w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Unit">
+                                            <input type="text" name="items[{{ $idx }}][unit]" value="{{ $item['unit'] }}" required class="unit-input w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Unit">
                                         </div>
                                         <div class="col-span-3">
                                             <input type="number" name="items[{{ $idx }}][price]" value="{{ $item['price'] }}" required class="price-input w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Price">
@@ -76,7 +76,7 @@
                                             <select name="items[0][material_id]" required onchange="updatePrice(this)" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none">
                                                 <option value="">Pilih Bahan...</option>
                                                 @foreach($materials as $material)
-                                                    <option value="{{ $material->id }}" data-price="{{ $material->last_price }}">{{ $material->name }}</option>
+                                                    <option value="{{ $material->id }}" data-price="{{ $material->price }}" data-unit="{{ $material->unit }}">{{ $material->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -84,7 +84,7 @@
                                             <input type="number" step="0.0001" name="items[0][quantity]" required class="w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Qty">
                                         </div>
                                         <div class="col-span-2">
-                                            <input type="text" name="items[0][unit]" required class="w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Unit">
+                                            <input type="text" name="items[0][unit]" required class="unit-input w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Unit">
                                         </div>
                                         <div class="col-span-3">
                                             <input type="number" name="items[0][price]" required class="price-input w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Price">
@@ -120,11 +120,14 @@
         function updatePrice(select) {
             const selectedOption = select.options[select.selectedIndex];
             const price = selectedOption.getAttribute('data-price');
+            const unit = selectedOption.getAttribute('data-unit');
             const row = select.closest('.item-row');
+            
             const priceInput = row.querySelector('.price-input');
-            if (priceInput) {
-                priceInput.value = price || 0;
-            }
+            const unitInput = row.querySelector('.unit-input');
+            
+            if (priceInput) priceInput.value = price || 0;
+            if (unitInput) unitInput.value = unit || '';
         }
 
         function addItem() {
@@ -134,7 +137,7 @@
             
             let options = '<option value="">Pilih Bahan...</option>';
             materials.forEach(m => {
-                options += `<option value="${m.id}" data-price="${m.last_price}">${m.name}</option>`;
+                options += `<option value="${m.id}" data-price="${m.price}" data-unit="${m.unit}">${m.name}</option>`;
             });
 
             row.innerHTML = `
@@ -147,7 +150,7 @@
                     <input type="number" step="0.0001" name="items[${rowCount}][quantity]" required class="w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Qty">
                 </div>
                 <div class="col-span-2">
-                    <input type="text" name="items[${rowCount}][unit]" required class="w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Unit">
+                    <input type="text" name="items[${rowCount}][unit]" required class="unit-input w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Unit">
                 </div>
                 <div class="col-span-3">
                     <input type="number" name="items[${rowCount}][price]" required class="price-input w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Price">
