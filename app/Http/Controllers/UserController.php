@@ -33,6 +33,16 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+        // Normalisasi nomor telepon SEBELUM validasi
+        $phone = preg_replace('/[^0-9]/', '', $request->phone);
+        if (str_starts_with($phone, '0')) {
+            $phone = '62' . substr($phone, 1);
+        } elseif (str_starts_with($phone, '8')) {
+            $phone = '62' . $phone;
+        }
+        
+        $request->merge(['phone' => $phone]);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'required|string|unique:users,phone',
@@ -41,21 +51,12 @@ class UserController extends Controller
             'sppg_id' => 'nullable|exists:sppgs,id',
         ]);
 
-        // Normalisasi nomor telepon
-        $phone = preg_replace('/[^0-9]/', '', $validated['phone']);
-        if (str_starts_with($phone, '0')) {
-            $phone = '62' . substr($phone, 1);
-        } elseif (str_starts_with($phone, '8')) {
-            $phone = '62' . $phone;
-        }
-        $validated['phone'] = $phone;
-
         // Auto-generate email jika kosong
         if (empty($validated['email'])) {
             $validated['email'] = $phone . '@aladelphi.or.id';
         }
 
-        // Auto-generate password (tidak dipakai login WA tapi wajib ada di DB)
+        // Auto-generate password
         $validated['password'] = bcrypt($phone . 'boto2024');
 
         User::create($validated);
@@ -82,6 +83,16 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        // Normalisasi nomor telepon SEBELUM divalidasi
+        $phone = preg_replace('/[^0-9]/', '', $request->phone);
+        if (str_starts_with($phone, '0')) {
+            $phone = '62' . substr($phone, 1);
+        } elseif (str_starts_with($phone, '8')) {
+            $phone = '62' . $phone;
+        }
+
+        $request->merge(['phone' => $phone]);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'required|string|unique:users,phone,' . $user->id,
@@ -89,15 +100,6 @@ class UserController extends Controller
             'role' => 'required|string',
             'sppg_id' => 'nullable|exists:sppgs,id',
         ]);
-
-        // Normalisasi nomor telepon
-        $phone = preg_replace('/[^0-9]/', '', $validated['phone']);
-        if (str_starts_with($phone, '0')) {
-            $phone = '62' . substr($phone, 1);
-        } elseif (str_starts_with($phone, '8')) {
-            $phone = '62' . $phone;
-        }
-        $validated['phone'] = $phone;
 
         $user->update($validated);
 
