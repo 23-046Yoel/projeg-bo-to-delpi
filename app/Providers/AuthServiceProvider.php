@@ -26,7 +26,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         \Illuminate\Support\Facades\Gate::define('manage-menus', function ($user) {
-            return in_array($user->role, [\App\Models\User::ROLE_ADMIN, \App\Models\User::ROLE_PENGAWAS_GIZI]);
+            return in_array($user->role, [\App\Models\User::ROLE_ADMIN, \App\Models\User::ROLE_PENGAWAS_GIZI, \App\Models\User::ROLE_KA_SPPG]);
         });
 
         \Illuminate\Support\Facades\Gate::define('manage-finances', function ($user) {
@@ -46,7 +46,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         \Illuminate\Support\Facades\Gate::define('view-reports', function ($user) {
-            return in_array($user->role, [\App\Models\User::ROLE_ADMIN, \App\Models\User::ROLE_KA_SPPG, \App\Models\User::ROLE_QC, \App\Models\User::ROLE_PENGAWAS_KEUANGAN]);
+            return in_array($user->role, [\App\Models\User::ROLE_ADMIN, \App\Models\User::ROLE_KA_SPPG, \App\Models\User::ROLE_QC, \App\Models\User::ROLE_PENGAWAS_KEUANGAN, \App\Models\User::ROLE_PENGAWAS_GIZI]);
         });
     }
 }
