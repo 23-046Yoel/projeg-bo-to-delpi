@@ -32,7 +32,7 @@
                         <table class="w-full text-left">
                             <thead>
                                 <tr class="border-b border-gray-100">
-                                    <th class="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">Nama / Email</th>
+                                    <th class="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">Nama / WA / Email</th>
                                     <th class="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">Peran (Role)</th>
                                     <th class="px-6 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">Lokasi SPPG</th>
                                     <th class="px-6 py-5 text-center text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">Aksi</th>
@@ -48,16 +48,17 @@
                                                 </div>
                                                 <div class="ml-4">
                                                     <div class="text-sm font-black text-royal-navy uppercase tracking-tight">{{ $user->name }}</div>
-                                                    <div class="text-xs text-gray-400 font-medium">{{ $user->email }}</div>
+                                                    <div class="text-[11px] text-emerald-600 font-bold">📲 +{{ $user->phone }}</div>
+                                                    <div class="text-[10px] text-gray-400 font-medium italic">{{ $user->email }}</div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="px-6 py-6 whitespace-nowrap">
                                             <span class="inline-flex px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest {{ 
                                                 $user->role === 'admin' ? 'bg-royal-navy text-gold' : 
-                                                ($user->role === 'driver' ? 'bg-emerald-50 text-emerald-600' : 'bg-silk text-gray-400') 
+                                                ($user->role === 'volunteer' ? 'bg-emerald-50 text-emerald-600' : 'bg-silk text-gray-500') 
                                             }} shadow-sm border border-black/5">
-                                                {{ $user->role }}
+                                                {{ $user->role_title }}
                                             </span>
                                         </td>
                                         <td class="px-6 py-6 whitespace-nowrap">

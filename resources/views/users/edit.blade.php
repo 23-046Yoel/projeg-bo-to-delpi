@@ -38,6 +38,27 @@
                                 @error('name') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
                             </div>
 
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <!-- Phone (WhatsApp) -->
+                                <div class="group">
+                                    <label for="phone" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Nomor WhatsApp</label>
+                                    <div class="relative">
+                                        <input type="text" name="phone" id="phone" value="{{ old('phone', $user->phone) }}" required
+                                            class="w-full pl-14 pr-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
+                                        <span class="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold">+62</span>
+                                    </div>
+                                    @error('phone') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
+                                </div>
+
+                                <!-- Email -->
+                                <div class="group">
+                                    <label for="email" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Email (Opsional)</label>
+                                    <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}"
+                                        class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
+                                    @error('email') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
+                                </div>
+                            </div>
+
                             <!-- Role -->
                             <div class="group">
                                 <label for="role" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Tugaskan Sebagai (Role)</label>

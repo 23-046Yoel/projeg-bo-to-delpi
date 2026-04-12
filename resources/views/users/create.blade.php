@@ -22,47 +22,42 @@
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <!-- Name -->
-                            <div class="group">
+                            <div class="group col-span-1 md:col-span-2">
                                 <label for="name" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Nama Lengkap</label>
                                 <input type="text" name="name" id="name" value="{{ old('name') }}" required
-                                    class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
+                                    class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none"
+                                    placeholder="Nama Staff">
                                 @error('name') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
                             </div>
 
-                            <!-- Email -->
+                            <!-- Phone (WhatsApp) - PRIMARY LOGIN -->
                             <div class="group">
-                                <label for="email" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Email (Login ID)</label>
-                                <input type="email" name="email" id="email" value="{{ old('email') }}" required
-                                    class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
+                                <label for="phone" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Nomor WhatsApp (Untuk Login OTP)</label>
+                                <div class="relative">
+                                    <input type="text" name="phone" id="phone" value="{{ old('phone') }}" required
+                                        class="w-full pl-14 pr-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none"
+                                        placeholder="08123456789">
+                                    <span class="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 font-bold">+62</span>
+                                </div>
+                                @error('phone') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
+                            </div>
+
+                            <!-- Email (Optional) -->
+                            <div class="group">
+                                <label for="email" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Email (Opsional)</label>
+                                <input type="email" name="email" id="email" value="{{ old('email') }}"
+                                    class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none"
+                                    placeholder="staff@example.com">
                                 @error('email') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
-                            </div>
-
-                            <!-- Password -->
-                            <div class="group">
-                                <label for="password" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Password</label>
-                                <input type="password" name="password" id="password" required
-                                    class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
-                                @error('password') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
-                            </div>
-
-                            <!-- Password Confirmation -->
-                            <div class="group">
-                                <label for="password_confirmation" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Konfirmasi Password</label>
-                                <input type="password" name="password_confirmation" id="password_confirmation" required
-                                    class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
                             </div>
 
                             <!-- Role -->
                             <div class="group">
                                 <label for="role" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Tugaskan Sebagai (Role)</label>
                                 <select id="role" name="role" required class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none appearance-none">
-                                    <option value="{{ \App\Models\User::ROLE_DRIVER }}" selected>Driver</option>
-                                    <option value="{{ \App\Models\User::ROLE_ASLAP }}">Aslap (Asisten Lapangan)</option>
-                                    <option value="{{ \App\Models\User::ROLE_WAREHOUSE }}">Warehouse (Gudang)</option>
-                                    <option value="{{ \App\Models\User::ROLE_FINANCE }}">Finance</option>
-                                    <option value="{{ \App\Models\User::ROLE_QC }}">Quality Control</option>
-                                    <option value="{{ \App\Models\User::ROLE_NUTRITIONIST }}">Pengawas Gizi (Nutritionist)</option>
-                                    <option value="{{ \App\Models\User::ROLE_ADMIN }}">Master Admin</option>
+                                    @foreach($roles as $key => $title)
+                                        <option value="{{ $key }}" {{ old('role') == $key ? 'selected' : '' }}>{{ $title }}</option>
+                                    @endforeach
                                 </select>
                                 @error('role') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
                             </div>
@@ -73,7 +68,7 @@
                                 <select id="sppg_id" name="sppg_id" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none appearance-none">
                                     <option value="">Belum Ditugaskan / Master Office</option>
                                     @foreach($sppgs as $sppg)
-                                        <option value="{{ $sppg->id }}" {{ (auth()->user()->sppg_id == $sppg->id) ? 'selected' : '' }}>{{ $sppg->name }}</option>
+                                        <option value="{{ $sppg->id }}" {{ old('sppg_id') == $sppg->id ? 'selected' : '' }}>{{ $sppg->name }}</option>
                                     @endforeach
                                 </select>
                                 @error('sppg_id') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror

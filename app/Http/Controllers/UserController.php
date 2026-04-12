@@ -18,15 +18,15 @@ class UserController extends Controller
     {
         $sppgs = Sppg::all();
         $roles = [
-            User::ROLE_ADMIN => 'Master Admin',
-            User::ROLE_FINANCE => 'Finance',
-            User::ROLE_WAREHOUSE => 'Warehouse',
-            User::ROLE_ASLAP => 'Aslap',
-            User::ROLE_DRIVER => 'Driver',
-            User::ROLE_HEAD => 'Head',
-            User::ROLE_VOLUNTEER => 'Volunteer',
-            User::ROLE_QC => 'Quality Control',
-            User::ROLE_NUTRITIONIST => 'Pengawas Gizi'
+            User::ROLE_ADMIN => 'MASTER ADMIN',
+            User::ROLE_KA_SPPG => 'KA SPPG',
+            User::ROLE_PENGAWAS_GIZI => 'PENGAWAS GIZI',
+            User::ROLE_PENGAWAS_KEUANGAN => 'PENGAWAS KEUANGAN',
+            User::ROLE_ASLAP => 'ASISTEN LAPANGAN',
+            User::ROLE_WAREHOUSE => 'STAF GUDANG',
+            User::ROLE_QC => 'QUALITY CONTROL',
+            User::ROLE_DRIVER => 'DRIVER OPERASIONAL',
+            User::ROLE_VOLUNTEER => 'RELAWAN / PUBLIK',
         ];
         return view('users.create', compact('sppgs', 'roles'));
     }
@@ -35,32 +35,47 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'phone' => 'required|string|unique:users,phone',
+            'email' => 'nullable|email|unique:users,email',
             'role' => 'required|string',
             'sppg_id' => 'nullable|exists:sppgs,id',
         ]);
 
-        $validated['password'] = bcrypt($validated['password']);
+        // Normalisasi nomor telepon
+        $phone = preg_replace('/[^0-9]/', '', $validated['phone']);
+        if (str_starts_with($phone, '0')) {
+            $phone = '62' . substr($phone, 1);
+        } elseif (str_starts_with($phone, '8')) {
+            $phone = '62' . $phone;
+        }
+        $validated['phone'] = $phone;
+
+        // Auto-generate email jika kosong
+        if (empty($validated['email'])) {
+            $validated['email'] = $phone . '@aladelphi.or.id';
+        }
+
+        // Auto-generate password (tidak dipakai login WA tapi wajib ada di DB)
+        $validated['password'] = bcrypt($phone . 'boto2024');
 
         User::create($validated);
 
-        return redirect()->route('users.index')->with('success', 'User created successfully.');
+        return redirect()->route('users.index')->with('success', 'Staff baru berhasil didaftarkan.');
     }
 
     public function edit(User $user)
     {
         $sppgs = Sppg::all();
         $roles = [
-            User::ROLE_ADMIN => 'Master Admin',
-            User::ROLE_FINANCE => 'Finance',
-            User::ROLE_WAREHOUSE => 'Warehouse',
-            User::ROLE_ASLAP => 'Aslap',
-            User::ROLE_DRIVER => 'Driver',
-            User::ROLE_HEAD => 'Head',
-            User::ROLE_VOLUNTEER => 'Volunteer',
-            User::ROLE_QC => 'Quality Control',
-            User::ROLE_NUTRITIONIST => 'Pengawas Gizi'
+            User::ROLE_ADMIN => 'MASTER ADMIN',
+            User::ROLE_KA_SPPG => 'KA SPPG',
+            User::ROLE_PENGAWAS_GIZI => 'PENGAWAS GIZI',
+            User::ROLE_PENGAWAS_KEUANGAN => 'PENGAWAS KEUANGAN',
+            User::ROLE_ASLAP => 'ASISTEN LAPANGAN',
+            User::ROLE_WAREHOUSE => 'STAF GUDANG',
+            User::ROLE_QC => 'QUALITY CONTROL',
+            User::ROLE_DRIVER => 'DRIVER OPERASIONAL',
+            User::ROLE_VOLUNTEER => 'RELAWAN / PUBLIK',
         ];
         return view('users.edit', compact('user', 'sppgs', 'roles'));
     }
@@ -69,22 +84,33 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'phone' => 'required|string|unique:users,phone,' . $user->id,
+            'email' => 'nullable|email|unique:users,email,' . $user->id,
             'role' => 'required|string',
             'sppg_id' => 'nullable|exists:sppgs,id',
         ]);
 
+        // Normalisasi nomor telepon
+        $phone = preg_replace('/[^0-9]/', '', $validated['phone']);
+        if (str_starts_with($phone, '0')) {
+            $phone = '62' . substr($phone, 1);
+        } elseif (str_starts_with($phone, '8')) {
+            $phone = '62' . $phone;
+        }
+        $validated['phone'] = $phone;
+
         $user->update($validated);
 
-        return redirect()->route('users.index')->with('success', 'User updated successfully.');
+        return redirect()->route('users.index')->with('success', 'Data staff berhasil diperbarui.');
     }
 
     public function destroy(User $user)
     {
         if ($user->id === auth()->id()) {
-            return back()->with('error', 'You cannot delete yourself.');
+            return back()->with('error', 'Anda tidak bisa menghapus diri sendiri.');
         }
 
         $user->delete();
-        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+        return redirect()->route('users.index')->with('success', 'Staff berhasil dihapus.');
     }
 }
