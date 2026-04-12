@@ -10,7 +10,13 @@ class MenuController extends Controller
 {
     public function index()
     {
-        $menus = Menu::orderBy('date', 'asc')->paginate(15);
+        $query = Menu::with(['dishes', 'sppg']);
+
+        if (!auth()->user()->isAdmin() && auth()->user()->sppg_id) {
+            $query->where('sppg_id', auth()->user()->sppg_id);
+        }
+
+        $menus = $query->orderBy('date', 'asc')->paginate(15);
         return view('menus.index', compact('menus'));
     }
 
@@ -74,8 +80,9 @@ class MenuController extends Controller
     public function edit(Menu $menu)
     {
         $dishes = Dish::all();
+        $sppgs = \App\Models\Sppg::all();
         $selectedDishes = $menu->dishes->pluck('id')->toArray();
-        return view('menus.edit', compact('menu', 'dishes', 'selectedDishes'));
+        return view('menus.edit', compact('menu', 'dishes', 'selectedDishes', 'sppgs'));
     }
 
     public function update(Request $request, Menu $menu)
@@ -83,14 +90,16 @@ class MenuController extends Controller
         $validated = $request->validate([
             'date' => 'required|date',
             'content' => 'nullable|string',
+            'sppg_id' => 'nullable|exists:sppgs,id',
             'dishes' => 'required|array',
             'dishes.*.id' => 'required|exists:dishes,id',
-            'dishes.*.portions' => 'required|l|min:1',
+            'dishes.*.portions' => 'required|integer|min:1',
         ]);
 
         $menu->update([
             'date' => $validated['date'],
             'content' => $validated['content'] ?? null,
+            'sppg_id' => $validated['sppg_id'] ?? $menu->sppg_id
         ]);
 
         $syncData = [];

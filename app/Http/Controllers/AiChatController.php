@@ -25,11 +25,29 @@ class AiChatController extends Controller
             ]);
 
             $message = $request->message;
+            $user = auth()->user();
 
-            // Fetch context from database
-            $context = $this->getDatabaseContext();
+            // PUBLIC SECURITY FILTER
+            $financialKeywords = ['keuangan', 'saldo', 'dana', 'bayar', 'beli', 'uang', 'transaksi', 'biaya', 'pembayaran', 'budget'];
+            $isFinancialQuery = false;
+            foreach ($financialKeywords as $word) {
+                if (stripos($message, $word) !== false) {
+                    $isFinancialQuery = true;
+                    break;
+                }
+            }
 
-            $response = $this->aiService->generateResponse($message, $context);
+            if (!$user && $isFinancialQuery) {
+                return response()->json([
+                    'success' => true,
+                    'reply' => 'Maaf, untuk informasi terkait keuangan, dana, atau transaksi, Anda harus melakukan login terlebih dahulu ke sistem BoTo Delphi demi keamanan data.'
+                ]);
+            }
+
+            // Fetch context from database (Scoped by user)
+            $context = $user ? $this->getDatabaseContext($user) : "GENERAL MBG PUBLIC INFO: Ini adalah program Makan Bergizi Gratis (MBG) dari Badan Gizi Nasional (BGN). Fokus pada perbaikan gizi anak sekolah.";
+
+            $response = $this->aiService->generateResponse($message, $context, $user ? $user->name : 'Publik');
 
             return response()->json([
                 'success' => true,
@@ -44,15 +62,16 @@ class AiChatController extends Controller
         }
     }
 
-    protected $contextLimit = 5;
-
-    protected function getDatabaseContext()
+    protected function getDatabaseContext($user)
     {
-        $materials = Material::select('name', 'stock')->get();
-        $recentOrders = Order::with('supplier')->latest()->take(5)->get();
-        $recentPayments = Payment::latest()->take(5)->get();
+        $sppgId = $user->sppg_id;
+        
+        $materials = Material::when($sppgId, fn($q) => $q->where('sppg_id', $sppgId))->select('name', 'stock')->get();
+        $recentOrders = Order::when($sppgId, fn($q) => $q->where('sppg_id', $sppgId))->with('supplier')->latest()->take(5)->get();
+        $recentPayments = Payment::when($sppgId, fn($q) => $q->where('sppg_id', $sppgId))->latest()->take(5)->get();
 
-        $context = "DATA STOK BARANG:\n";
+        $context = "DATA UNIT SPPG: " . ($user->sppg->name ?? 'ALL') . "\n\n";
+        $context .= "DATA STOK BARANG:\n";
         foreach ($materials as $m) {
             $context .= "- {$m->name}: {$m->stock}\n";
         }

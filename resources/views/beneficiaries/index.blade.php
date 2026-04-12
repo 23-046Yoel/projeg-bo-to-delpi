@@ -26,6 +26,7 @@
                         <thead>
                             <tr class="border-b border-gray-50">
                                 <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Nama Anak</th>
+                                <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Dapur</th>
                                 <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Kategori</th>
                                 <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Asal Sekolah</th>
                                 <th class="px-6 py-4 text-center text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Data Fisik</th>
@@ -45,6 +46,9 @@
                                                 <div class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">Umur: {{ $beneficiary->age }}</div>
                                             </div>
                                         </div>
+                                    </td>
+                                    <td class="px-6 py-6 whitespace-nowrap">
+                                        <div class="text-[10px] font-black text-gold-dark uppercase tracking-widest">{{ $beneficiary->sppg->name ?? '-' }}</div>
                                     </td>
                                     <td class="px-6 py-6 whitespace-nowrap">
                                         <span class="px-3 py-1 bg-gold/10 text-gold-dark rounded-lg text-[10px] font-black uppercase tracking-wider">

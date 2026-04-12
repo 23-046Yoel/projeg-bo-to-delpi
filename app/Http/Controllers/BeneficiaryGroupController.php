@@ -10,7 +10,7 @@ class BeneficiaryGroupController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        $query = BeneficiaryGroup::query();
+        $query = BeneficiaryGroup::query()->where('total_beneficiaries', '>', 0);
 
         // Admin can filter by SPPG
         if ($request->has('sppg_id') && $request->sppg_id != '') {
@@ -46,6 +46,9 @@ class BeneficiaryGroupController extends Controller
             'name' => 'required|string|max:255',
             'location' => 'nullable|string|max:255',
             'type' => 'required|string',
+            'category' => 'required|string',
+            'porsi_besar' => 'nullable|integer|min:0',
+            'porsi_kecil' => 'nullable|integer|min:0',
             'sppg_id' => 'nullable|exists:sppgs,id',
             'count_siswa' => 'nullable|integer|min:0',
             'count_guru' => 'nullable|integer|min:0',
@@ -62,15 +65,18 @@ class BeneficiaryGroupController extends Controller
                  ($request->count_menyusui ?? 0) + 
                  ($request->count_balita ?? 0);
 
+        // If portions are not provided, auto-calculate
+        $porsiBesar = $request->porsi_besar ?? (($request->count_siswa ?? 0) + ($request->count_hamil ?? 0) + ($request->count_menyusui ?? 0));
+        $porsiKecil = $request->porsi_kecil ?? (($request->count_guru ?? 0) + ($request->count_balita ?? 0));
+
         BeneficiaryGroup::create(array_merge($validated, [
             'sppg_id' => $sppg_id,
             'total_beneficiaries' => $total,
-            // Automatically set portions if not manual
-            'porsi_besar' => ($request->count_siswa ?? 0) + ($request->count_hamil ?? 0) + ($request->count_menyusui ?? 0),
-            'porsi_kecil' => ($request->count_guru ?? 0) + ($request->count_balita ?? 0),
+            'porsi_besar' => $porsiBesar,
+            'porsi_kecil' => $porsiKecil,
         ]));
 
-        return redirect()->route('beneficiary-groups.index')->with('success', 'Penerima Manfaat berhasil ditambahkan.');
+        return redirect()->route('beneficiary-groups.create')->with('success', 'Penerima Manfaat berhasil ditambahkan.');
     }
 
     public function edit(BeneficiaryGroup $beneficiaryGroup)
@@ -85,6 +91,9 @@ class BeneficiaryGroupController extends Controller
             'name' => 'required|string|max:255',
             'location' => 'nullable|string|max:255',
             'type' => 'required|string',
+            'category' => 'required|string',
+            'porsi_besar' => 'nullable|integer|min:0',
+            'porsi_kecil' => 'nullable|integer|min:0',
             'sppg_id' => 'nullable|exists:sppgs,id',
             'count_siswa' => 'nullable|integer|min:0',
             'count_guru' => 'nullable|integer|min:0',
@@ -101,8 +110,8 @@ class BeneficiaryGroupController extends Controller
 
         $beneficiaryGroup->update(array_merge($validated, [
             'total_beneficiaries' => $total,
-            'porsi_besar' => ($request->count_siswa ?? 0) + ($request->count_hamil ?? 0) + ($request->count_menyusui ?? 0),
-            'porsi_kecil' => ($request->count_guru ?? 0) + ($request->count_balita ?? 0),
+            'porsi_besar' => $request->porsi_besar ?? (($request->count_siswa ?? 0) + ($request->count_hamil ?? 0) + ($request->count_menyusui ?? 0)),
+            'porsi_kecil' => $request->porsi_kecil ?? (($request->count_guru ?? 0) + ($request->count_balita ?? 0)),
         ]));
 
         return redirect()->route('beneficiary-groups.index')->with('success', 'Penerima Manfaat berhasil diperbarui.');

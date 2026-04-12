@@ -204,6 +204,51 @@ class WhatsAppController extends Controller
             return $this->wa->sendMessage($phone, $this->bot->medanize("Baik. Silakan kirimkan lokasi GPS Anda melalui fitur Share Location di WhatsApp untuk mencatat kehadiran."));
         }
 
+        // --- NEW: DRIVER MONITORING LOGIC ---
+        if ($msg == 'BERANGKAT' || $msg == 'TIBA') {
+            // Find active route for this phone number for today
+            $route = \App\Models\DistributionRoute::where(function($query) use ($phone) {
+                $query->where('driver_phone', $phone)
+                      ->orWhereHas('driver', function($q) use ($phone) {
+                          $q->where('phone', $phone);
+                      });
+            })
+            ->whereDate('date', now())
+            ->whereIn('status', ['planned', 'active'])
+            ->first();
+
+            if (!$route) {
+                return $this->wa->sendMessage($phone, $this->bot->medanize("Gak ada jadwal jalanmu hari ini lae. Hubungi aslapmu ya!"));
+            }
+
+            if ($msg == 'BERANGKAT') {
+                $route->update([
+                    'status' => 'active',
+                    'departure_time' => now()
+                ]);
+                return $this->wa->sendMessage($phone, $this->bot->medanize("Mantap! Hati-hati di jalan ya lae. Semangat!"));
+            }
+
+            if ($msg == 'TIBA') {
+                // Find next pending stop
+                $stop = $route->stops()->where('status', 'pending')->orderBy('order')->first();
+                if ($stop) {
+                    $stop->update([
+                        'status' => 'completed',
+                        'arrival_time' => now()
+                    ]);
+                    
+                    // If no more stops, complete the route
+                    if ($route->stops()->where('status', 'pending')->count() == 0) {
+                        $route->update(['status' => 'completed', 'arrival_time' => now()]);
+                    }
+                    
+                    return $this->wa->sendMessage($phone, $this->bot->medanize("Siap! Sudah kucatat kau sampai di " . $stop->beneficiaryGroup->name . ". Lanjut ke titik berikutnya!"));
+                }
+                return $this->wa->sendMessage($phone, $this->bot->medanize("Sudah sampai semua titikmu lae! Makasih ya!"));
+            }
+        }
+
         // If message is just "MENU" or greeting for staff, show their role intro
         if (preg_match('/menu|halo|pagi|siang|malam/i', $message)) {
             return $this->wa->sendMessage($phone, $this->bot->medanize("Halo " . $user->name . "! Tim MASTER ADMIN ya kau di " . ($user->sppg->name ?? 'SPPG') . "? Ada laporan apa hari ini?"));

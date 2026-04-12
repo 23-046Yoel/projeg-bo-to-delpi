@@ -6,9 +6,9 @@
             </a>
             <div>
                 <h2 class="font-black text-2xl text-royal-navy leading-tight tracking-tight uppercase font-playfair">
-                    {{ __('Create Purchase Order') }}
+                    {{ __('Buat Surat Pesanan (PO)') }}
                 </h2>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1">Surat Pesanan Bahan Baku</p>
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1">Pemesanan Bahan Baku ke Supplier</p>
             </div>
         </div>
     </x-slot>
@@ -29,7 +29,7 @@
                                 </select>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Order Date</label>
+                                <label class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Tanggal Pesanan</label>
                                 <input type="date" name="order_date" required value="{{ date('Y-m-d') }}"
                                     class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
                             </div>
@@ -37,9 +37,9 @@
 
                         <div class="border-t border-gray-50 pt-10">
                             <div class="flex items-center justify-between mb-8">
-                                <h3 class="text-[10px] font-black text-royal-navy uppercase tracking-[0.2em]">Material List</h3>
+                                <h3 class="text-[10px] font-black text-royal-navy uppercase tracking-[0.2em]">Daftar Bahan Baku</h3>
                                 <button type="button" onclick="addItem()" class="px-4 py-2 bg-royal-navy text-gold rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-royal-navy/90 transition-all">
-                                    + Add Item
+                                    + Tambah Item
                                 </button>
                             </div>
 
@@ -101,10 +101,10 @@
 
                         <div class="pt-8 border-t border-gray-50 flex space-x-4">
                             <button type="submit" class="flex-1 py-5 bg-royal-navy text-gold font-black text-xs uppercase tracking-[0.3em] rounded-2xl shadow-2xl shadow-royal-navy/20 hover:bg-royal-navy/90 hover:-translate-y-1 transition-all duration-300">
-                                Save & Generate PO
+                                Simpan & Generate PO
                             </button>
                              <a href="{{ route('orders.index') }}" class="px-12 py-5 border-2 border-gray-100 rounded-2xl text-gray-400 font-bold uppercase tracking-[0.2em] text-[10px] hover:bg-silk transition-all flex items-center">
-                                Cancel
+                                Batal
                             </a>
                         </div>
                     </div>

@@ -49,6 +49,28 @@
                                         <option value="Kas Kecil">Kas Kecil</option>
                                     </select>
                                 </div>
+
+                                <div class="col-span-1 md:col-span-2">
+                                    <label class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Terkait Penerima / Anak (Opsional)</label>
+                                    <select name="beneficiary_id" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none transition-all">
+                                        <option value="">-- Tidak Terikat Spesifik --</option>
+                                        @foreach($beneficiaries as $b)
+                                            <option value="{{ $b->id }}">{{ $b->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <p class="mt-2 text-[9px] text-gray-400 font-bold uppercase tracking-widest italic leading-relaxed">Pilih jika transaksi ini spesifik untuk anak tertentu (misal: pemberian bantuan khusus).</p>
+                                </div>
+                                
+                                {{-- Saldo Awal Reminder --}}
+                                <div class="col-span-1 md:col-span-2 bg-royal-navy/5 p-6 rounded-[2rem] border border-royal-navy/10 flex items-start space-x-4">
+                                    <div class="w-10 h-10 rounded-xl bg-royal-navy flex items-center justify-center text-gold flex-shrink-0">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-black text-royal-navy uppercase tracking-widest mb-1">Penting: Saldo Awal</p>
+                                        <p class="text-[11px] text-slate-500 font-medium leading-relaxed">Pastikan Anda telah mengisi "Bantuan Pemerintah" atau saldo awal sebelum mencatat pengeluaran pertama.</p>
+                                    </div>
+                                </div>
                                 
                                 <div class="bg-emerald-50 rounded-[2rem] p-6 border border-emerald-100">
                                     <label class="block text-[10px] font-black text-emerald-600 uppercase tracking-[0.2em] mb-4">Pemasukan (+)</label>

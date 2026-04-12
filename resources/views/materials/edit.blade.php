@@ -39,22 +39,25 @@
                                     </select>
                                 </div>
 
-                                <div>
+                                @php
+                                    $units = ['Kg', 'Liter', 'Butir', 'Ikat', 'Pcs', 'Bungkus', 'Karung', 'Dus', 'Gram'];
+                                    $isCustom = !in_array($material->unit, $units);
+                                @endphp
+                                <div x-data="{ unitType: '{{ $isCustom ? 'custom' : $material->unit }}' }">
                                     <label for="unit" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Satuan (Unit)</label>
-                                    @php
-                                        $commonUnits = ['Kg', 'Liter', 'Bungkus', 'Pcs', 'Gram'];
-                                        $isOther = !in_array($material->unit, $commonUnits);
-                                    @endphp
-                                    <select id="unit_select" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none mb-2" onchange="if(this.value=='Other'){document.getElementById('unit_manual_container').classList.remove('hidden'); document.getElementById('unit').value='';}else{document.getElementById('unit_manual_container').classList.add('hidden'); document.getElementById('unit').value=this.value;}">
-                                        @foreach($commonUnits as $u)
-                                            <option value="{{ $u }}" {{ $material->unit == $u ? 'selected' : '' }}>{{ $u }}</option>
-                                        @endforeach
-                                        <option value="Other" {{ $isOther ? 'selected' : '' }}>Lainnya...</option>
-                                    </select>
-                                    <input type="hidden" name="unit" id="unit" value="{{ $material->unit }}">
-                                    <div id="unit_manual_container" class="{{ $isOther ? '' : 'hidden' }}">
-                                        <input type="text" id="unit_manual" value="{{ $isOther ? $material->unit : '' }}" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none" placeholder="Ketik satuan manual..." oninput="document.getElementById('unit').value=this.value">
+                                    <div class="space-y-3">
+                                        <select id="unit_select" x-model="unitType" @change="if(unitType !== 'custom') $refs.unit_input.value = unitType" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
+                                            @foreach($units as $u)
+                                                <option value="{{ $u }}">{{ $u }}</option>
+                                            @endforeach
+                                            <option value="custom">Lainnya...</option>
+                                        </select>
+                                        <input type="text" name="unit" x-ref="unit_input" value="{{ $material->unit }}" x-show="unitType === 'custom'" 
+                                            :required="unitType === 'custom'"
+                                            class="w-full px-6 py-4 bg-white border-2 border-gold rounded-2xl text-sm font-bold text-royal-navy shadow-lg animate-fadeIn outline-none" 
+                                            placeholder="Masukkan satuan baru...">
                                     </div>
+                                    @error('unit') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
                                 </div>
 
                                 <div>

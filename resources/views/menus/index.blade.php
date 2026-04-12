@@ -24,7 +24,7 @@
                         <table class="min-w-full">
                             <thead>
                                 <tr class="border-b-2 border-royal-navy/10">
-                                    <th class="px-4 py-4 text-left text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] bg-silk/30">Tanggal</th>
+                                    <th class="px-4 py-4 text-left text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] bg-silk/30">Dapur</th>
                                     <th class="px-4 py-4 text-left text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] bg-silk/30">Karbo</th>
                                     <th class="px-4 py-4 text-left text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] bg-silk/30">Protein Hewani</th>
                                     <th class="px-4 py-4 text-left text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] bg-silk/30">Protein Nabati</th>
@@ -41,33 +41,44 @@
                                     @endphp
                                     <tr class="hover:bg-gold/5 transition-colors group">
                                         <td class="px-4 py-4 whitespace-nowrap">
-                                            <div class="flex items-center">
-                                                <div class="w-10 h-10 rounded-xl bg-royal-navy shadow-md flex items-center justify-center text-gold mr-3 group-hover:scale-110 transition-transform">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                                </div>
-                                                <div>
+                                            <div class="flex flex-col">
+                                                <div class="text-[10px] font-black text-gold-dark uppercase tracking-widest mb-1">{{ $menu->sppg->name ?? 'SEMUA DAPUR' }}</div>
+                                                <div class="flex items-center">
                                                     <div class="text-sm font-black text-royal-navy">{{ \Carbon\Carbon::parse($menu->date)->translatedFormat('d M Y') }}</div>
+                                                    <span class="mx-2 text-gray-300">|</span>
                                                     <div class="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{{ \Carbon\Carbon::parse($menu->date)->translatedFormat('l') }}</div>
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="px-4 py-4">
-                                            <div class="text-xs font-semibold text-gray-700">{{ $menuData['karbo'] ?? '-' }}</div>
+                                            <div class="text-xs font-semibold text-gray-700">
+                                                {{ $menu->karbo ?: ($menu->dishes->count() > 0 ? $menu->dishes[0]->name : '-') }}
+                                            </div>
                                         </td>
                                         <td class="px-4 py-4">
-                                            <div class="text-xs font-semibold text-gray-700">{{ $menuData['protein_hewani'] ?? '-' }}</div>
+                                            <div class="text-xs font-semibold text-gray-700">
+                                                {{ $menu->protein_hewani ?: ($menu->dishes->count() > 1 ? $menu->dishes[1]->name : '-') }}
+                                            </div>
                                         </td>
                                         <td class="px-4 py-4">
-                                            <div class="text-xs font-semibold text-gray-700">{{ $menuData['protein_nabati'] ?? '-' }}</div>
+                                            <div class="text-xs font-semibold text-gray-700">
+                                                {{ $menu->protein_nabati ?: ($menu->dishes->count() > 2 ? $menu->dishes[2]->name : '-') }}
+                                            </div>
                                         </td>
                                         <td class="px-4 py-4">
-                                            <div class="text-xs font-semibold text-gray-700">{{ $menuData['sayur'] ?? '-' }}</div>
+                                            <div class="text-xs font-semibold text-gray-700">
+                                                {{ $menu->sayur ?: ($menu->dishes->count() > 3 ? $menu->dishes[3]->name : '-') }}
+                                            </div>
                                         </td>
                                         <td class="px-4 py-4">
-                                            <div class="text-xs font-semibold text-gray-700">{{ $menuData['buah'] ?? '-' }}</div>
+                                            <div class="text-xs font-semibold text-gray-700">
+                                                {{ $menu->buah ?: ($menu->dishes->count() > 4 ? $menu->dishes[4]->name : '-') }}
+                                            </div>
                                         </td>
                                         <td class="px-4 py-4">
-                                            <div class="text-xs font-semibold text-gray-700">{{ $menuData['pelengkap'] ?? '-' }}</div>
+                                            <div class="text-xs font-semibold text-gray-700">
+                                                {{ $menu->pelengkap ?: ($menu->dishes->count() > 5 ? $menu->dishes[5]->name : '-') }}
+                                            </div>
                                         </td>
                                         <td class="px-4 py-4 whitespace-nowrap text-center">
                                             <div class="flex items-center justify-center space-x-2">

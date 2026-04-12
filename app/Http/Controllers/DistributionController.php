@@ -60,7 +60,8 @@ class DistributionController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'driver_id' => 'required|exists:users,id',
+            'driver_id' => 'nullable|exists:users,id',
+            'driver_phone' => 'required_without:driver_id|nullable|string',
             'date' => 'required|date',
             'group_ids' => 'required|array',
             'group_ids.*' => 'exists:beneficiary_groups,id',
@@ -68,7 +69,8 @@ class DistributionController extends Controller
 
         $route = DistributionRoute::create([
             'assistant_id' => auth()->id(),
-            'driver_id' => $validated['driver_id'],
+            'driver_id' => $validated['driver_id'] ?? null,
+            'driver_phone' => $validated['driver_phone'] ?? null,
             'sppg_id' => auth()->user()->sppg_id,
             'date' => $validated['date'],
             'status' => 'planned',

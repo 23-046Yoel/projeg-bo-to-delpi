@@ -12,7 +12,13 @@ class BeneficiaryController extends Controller
      */
     public function index()
     {
-        $beneficiaries = Beneficiary::latest()->paginate(10);
+        $query = Beneficiary::with('sppg');
+
+        if (!auth()->user()->isAdmin() && auth()->user()->sppg_id) {
+            $query->where('sppg_id', auth()->user()->sppg_id);
+        }
+
+        $beneficiaries = $query->latest()->paginate(10);
         return view('beneficiaries.index', compact('beneficiaries'));
     }
 

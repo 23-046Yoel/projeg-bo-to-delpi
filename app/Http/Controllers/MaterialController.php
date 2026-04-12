@@ -30,12 +30,15 @@ class MaterialController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'category' => 'required|string',
-            'unit' => 'nullable|string|max:50',
-            'price' => 'numeric|min:0',
-            'stock' => 'numeric|min:0',
-            'expiry_date' => 'nullable|date',
+            'name'                 => 'required|string|max:255',
+            'category'             => 'required|string',
+            'unit'                 => 'nullable|string|max:50',
+            'price'                => 'numeric|min:0',
+            'stock'                => 'numeric|min:0',
+            'expiry_date'          => 'nullable|date',
+            'notes'                => 'nullable|string|max:1000',
+            'last_price'           => 'nullable|numeric|min:0',
+            'estimated_daily_need' => 'nullable|numeric|min:0',
         ]);
 
         Material::create(array_merge($validated, [

@@ -15,18 +15,33 @@ class User extends Authenticatable
     protected $guarded = [];
 
     const ROLE_ADMIN = 'admin';
-    const ROLE_FINANCE = 'finance';
-    const ROLE_WAREHOUSE = 'warehouse';
+    const ROLE_KA_SPPG = 'ka_sppg';
+    const ROLE_PENGAWAS_GIZI = 'nutrition_supervisor';
+    const ROLE_PENGAWAS_KEUANGAN = 'finance_supervisor';
     const ROLE_ASLAP = 'aslap';
-    const ROLE_DRIVER = 'driver';
-    const ROLE_HEAD = 'head';
-    const ROLE_VOLUNTEER = 'volunteer';
+    const ROLE_VOLUNTEER = 'volunteer'; // Represents "Publik" in the screenshot
+    const ROLE_WAREHOUSE = 'warehouse';
     const ROLE_QC = 'qc';
-    const ROLE_NUTRITIONIST = 'nutritionist';
+    const ROLE_DRIVER = 'driver'; // Existing role
 
     public function isAdmin()
     {
         return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function getRoleTitleAttribute()
+    {
+        return [
+            self::ROLE_ADMIN => 'MASTER ADMIN',
+            self::ROLE_KA_SPPG => 'KA SPPG',
+            self::ROLE_PENGAWAS_GIZI => 'PENGAWAS GIZI',
+            self::ROLE_PENGAWAS_KEUANGAN => 'PENGAWAS KEUANGAN',
+            self::ROLE_ASLAP => 'ASISTEN LAPANGAN',
+            self::ROLE_VOLUNTEER => 'PUBLIK / RELAWAN',
+            self::ROLE_WAREHOUSE => 'STAF GUDANG',
+            self::ROLE_QC => 'QUALITY CONTROL',
+            self::ROLE_DRIVER => 'DRIVER OPERASIONAL',
+        ][$this->role] ?? 'PENGGUNA';
     }
 
     public function sppg()

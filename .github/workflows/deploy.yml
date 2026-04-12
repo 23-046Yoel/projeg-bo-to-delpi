@@ -1,0 +1,76 @@
+name: 🚀 Auto Deploy ke CloudKilat
+
+on:
+  push:
+    branches:
+      - main        # Deploy otomatis saat push ke branch "main"
+      - production  # Atau branch "production"
+
+jobs:
+  deploy:
+    name: Deploy ke Server Hosting
+    runs-on: ubuntu-latest
+
+    steps:
+      # ── Step 1: Ambil kode dari GitHub ──────────────────────────────
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      # ── Step 2: Setup PHP ────────────────────────────────────────────
+      - name: 🐘 Setup PHP 8.2
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, bcmath, pdo, pdo_mysql
+          coverage: none
+
+      # ── Step 3: Install Composer Dependencies ────────────────────────
+      - name: 📦 Install Composer Dependencies
+        run: composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
+
+      # ── Step 4: Deploy ke Server via SSH ─────────────────────────────
+      - name: 🔗 Deploy via SSH ke CloudKilat
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}         # IP Server CloudKilat
+          username: ${{ secrets.SSH_USER }}     # Username SSH (biasanya root atau cpanel user)
+          password: ${{ secrets.SSH_PASSWORD }} # Password SSH (atau gunakan key)
+          port: ${{ secrets.SSH_PORT }}         # Port SSH (biasanya 22)
+          script: |
+            echo "🚀 Mulai Deploy BoTo Delphi..."
+            
+            # Masuk ke folder project di server
+            cd ${{ secrets.PROJECT_PATH }}
+            
+            # Pastikan git remote sudah terhubung ke repo yang benar
+            git config --global --add safe.directory ${{ secrets.PROJECT_PATH }}
+            
+            # Pull kode terbaru dari GitHub
+            git pull origin main
+            
+            # Install/update dependencies
+            composer install --no-dev --optimize-autoloader --no-interaction
+            
+            # Jalankan migrasi database
+            php artisan migrate --force
+            
+            # Optimasi sistem
+            php artisan optimize:clear
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
+            
+            # Buat storage link jika belum ada
+            php artisan storage:link --force 2>/dev/null || true
+            
+            # Set permission yang benar
+            chmod -R 775 storage bootstrap/cache
+            
+            echo "✅ Deploy BoTo Delphi BERHASIL!"
+
+      # ── Step 5: Notifikasi WhatsApp (Opsional) ───────────────────────
+      # Uncomment jika ingin notif WA setelah deploy berhasil
+      # - name: 📱 Notifikasi WhatsApp
+      #   run: |
+      #     curl -s "https://wablas.com/api/send-message" \
+      #       -d "token=${{ secrets.WABLAS_TOKEN }}&phone=${{ secrets.NOTIF_PHONE }}&message=✅ BoTo Delphi berhasil di-deploy ke server! Commit: ${{ github.event.head_commit.message }}"

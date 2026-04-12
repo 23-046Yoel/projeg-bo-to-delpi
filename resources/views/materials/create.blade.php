@@ -41,19 +41,25 @@
                                     @error('category') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
                                 </div>
 
-                                <div>
+                                <div x-data="{ unitType: 'fixed', customUnit: '' }">
                                     <label for="unit" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Satuan (Unit)</label>
-                                    <select id="unit_select" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none mb-2" onchange="if(this.value=='Other'){document.getElementById('unit_manual_container').classList.remove('hidden'); document.getElementById('unit').value='';}else{document.getElementById('unit_manual_container').classList.add('hidden'); document.getElementById('unit').value=this.value;}">
-                                        <option value="Kg">Kg</option>
-                                        <option value="Liter">Liter</option>
-                                        <option value="Bungkus">Bungkus</option>
-                                        <option value="Pcs">Pcs</option>
-                                        <option value="Gram">Gram</option>
-                                        <option value="Other">Lainnya...</option>
-                                    </select>
-                                    <input type="hidden" name="unit" id="unit" value="Kg">
-                                    <div id="unit_manual_container" class="hidden">
-                                        <input type="text" id="unit_manual" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none" placeholder="Ketik satuan manual..." oninput="document.getElementById('unit').value=this.value">
+                                    <div class="space-y-3">
+                                        <select id="unit_select" x-model="unitType" @change="if(unitType !== 'custom') $refs.unit_input.value = unitType" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
+                                            <option value="Kg">Kg</option>
+                                            <option value="Liter">Liter</option>
+                                            <option value="Butir">Butir</option>
+                                            <option value="Ikat">Ikat</option>
+                                            <option value="Pcs">Pcs</option>
+                                            <option value="Bungkus">Bungkus</option>
+                                            <option value="Karung">Karung</option>
+                                            <option value="Dus">Dus</option>
+                                            <option value="Gram">Gram</option>
+                                            <option value="custom">Lainnya...</option>
+                                        </select>
+                                        <input type="text" name="unit" x-ref="unit_input" x-show="unitType === 'custom'" 
+                                            :required="unitType === 'custom'"
+                                            class="w-full px-6 py-4 bg-white border-2 border-gold rounded-2xl text-sm font-bold text-royal-navy shadow-lg animate-fadeIn outline-none" 
+                                            placeholder="Masukkan satuan baru...">
                                     </div>
                                     @error('unit') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
                                 </div>
@@ -80,6 +86,44 @@
                                     <input type="number" step="0.01" name="stock" id="stock" value="{{ old('stock', 0) }}" required
                                         class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
                                     @error('stock') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
+                                </div>
+
+                                {{-- SECTION: Informasi Tambahan --}}
+                                <div class="col-span-1 md:col-span-2">
+                                    <div class="border-t border-dashed border-gray-200 pt-8 mt-2">
+                                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                            Informasi Tambahan (Opsional)
+                                        </p>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                            <div>
+                                                <label for="last_price" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Harga Beli Terakhir</label>
+                                                <div class="relative">
+                                                    <span class="absolute left-6 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">Rp</span>
+                                                    <input type="number" name="last_price" id="last_price" value="{{ old('last_price') }}"
+                                                        class="w-full pl-14 pr-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none"
+                                                        placeholder="0">
+                                                </div>
+                                                <p class="mt-1 text-[10px] text-gray-400">Diisi otomatis saat terima pesanan.</p>
+                                            </div>
+                                            <div>
+                                                <label for="estimated_daily_need" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Estimasi Kebutuhan Harian</label>
+                                                <div class="relative">
+                                                    <input type="number" step="0.01" name="estimated_daily_need" id="estimated_daily_need" value="{{ old('estimated_daily_need') }}"
+                                                        class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none"
+                                                        placeholder="0">
+                                                    <span class="absolute right-6 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">/ hari</span>
+                                                </div>
+                                                <p class="mt-1 text-[10px] text-gray-400">Misal: 50 kg beras per hari untuk hitung stok kritis.</p>
+                                            </div>
+                                            <div class="col-span-1 md:col-span-2">
+                                                <label for="notes" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Catatan / Keterangan</label>
+                                                <textarea name="notes" id="notes" rows="3"
+                                                    class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none resize-none"
+                                                    placeholder="Contoh: Tahu ukuran 5x5 per biji Rp 600. Beli di Pak Andi 082xxxx. Simpan di kulkas maks 2 hari.">{{ old('notes') }}</textarea>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 

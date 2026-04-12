@@ -9,78 +9,55 @@ use Illuminate\Support\Facades\Log;
 class AiBotService
 {
     protected $apiKey;
-    protected $baseUrl = 'https://api.groq.com/openai/v1/chat/completions';
+    protected $baseUrl = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent';
 
     public function __construct()
     {
-        $this->apiKey = config('services.groq.key');
+        $this->apiKey = config('services.gemini.key');
     }
 
-    public function generateResponse(string $question, string $context)
+    public function generateResponse(string $question, string $context, string $userName = 'Publik')
     {
         if (!$this->apiKey) {
-            return "Maaf, API Key Groq belum dikonfigurasi. Silakan hubungi admin.";
-        }
-
-        // Simple rate limiting
-        $cacheKey = 'openai_last_request';
-        $lastRequest = Cache::get($cacheKey);
-        
-        if ($lastRequest && (time() - $lastRequest) < 3) {
-            sleep(3);
+            return "Maaf, API Key Gemini belum dikonfigurasi. Silakan hubungi admin.";
         }
 
         try {
-            $systemPrompt = "Anda adalah asisten AI untuk sistem 'BoTo Delphi' (Sistem Manajemen Inventori & Keuangan). 
-            Jawab dengan ramah dan profesional dalam Bahasa Indonesia.
-            Gunakan data yang diberikan untuk menjawab pertanyaan user.
-            Jika data tidak ada, jawab bahwa Anda tidak menemukannya di sistem.";
+            $systemPrompt = "Anda adalah asisten AI untuk sistem 'BoTo Delphi' (Sistem Makan Bergizi Gratis / MBG). 
+            Jawab dengan ramah, informatif, dan profesional dalam Bahasa Indonesia.
+            Gunakan data yang diberikan untuk menjawab pertanyaan user. 
+            Nama user yang bertanya adalah: $userName.
+            Jika user tidak login (Nama: Publik), jangan berikan detail data stok atau keuangan spesifik.
+            Jika data tidak ada atau akses terbatas, arahkan user untuk login atau hubungi Admin SPPG.";
 
-            $userPrompt = "DATA DATABASE:\n$context\n\nPERTANYAAN USER: $question";
+            $fullPrompt = "SYSTEM INSTRUCTION:\n$systemPrompt\n\nCONTEXT:\n$context\n\nPERTANYAAN USER: $question";
 
-            Log::info("Calling Groq API");
+            Log::info("Calling Gemini 1.5 Flash API");
 
-            // Record this request time
-            Cache::put($cacheKey, time(), 60);
-
-            // Retry logic with exponential backoff
-            $maxRetries = 3;
-            $retryDelay = 3;
-
-            for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
-                $response = Http::timeout(60)
-                    ->connectTimeout(30)
-                    ->withHeaders([
-                        'Authorization' => 'Bearer ' . $this->apiKey,
-                        'Content-Type' => 'application/json',
-                    ])
-                    ->withoutVerifying()
-                    ->post($this->baseUrl, [
-                        'model' => 'llama-3.1-8b-instant',
-                        'messages' => [
-                            ['role' => 'system', 'content' => $systemPrompt],
-                            ['role' => 'user', 'content' => $userPrompt]
-                        ],
-                        'max_tokens' => 500,
+            $response = Http::timeout(60)
+                ->withHeaders(['Content-Type' => 'application/json'])
+                ->post($this->baseUrl . '?key=' . $this->apiKey, [
+                    'contents' => [
+                        [
+                            'parts' => [
+                                ['text' => $fullPrompt]
+                            ]
+                        ]
+                    ],
+                    'generationConfig' => [
                         'temperature' => 0.7,
-                    ]);
+                        'maxOutputTokens' => 800,
+                    ]
+                ]);
 
-                if ($response->successful()) {
-                    $data = $response->json();
-                    return $data['choices'][0]['message']['content'] ?? "Gagal mendapatkan respon dari AI.";
-                }
-
-                // Other errors, log and return
-                Log::error("AI API Error [" . $response->status() . "]: " . $response->body());
-                
-                if ($response->status() === 429) {
-                    return "Maaf, server AI sedang sibuk. silahkan  cek kodingan lagi       "                       ;
-                }
-                
-                return "Terjadi kesalahan saat menghubungi server AI (Code: " . $response->status() . ").";
+            if ($response->successful()) {
+                $data = $response->json();
+                return $data['candidates'][0]['content']['parts'][0]['text'] ?? "Gagal mendapatkan respon dari AI.";
             }
 
-            return "Maaf, tidak dapat menghubungi server AI setelah beberapa percobaan.";
+            Log::error("Gemini API Error [" . $response->status() . "]: " . $response->body());
+            
+            return "Terjadi kesalahan saat menghubungi server AI (Code: " . $response->status() . "). Silakan hubungi tim teknis.";
 
         } catch (\Exception $e) {
             Log::error("AiBotService Exception: " . $e->getMessage());

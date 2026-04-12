@@ -53,13 +53,16 @@
             <span class="font-bold tracking-tight">{{ __('Dashboard') }}</span>
         </x-nav-link>
 
+        @can('manage-suppliers')
         <x-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')" class="py-3">
             <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
             </svg>
             <span class="font-bold tracking-tight">{{ __('Suppliers') }}</span>
         </x-nav-link>
+        @endcan
 
+        @can('manage-menus')
         <x-nav-link :href="route('menus.index')" :active="request()->routeIs('menus.*')" class="py-3">
             <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
@@ -73,7 +76,9 @@
             </svg>
             <span class="font-bold tracking-tight">{{ __('Daftar Hidangan (Resep)') }}</span>
         </x-nav-link>
+        @endcan
 
+        @can('manage-distribution')
         <div class="px-8 mt-4 mb-2">
             <p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Education & Beneficiaries</p>
         </div>
@@ -84,24 +89,21 @@
             </svg>
             <span class="font-bold tracking-tight">{{ __('Manajemen Penerima Manfaat') }}</span>
         </x-nav-link>
+        @endcan
 
+        @can('manage-beneficiaries')
         <x-nav-link :href="route('beneficiaries.index')" :active="request()->routeIs('beneficiaries.*')" class="py-3">
             <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
             </svg>
-            <span class="font-bold tracking-tight">{{ __('Data Penerima') }}</span>
+            <span class="font-bold tracking-tight">{{ __('Daftar PM Detail') }}</span>
         </x-nav-link>
+        @endcan
 
+        @can('manage-warehouse')
         <div class="px-8 mt-4 mb-2">
             <p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Supply Chain & Vendor</p>
         </div>
-
-        <x-nav-link :href="route('suppliers.index')" :active="request()->routeIs('suppliers.*')" class="py-3">
-            <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
-            </svg>
-            <span class="font-bold tracking-tight">{{ __('Daftar Pemasok') }}</span>
-        </x-nav-link>
 
         <x-nav-link :href="route('materials.index')" :active="request()->routeIs('materials.*')" class="py-3">
             <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -116,6 +118,12 @@
             </svg>
             <span class="font-bold tracking-tight">{{ __('Gudang & Stok') }}</span>
         </x-nav-link>
+        @endcan
+
+        @can('manage-finances')
+        <div class="px-8 mt-4 mb-2">
+            <p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Financial & Recap</p>
+        </div>
 
         <x-nav-link :href="route('orders.index')" :active="request()->routeIs('orders.*')" class="py-3">
             <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -123,10 +131,6 @@
             </svg>
             <span class="font-bold tracking-tight">{{ __('Surat Pesanan') }}</span>
         </x-nav-link>
-
-        <div class="px-8 mt-4 mb-2">
-            <p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Financial & Recap</p>
-        </div>
 
         <x-nav-link :href="route('payments.index')" :active="request()->routeIs('payments.*')" class="py-3">
             <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -147,8 +151,10 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
             <span class="font-bold tracking-tight">{{ __('Laporan Arus Kas') }}</span>
-        </x-nav-link>   
+        </x-nav-link>
+        @endcan
 
+        @can('view-reports')
         <div class="px-8 mt-4 mb-2">
             <p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Volunteer Monitoring</p>
         </div>
@@ -169,35 +175,10 @@
 
         <x-nav-link :href="route('reports.bapsd')" :active="request()->routeIs('reports.bapsd')" class="py-3">
             <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
             </svg>
             <span class="font-bold tracking-tight">{{ __('BAPSD') }}</span>
         </x-nav-link>
-
-        <x-nav-link :href="route('inventory.index')" :active="request()->routeIs('inventory.*')" class="py-3">
-            <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-            </svg>
-            <span class="font-bold tracking-tight">{{ __('Gudang & Stok') }}</span>
-        </x-nav-link>
-
-        <x-nav-link :href="route('orders.index')" :active="request()->routeIs('orders.*')" class="py-3">
-            <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-            </svg>
-            <span class="font-bold tracking-tight">{{ __('Surat Pesanan') }}</span>
-        </x-nav-link>
-
-        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')" class="py-3">
-            <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-            </svg>
-            <span class="font-bold tracking-tight">{{ __('Manajemen Staff') }}</span>
-        </x-nav-link>
-
-        <div class="px-8 mt-4 mb-2">
-            <p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Volunteer Monitoring</p>
-        </div>
 
         <x-nav-link :href="route('attendances.index')" :active="request()->routeIs('attendances.*')" class="py-3">
             <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -213,6 +194,23 @@
             </svg>
             <span class="font-bold tracking-tight">{{ __('Layanan Pengaduan') }}</span>
         </x-nav-link>
+        @endcan
+
+        @if(auth()->user()->isAdmin())
+        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')" class="py-3">
+            <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+            <span class="font-bold tracking-tight">{{ __('Manajemen Staff') }}</span>
+        </x-nav-link>
+
+        <x-nav-link :href="route('aspirations.index')" :active="request()->routeIs('aspirations.*')" class="py-3">
+            <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/>
+            </svg>
+            <span class="font-bold tracking-tight">{{ __('Moderasi Aspirasi') }}</span>
+        </x-nav-link>
+        @endif
 
         <div class="px-8 mt-4 mb-2">
             <p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Distribution</p>
@@ -243,7 +241,7 @@
             </div>
             <div class="overflow-hidden">
                 <p class="text-sm font-black text-royal-navy truncate uppercase tracking-tight">{{ Auth::user()->name }}</p>
-                <p class="text-[10px] text-gold-dark font-bold uppercase tracking-widest">{{ Auth::user()->role === \App\Models\User::ROLE_DRIVER ? 'OFFICIAL DRIVER' : 'MASTER ADMIN' }}</p>
+                <p class="text-[10px] text-gold-dark font-bold uppercase tracking-widest">{{ Auth::user()->role_title }}</p>
             </div>
         </div>
 

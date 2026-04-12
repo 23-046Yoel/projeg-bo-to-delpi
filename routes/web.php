@@ -27,13 +27,14 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Auth\WhatsAppLoginController;
 
 Route::get('/', function () {
+    $totalBeneficiaries = \App\Models\BeneficiaryGroup::sum('total_beneficiaries');
     $stats = [
         'posts_count' => \App\Models\News::count(),
         'beneficiaries_per_kitchen' => \App\Models\Sppg::count() > 0 
-            ? round(\App\Models\Beneficiary::count() / \App\Models\Sppg::count()) 
-            : \App\Models\Beneficiary::count(),
+            ? round($totalBeneficiaries / \App\Models\Sppg::count()) 
+            : $totalBeneficiaries,
         'tutorials_count' => \App\Models\Dish::whereNotNull('youtube_url')->count(),
-        'beneficiaries_count' => \App\Models\Beneficiary::count(), // Kept for the hero section
+        'beneficiaries_count' => $totalBeneficiaries,
     ];
     return view('welcome', compact('stats'));
 });
@@ -72,6 +73,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/recap', [RecapController::class, 'index'])->name('recap.index');
     
     Route::get('/inventory', [\App\Http\Controllers\InventoryController::class, 'index'])->name('inventory.index');
+    Route::post('/inventory/adjust', [\App\Http\Controllers\InventoryController::class, 'adjust'])->name('inventory.adjust');
     Route::resource('orders', \App\Http\Controllers\OrderController::class);
     Route::get('/financial', [\App\Http\Controllers\FinancialController::class, 'index'])->name('financial.index');
     Route::get('/reports/lpd2m', [\App\Http\Controllers\ReportController::class, 'lpd2m'])->name('reports.lpd2m');
@@ -99,6 +101,22 @@ Route::post('/pendaftaran-pemasok', [SupplierRegistrationController::class, 'sto
 
 // AI Chat Bot Route (Public)
 Route::post('/chat/query', [\App\Http\Controllers\AiChatController::class, 'query'])->name('chat.query');
+
+// Public Portal Routes
+Route::post('/aspirasi', [\App\Http\Controllers\AspirationController::class, 'store'])->name('aspirations.store');
+Route::get('/dapur', [\App\Http\Controllers\KitchenController::class, 'index'])->name('kitchens.index');
+Route::get('/dapur/{slug}', [\App\Http\Controllers\KitchenController::class, 'show'])->name('kitchens.show');
+Route::get('/harga-komunitas', [\App\Http\Controllers\CommunityPriceController::class, 'index'])->name('community-prices.index');
+Route::post('/harga-komunitas', [\App\Http\Controllers\CommunityPriceController::class, 'store'])->name('community-prices.store');
+Route::post('/harga-komunitas/{price}/like', [\App\Http\Controllers\CommunityPriceController::class, 'like'])->name('community-prices.like');
+
+// Admin Aspiration Moderation (Auth required)
+Route::middleware('auth')->group(function () {
+    Route::get('/admin/aspirasi', [\App\Http\Controllers\AspirationController::class, 'index'])->name('aspirations.index');
+    Route::post('/admin/aspirasi/{aspiration}/toggle', [\App\Http\Controllers\AspirationController::class, 'toggle'])->name('aspirations.toggle');
+    Route::post('/admin/aspirasi/{aspiration}/pin', [\App\Http\Controllers\AspirationController::class, 'pin'])->name('aspirations.pin');
+    Route::delete('/admin/aspirasi/{aspiration}', [\App\Http\Controllers\AspirationController::class, 'destroy'])->name('aspirations.destroy');
+});
 
 // Maintenance Routes
 Route::get('/bersihkan-sistem', function () {

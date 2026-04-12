@@ -64,13 +64,53 @@
                            </div>
                         </div>
 
-                        <div class="p-8 bg-royal-navy rounded-[2rem] relative overflow-hidden group shadow-xl">
+                        <div x-data="{ open: false, type: 'in' }" class="p-8 bg-royal-navy rounded-[2rem] relative overflow-hidden group shadow-xl">
                            <div class="relative z-10">
-                                <div class="text-[10px] font-black text-gold uppercase tracking-widest mb-2">Audit Status</div>
-                                <div class="text-xl font-black text-white">READY FOR AUDIT</div>
+                                <div class="text-[10px] font-black text-gold uppercase tracking-widest mb-4">Aksi Cepat</div>
+                                <div class="flex gap-2">
+                                    <button @click="open = true; type = 'in'" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-3 px-4 text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-emerald-500/20">
+                                        + Tambah
+                                    </button>
+                                    <button @click="open = true; type = 'out'" class="flex-1 bg-rose-500 hover:bg-rose-600 text-white rounded-xl py-3 px-4 text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-rose-500/20">
+                                        - Kurang
+                                    </button>
+                                </div>
                            </div>
-                           <div class="absolute -right-4 -bottom-4 opacity-20">
-                                <svg class="w-24 h-24 text-gold" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                           
+                           {{-- Adjustment Modal --}}
+                           <div x-show="open" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-royal-navy/60 backdrop-blur-sm" x-cloak>
+                                <div @click.away="open = false" class="bg-white rounded-[2.5rem] p-10 w-full max-w-md shadow-2xl border border-gray-100 animate-fadeIn">
+                                    <h3 class="text-xl font-black text-royal-navy uppercase tracking-tight mb-6" x-text="type === 'in' ? 'Tambah Stok Manual' : 'Kurangi Stok Manual'"></h3>
+                                    
+                                    <form action="{{ route('inventory.adjust') }}" method="POST" class="space-y-6">
+                                        @csrf
+                                        <input type="hidden" name="type" :value="type">
+                                        
+                                        <div>
+                                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Pilih Bahan Baku</label>
+                                            <select name="material_id" required class="w-full px-6 py-4 bg-silk border-none rounded-2xl text-sm font-bold text-royal-navy focus:ring-2 focus:ring-gold outline-none">
+                                                @foreach($materials as $m)
+                                                    <option value="{{ $m->id }}">{{ $m->name }} ({{ $m->unit }})</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Jumlah (Quantity)</label>
+                                            <input type="number" step="0.01" name="quantity" required class="w-full px-6 py-4 bg-silk border-none rounded-2xl text-sm font-bold text-royal-navy focus:ring-2 focus:ring-gold outline-none" placeholder="0.00">
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Catatan (Optional)</label>
+                                            <input type="text" name="note" class="w-full px-6 py-4 bg-silk border-none rounded-2xl text-sm font-bold text-royal-navy focus:ring-2 focus:ring-gold outline-none" placeholder="Contoh: Stok rusak, bonus supplier...">
+                                        </div>
+
+                                        <div class="flex gap-4 pt-4">
+                                            <button type="button" @click="open = false" class="flex-1 py-4 bg-gray-100 text-gray-400 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-gray-200 transition-all">Batal</button>
+                                            <button type="submit" class="flex-1 py-4 bg-royal-navy text-gold text-[10px] font-black uppercase tracking-widest rounded-2xl hover:scale-105 transition-all shadow-xl shadow-royal-navy/20">Proses</button>
+                                        </div>
+                                    </form>
+                                </div>
                            </div>
                         </div>
                     </div>

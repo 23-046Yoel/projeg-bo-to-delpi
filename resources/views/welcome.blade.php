@@ -58,13 +58,19 @@
     <!-- News Ticker -->
     @php
         $latest_news = \App\Models\News::latest()->take(5)->get();
+        $active_aspirations = \App\Models\Aspiration::where('is_active', true)->latest()->take(5)->get();
     @endphp
-    @if($latest_news->count() > 0)
+    @if($latest_news->count() > 0 || $active_aspirations->count() > 0)
     <div class="ticker-wrap sticky top-0 z-50">
         <div class="ticker">
             @foreach($latest_news as $news)
                 <span class="mx-8 font-semibold text-sm uppercase tracking-widest text-[#D4AF37]">
-                    ● {{ $news->title }}
+                    📢 {{ $news->title }}
+                </span>
+            @endforeach
+            @foreach($active_aspirations as $asp)
+                <span class="mx-8 font-semibold text-sm tracking-widest text-white/80">
+                    💬 <em>{{ $asp->sender_name }} ({{ $asp->location }}):</em> {{ Str::limit($asp->content, 80) }}
                 </span>
             @endforeach
         </div>
@@ -80,7 +86,9 @@
             </div>
             <div class="h-8 w-[1px] bg-slate-200 hidden md:block"></div>
             <div class="flex items-center gap-4 hidden md:flex opacity-80 transition-opacity hover:opacity-100">
-                <img src="{{ asset('images/bgn_logo.png') }}" alt="Badan Gizi Nasional" class="h-10 w-auto">
+                <a href="https://bgn.go.id" target="_blank" rel="noopener">
+                    <img src="{{ asset('images/bgn_logo.png') }}" alt="Badan Gizi Nasional" class="h-10 w-auto hover:opacity-100 opacity-80 transition-opacity">
+                </a>
                 <img src="{{ asset('images/ala_delphi.png') }}" alt="Yayasan ALA DELPHI" class="h-10 w-auto">
             </div>
         </div>
@@ -140,6 +148,62 @@
                 <div class="text-[#D4AF37] text-4xl font-black mb-2">{{ $stats['tutorials_count'] }}</div>
                 <div class="text-slate-400 text-xs uppercase tracking-widest font-bold">Video Tutorial Terupload</div>
             </div>
+        </div>
+    </section>
+
+    <!-- Kitchen Gallery Section -->
+    <section class="max-w-7xl mx-auto px-6 py-24 border-t border-slate-100">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+            <div>
+                <h2 class="playfair text-4xl lg:text-5xl font-black italic text-[#0F172A] mb-4">Profil Dapur MBG</h2>
+                <p class="text-gray-500 max-w-xl">Kunjungi profil lengkap setiap dapur SPPG, menampilkan tim manajemen, situasi, dan kontak langsung.</p>
+            </div>
+            <a href="{{ route('kitchens.index') }}" class="px-6 py-3 rounded-lg border border-slate-200 text-sm font-bold hover:bg-slate-50 transition-all flex items-center gap-2 whitespace-nowrap">
+                Lihat Semua Dapur
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+        </div>
+        @php $kitchens = \App\Models\Sppg::withCount('beneficiaries')->latest()->take(3)->get(); @endphp
+        <div class="grid md:grid-cols-3 gap-6">
+            @forelse($kitchens as $kitchen)
+            @php
+                $now = now();
+                $hours = $kitchen->operational_hours ?? '06:00 - 14:00';
+                [$s, $e] = array_pad(explode(' - ', $hours), 2, '14:00');
+                try { $isOps = $now->between($now->copy()->setTimeFromTimeString($s), $now->copy()->setTimeFromTimeString($e)); } catch(\Exception $ex) { $isOps = false; }
+            @endphp
+            <a href="{{ route('kitchens.show', $kitchen->slug ?? $kitchen->id) }}" class="block group bg-white rounded-[2rem] border border-slate-100 shadow-lg overflow-hidden hover:-translate-y-2 transition-all duration-300">
+                <div class="relative h-40 bg-gradient-to-br from-[#0F172A] to-slate-700">
+                    @if($kitchen->image_path)
+                    <img src="{{ Storage::url($kitchen->image_path) }}" class="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity" alt="{{ $kitchen->name }}">
+                    @else
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <svg class="w-12 h-12 text-[#D4AF37]/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                    </div>
+                    @endif
+                    <div class="absolute top-3 left-3">
+                        @if($isOps)
+                        <span class="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/90 backdrop-blur rounded-full text-white text-[10px] font-black">
+                            <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>Aktif
+                        </span>
+                        @else
+                        <span class="px-3 py-1 bg-slate-700/70 backdrop-blur rounded-full text-slate-300 text-[10px] font-black">Tutup</span>
+                        @endif
+                    </div>
+                </div>
+                <div class="p-6">
+                    <h3 class="font-black text-[#0F172A] playfair italic mb-1">{{ $kitchen->name }}</h3>
+                    <p class="text-[10px] text-[#D4AF37] font-black uppercase tracking-widest">{{ $kitchen->beneficiaries_count }} Penerima Manfaat</p>
+                    @if($kitchen->address)
+                    <p class="text-xs text-slate-400 mt-2">{{ $kitchen->address }}</p>
+                    @endif
+                </div>
+            </a>
+            @empty
+            <div class="col-span-3 text-center py-16 text-slate-400">
+                <p class="font-bold">Data dapur belum tersedia. Admin dapat menambahkan profil dapur melalui Dashboard.</p>
+            </div>
+            @endforelse
         </div>
     </section>
 
@@ -327,6 +391,51 @@
         </div>
     </section>
 
+    <!-- Community Price Preview -->
+    <section class="max-w-7xl mx-auto px-6 py-24 border-t border-slate-100">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+            <div>
+                <span class="inline-block px-4 py-1 rounded-full bg-emerald-100 text-emerald-700 font-black text-xs uppercase tracking-[0.2em] mb-4">Harga Dari Warga</span>
+                <h2 class="playfair text-4xl lg:text-5xl font-black italic text-[#0F172A] mb-4">Feed Harga Komunitas</h2>
+                <p class="text-gray-500 max-w-xl">Harga bahan pangan langsung dari petani dan pedagang. Transparansi dari bawah ke atas.</p>
+            </div>
+            <div class="flex flex-col gap-3">
+                <a href="{{ route('community-prices.index') }}" class="px-6 py-3 rounded-lg border border-slate-200 text-sm font-bold hover:bg-slate-50 transition-all flex items-center gap-2">
+                    Lihat Semua &amp; Lapor Harga
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                </a>
+                <a href="https://siperda.simalungunkab.go.id" target="_blank" class="px-6 py-3 rounded-lg bg-emerald-50 border border-emerald-200 text-sm font-bold text-emerald-700 hover:bg-emerald-100 transition-all flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    Harga Resmi di Siperda ↗
+                </a>
+            </div>
+        </div>
+        @php $communityPrices = \App\Models\CommunityPrice::latest()->take(4)->get(); @endphp
+        @if($communityPrices->count() > 0)
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+            @foreach($communityPrices as $cp)
+            <div class="bg-white rounded-[1.5rem] border border-slate-100 shadow-md p-5 hover:shadow-lg transition-shadow">
+                <div class="w-10 h-10 rounded-2xl bg-[#D4AF37]/10 flex items-center justify-center text-xl font-black text-[#D4AF37] mb-3">
+                    {{ mb_substr($cp->item_name, 0, 1) }}
+                </div>
+                <h4 class="font-black text-[#0F172A] text-sm mb-1">{{ $cp->item_name }}</h4>
+                <p class="text-lg font-black text-[#D4AF37]">Rp {{ number_format($cp->price, 0, ',', '.') }}</p>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">/ {{ $cp->unit }}</p>
+                <p class="text-[10px] text-slate-400 mt-2 flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+                    {{ $cp->location }}
+                </p>
+            </div>
+            @endforeach
+        </div>
+        @else
+        <div class="text-center py-16 bg-white rounded-[2rem] border border-slate-100">
+            <p class="text-slate-400 font-bold mb-4">Jadilah yang pertama melaporkan harga dari wilayah Anda!</p>
+            <a href="{{ route('community-prices.index') }}" class="px-6 py-3 bg-[#0F172A] text-[#D4AF37] font-black text-xs uppercase tracking-widest rounded-xl hover:scale-105 transition-all">Laporan Sekarang</a>
+        </div>
+        @endif
+    </section>
+
     <!-- Social Transparency Feed -->
     <section class="bg-silk/30 py-24">
         <div class="max-w-7xl mx-auto px-6">
@@ -389,6 +498,137 @@
                         </div>
                     @endfor
                 @endforelse
+            </div>
+        </div>
+    </section>
+
+    <!-- Aspiration Section -->
+    <section class="bg-[#0F172A] py-24">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <span class="inline-block px-4 py-1 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] font-black text-xs uppercase tracking-[0.3em] mb-6">Suara Masyarakat</span>
+            <h2 class="playfair text-4xl lg:text-5xl font-black italic text-white mb-4">Sampaikan <span class="text-[#D4AF37]">Aspirasi</span> Anda</h2>
+            <p class="text-slate-400 mb-10 max-w-lg mx-auto">Pesan Anda akan tampil di ticker setelah diverifikasi admin. Kritik, saran, dan harapan Anda demi perbaikan program MBG.</p>
+            @if(session('aspiration_success'))
+            <div class="p-4 bg-emerald-500/20 border border-emerald-500/30 rounded-2xl text-emerald-300 font-bold mb-8">{{ session('aspiration_success') }}</div>
+            @endif
+            <form action="{{ route('aspirations.store') }}" method="POST" class="bg-white/5 border border-white/10 rounded-[2rem] p-8 text-left">
+                @csrf
+                <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Nama Anda (Opsional)</label>
+                        <input type="text" name="sender_name" placeholder="Anonim" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold text-white placeholder-slate-500 focus:border-[#D4AF37] outline-none transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Lokasi / Daerah</label>
+                        <input type="text" name="location" placeholder="Kec. Gunung Maligas, Simalungun" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold text-white placeholder-slate-500 focus:border-[#D4AF37] outline-none transition-all">
+                    </div>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Aspirasi / Pesan *</label>
+                    <textarea name="content" required rows="4" placeholder="Tulis aspirasi, saran, atau harapan Anda tentang program MBG..." class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-sm font-bold text-white placeholder-slate-500 focus:border-[#D4AF37] outline-none transition-all resize-none"></textarea>
+                </div>
+                <p class="text-[10px] text-slate-500 mb-6">* Aspirasi Anda akan ditampilkan di ticker setelah diverifikasi oleh Admin SPPG.</p>
+                <button type="submit" class="w-full py-4 bg-[#D4AF37] text-[#0F172A] font-black text-xs uppercase tracking-[0.3em] rounded-2xl shadow-2xl shadow-gold/20 hover:scale-105 transition-all duration-300">
+                    Kirim Aspirasi
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- BGN Juknis Section -->
+    <section class="max-w-7xl mx-auto px-6 py-24 border-t border-slate-100">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+            <div>
+                <span class="inline-block px-4 py-1 rounded-full bg-blue-100 text-blue-700 font-black text-xs uppercase tracking-[0.2em] mb-4">Resmi dari BGN</span>
+                <h2 class="playfair text-4xl lg:text-5xl font-black italic text-[#0F172A] mb-4">Petunjuk Teknis <span class="text-[#D4AF37]">Resmi MBG</span></h2>
+                <p class="text-gray-500 max-w-xl">Portal ini mengambil konten petunjuk teknis langsung dari situs resmi Badan Gizi Nasional untuk memastikan kepatuhan operasional.</p>
+            </div>
+            <a href="https://bgn.go.id/juknis" target="_blank" rel="noopener"
+               class="px-6 py-3 rounded-lg border-2 border-blue-600 text-blue-700 font-black text-sm hover:bg-blue-600 hover:text-white transition-all flex items-center gap-2 whitespace-nowrap">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                Buka bgn.go.id/juknis ↗
+            </a>
+        </div>
+
+        <!-- Grid Petunjuk Teknis -->
+        <div class="grid md:grid-cols-3 gap-6 mb-10">
+            @php
+                $juknisLinks = [
+                    ['title' => 'Petunjuk Teknis MBG 2025', 'desc' => 'Panduan teknis operasional program Makan Bergizi Gratis dari Badan Gizi Nasional Tahun 2025.', 'url' => 'https://bgn.go.id/juknis', 'icon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z', 'color' => 'blue'],
+                    ['title' => 'Standar Gizi Anak MBG', 'desc' => 'Standar menu dan kandungan gizi minimum yang harus dipenuhi dalam setiap porsi makanan program MBG.', 'url' => 'https://bgn.go.id', 'icon' => 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', 'color' => 'emerald'],
+                    ['title' => 'Prosedur Pengadaan Bahan', 'desc' => 'Tata cara pengadaan bahan baku, persyaratan pemasok, dan mekanisme pembayaran sesuai regulasi BGN.', 'url' => 'https://bgn.go.id', 'icon' => 'M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z', 'color' => 'yellow'],
+                ];
+            @endphp
+            @foreach($juknisLinks as $juknis)
+            <a href="{{ $juknis['url'] }}" target="_blank" rel="noopener"
+               class="group bg-white border border-slate-100 rounded-[2rem] p-8 shadow-lg hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+                <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-6
+                    {{ $juknis['color'] === 'blue' ? 'bg-blue-50 text-blue-500 group-hover:bg-blue-500 group-hover:text-white' : '' }}
+                    {{ $juknis['color'] === 'emerald' ? 'bg-emerald-50 text-emerald-500 group-hover:bg-emerald-500 group-hover:text-white' : '' }}
+                    {{ $juknis['color'] === 'yellow' ? 'bg-[#D4AF37]/10 text-[#D4AF37] group-hover:bg-[#D4AF37] group-hover:text-white' : '' }}
+                    transition-all">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $juknis['icon'] }}"/>
+                    </svg>
+                </div>
+                <h3 class="playfair text-lg font-black italic text-[#0F172A] mb-3">{{ $juknis['title'] }}</h3>
+                <p class="text-gray-500 text-sm leading-relaxed mb-4">{{ $juknis['desc'] }}</p>
+                <span class="text-[10px] font-black uppercase tracking-widest
+                    {{ $juknis['color'] === 'blue' ? 'text-blue-600' : '' }}
+                    {{ $juknis['color'] === 'emerald' ? 'text-emerald-600' : '' }}
+                    {{ $juknis['color'] === 'yellow' ? 'text-[#D4AF37]' : '' }}
+                    flex items-center gap-2">
+                    Baca Selengkapnya
+                    <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </span>
+            </a>
+            @endforeach
+        </div>
+
+        <!-- Embedded Preview -->
+        <!-- Official Portal Preview (Premium Replacement for Iframe) -->
+        <div class="relative bg-white rounded-[3rem] border border-blue-100 shadow-2xl overflow-hidden group">
+            <!-- Browser Header -->
+            <div class="flex items-center justify-between px-8 py-5 bg-gradient-to-r from-blue-50 to-white border-b border-blue-100">
+                <div class="flex items-center gap-3">
+                    <div class="flex gap-1.5">
+                        <div class="w-3 h-3 rounded-full bg-slate-200"></div>
+                        <div class="w-3 h-3 rounded-full bg-slate-200"></div>
+                        <div class="w-3 h-3 rounded-full bg-slate-200"></div>
+                    </div>
+                    <div class="ml-4 px-4 py-1.5 bg-slate-100 rounded-full flex items-center gap-2">
+                        <svg class="w-3 h-3 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+                        <span class="text-[10px] font-bold text-slate-500 font-mono tracking-tight">https://bgn.go.id/juknis</span>
+                    </div>
+                </div>
+                <div class="hidden md:block text-[10px] font-black text-blue-300 uppercase tracking-[0.2em]">Official Portal Preview</div>
+            </div>
+
+            <!-- Content Area: Portal Teaser -->
+            <div class="relative py-24 px-8 text-center bg-gradient-to-b from-white to-blue-50/30">
+                <div class="max-w-xl mx-auto">
+                    <div class="w-20 h-20 bg-blue-600 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-blue-600/20 group-hover:rotate-12 transition-transform duration-500">
+                        <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                    </div>
+                    <h3 class="playfair text-3xl font-black italic text-[#0F172A] mb-4">Akses Langsung Juknis Resmi</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-10 px-4">
+                        Demi keamanan data dan kebijakan otoritas pusat, Petunjuk Teknis (Juknis) Badan Gizi Nasional hanya dapat diakses langsung melalui portal resmi lembaga.
+                    </p>
+                    <a href="https://bgn.go.id/juknis" target="_blank" rel="noopener"
+                       class="inline-flex items-center gap-4 px-10 py-5 bg-blue-600 text-white font-black text-xs uppercase tracking-[0.2em] rounded-2xl shadow-2xl shadow-blue-600/30 hover:scale-105 hover:bg-blue-700 transition-all duration-300">
+                        Buka Portal bgn.go.id
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Footer Compliance -->
+            <div class="px-8 py-5 bg-blue-50/50 border-t border-blue-100 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-2 text-[9px] font-black text-blue-400 uppercase tracking-widest">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                    Kepatuhan Keamanan Informasi BGN
+                </div>
+                <p class="text-[9px] text-slate-400 text-center font-bold">Terakhir diperbarui: {{ date('d M Y') }}</p>
             </div>
         </div>
     </section>
@@ -504,10 +744,13 @@
             <div>
                 <h4 class="font-black uppercase tracking-widest text-xs text-[#D4AF37] mb-8">Tautan Cepat</h4>
                 <ul class="space-y-4 text-slate-400 text-sm font-medium">
-                    <li><a href="#" class="hover:text-white transition-all">Beranda</a></li>
-                    <li><a href="#stats" class="hover:text-white transition-all">Statistik Real-time</a></li>
+                    <li><a href="{{ url('/') }}" class="hover:text-white transition-all">Beranda</a></li>
+                    <li><a href="{{ route('kitchens.index') }}" class="hover:text-white transition-all">Profil Dapur</a></li>
                     <li><a href="{{ route('prices.index') }}" class="hover:text-white transition-all">Harga Pangan</a></li>
+                    <li><a href="{{ route('community-prices.index') }}" class="hover:text-white transition-all">Harga Komunitas</a></li>
                     <li><a href="{{ route('complaints.create') }}" class="hover:text-white transition-all">Aduan Publik</a></li>
+                    <li><a href="https://siperda.simalungunkab.go.id" target="_blank" class="hover:text-white transition-all">Siperda Simalungun ↗</a></li>
+                    <li><a href="https://bgn.go.id" target="_blank" class="hover:text-white transition-all">BGN.go.id ↗</a></li>
                 </ul>
             </div>
             <div>
