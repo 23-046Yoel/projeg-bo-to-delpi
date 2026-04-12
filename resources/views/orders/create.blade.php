@@ -36,10 +36,27 @@
                         </div>
 
                         <div class="border-t border-gray-50 pt-10">
+                            <div class="bg-silk rounded-[2rem] p-6 mb-10 border-2 border-dashed border-gray-200">
+                                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                                    <div>
+                                        <h4 class="text-xs font-black text-royal-navy uppercase tracking-widest">Tarik Otomatis dari Menu</h4>
+                                        <p class="text-[9px] font-bold text-gray-400 uppercase mt-1">Sistem akan menghitung kebutuhan bahan berdasarkan rencana menu</p>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <input type="date" id="fetch-date" value="{{ date('Y-m-d') }}" 
+                                            class="px-4 py-2 bg-white border-2 border-transparent rounded-xl text-xs font-black text-royal-navy focus:border-gold outline-none">
+                                        <button type="button" onclick="fetchRequirements()" id="fetch-btn"
+                                            class="px-6 py-3 bg-white text-royal-navy border border-royal-navy/20 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-royal-navy hover:text-gold transition-all shadow-sm">
+                                            Ambil Data
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="flex items-center justify-between mb-8">
                                 <h3 class="text-[10px] font-black text-royal-navy uppercase tracking-[0.2em]">Daftar Bahan Baku</h3>
                                 <button type="button" onclick="addItem()" class="px-4 py-2 bg-royal-navy text-gold rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-royal-navy/90 transition-all">
-                                    + Tambah Item
+                                    + Tambah Item Manual
                                 </button>
                             </div>
 
@@ -116,6 +133,77 @@
     <script>
         let rowCount = {{ count($prepopulatedItems) ?: 1 }};
         const materials = @json($materials);
+
+        async function fetchRequirements() {
+            const date = document.getElementById('fetch-date').value;
+            const btn = document.getElementById('fetch-btn');
+            
+            if (!date) {
+                alert('Pilih tanggal terlebih dahulu');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="animate-pulse">Menghitung...</span>';
+
+            try {
+                const response = await fetch(`{{ route('orders.calculate') }}?date=${date}`);
+                const data = await response.json();
+
+                if (data.length === 0) {
+                    alert('Tidak ada rencana menu untuk tanggal ini.');
+                } else {
+                    if (confirm(`Ditemukan ${data.length} bahan baku. Apakah Anda ingin memasukkannya ke daftar? (Baris yang ada sekarang akan dikosongkan)`)) {
+                        document.getElementById('items-container').innerHTML = '';
+                        rowCount = 0;
+                        data.forEach(item => {
+                            addCalculatedItem(item);
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Gagal mengambil data kebutuhan bahan.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Ambil Data';
+            }
+        }
+
+        function addCalculatedItem(item) {
+            const container = document.getElementById('items-container');
+            const row = document.createElement('div');
+            row.className = 'item-row grid grid-cols-12 gap-4 items-center animate-fadeIn mt-4';
+            
+            let options = '<option value="">Pilih Bahan...</option>';
+            materials.forEach(m => {
+                options += `<option value="${m.id}" data-price="${m.price}" data-unit="${m.unit}" ${m.id == item.material_id ? 'selected' : ''}>${m.name}</option>`;
+            });
+
+            row.innerHTML = `
+                <div class="col-span-4">
+                    <select name="items[${rowCount}][material_id]" required onchange="updatePrice(this)" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none">
+                        ${options}
+                    </select>
+                </div>
+                <div class="col-span-2">
+                    <input type="number" step="0.0001" name="items[${rowCount}][quantity]" value="${item.quantity}" required class="w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Qty">
+                </div>
+                <div class="col-span-2">
+                    <input type="text" name="items[${rowCount}][unit]" value="${item.unit}" required class="unit-input w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Unit">
+                </div>
+                <div class="col-span-3">
+                    <input type="number" name="items[${rowCount}][price]" value="${item.price}" required class="price-input w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Price">
+                </div>
+                <div class="col-span-1 text-right">
+                    <button type="button" onclick="removeRow(this)" class="text-red-300 hover:text-red-500 transition-all">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    </button>
+                </div>
+            `;
+            container.appendChild(row);
+            rowCount++;
+        }
 
         function updatePrice(select) {
             const selectedOption = select.options[select.selectedIndex];

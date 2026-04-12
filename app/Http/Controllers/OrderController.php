@@ -157,6 +157,48 @@ class OrderController extends Controller
         return view('orders.daily', compact('requirements', 'date'));
     }
 
+    public function getRequirementsJson(Request $request)
+    {
+        $date = $request->get('date');
+        if (!$date) return response()->json([]);
+
+        $user = auth()->user();
+        $query = \App\Models\Menu::with(['dishes.recipes.material'])
+            ->where('date', $date);
+
+        if (!$user->isAdmin()) {
+            $query->where('sppg_id', $user->sppg_id);
+        }
+
+        $menus = $query->get();
+        $requirements = [];
+
+        foreach ($menus as $menu) {
+            foreach ($menu->dishes as $dish) {
+                $portions = $dish->pivot->portions;
+                foreach ($dish->recipes as $recipe) {
+                    $matId = $recipe->material_id;
+                    $needed = $recipe->quantity * $portions;
+
+                    if (!isset($requirements[$matId])) {
+                        $requirements[$matId] = [
+                            'material_id' => $matId,
+                            'name' => $recipe->material->name ?? 'Unknown',
+                            'quantity' => 0,
+                            'unit' => $recipe->unit,
+                            'price' => \App\Models\OrderItem::where('material_id', $matId)
+                                ->whereHas('order', function($q) { $q->where('status', '!=', 'pending'); })
+                                ->latest()->value('price') ?? 0
+                        ];
+                    }
+                    $requirements[$matId]['quantity'] += $needed;
+                }
+            }
+        }
+
+        return response()->json(array_values($requirements));
+    }
+
     public function receive(Order $order)
     {
         DB::transaction(function () use ($order) {
