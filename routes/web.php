@@ -76,6 +76,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/inventory/adjust', [\App\Http\Controllers\InventoryController::class, 'adjust'])->name('inventory.adjust');
     Route::get('/orders/daily', [\App\Http\Controllers\OrderController::class, 'dailyReport'])->name('orders.daily');
     Route::get('/orders/calculate-requirements', [\App\Http\Controllers\OrderController::class, 'getRequirementsJson'])->name('orders.calculate');
+    Route::get('/sppgs/{sppg}/portions', [\App\Http\Controllers\MenuController::class, 'getSppgPortions'])->name('sppgs.portions');
     Route::resource('orders', \App\Http\Controllers\OrderController::class);
     Route::get('/financial', [\App\Http\Controllers\FinancialController::class, 'index'])->name('financial.index');
     Route::get('/reports/lpd2m', [\App\Http\Controllers\ReportController::class, 'lpd2m'])->name('reports.lpd2m');

@@ -6,7 +6,7 @@
             </a>
             <div>
                 <h2 class="font-black text-2xl text-royal-navy leading-tight tracking-tight uppercase font-playfair">
-                    {{ __('Material Usage Plan') }}
+                    {{ __('Rencana Penggunaan Bahan') }}
                 </h2>
                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1">Estimasi Kebutuhan Bahan: {{ \Carbon\Carbon::parse($menu->date)->translatedFormat('d F Y') }}</p>
             </div>
@@ -17,12 +17,25 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-8">
             <!-- Dishes Recap -->
             <div class="bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-gray-100 p-8">
-                <h3 class="text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-6">Menu yang Direncanakan</h3>
+                <h3 class="text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-6">Menu yang Direncanakan (Porsi Ganda)</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     @foreach($menu->dishes as $dish)
                         <div class="p-6 bg-silk rounded-2xl border border-transparent hover:border-gold/30 transition-all group">
-                            <div class="text-xs font-black text-royal-navy uppercase tracking-tight mb-1 group-hover:text-gold transition-colors">{{ $dish->name }}</div>
-                            <div class="text-2xl font-black text-royal-navy">{{ $dish->pivot->portions }} <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Portions</span></div>
+                            <div class="text-xs font-black text-royal-navy uppercase tracking-tight mb-3 group-hover:text-gold transition-colors">{{ $dish->name }}</div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <div class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Besar</div>
+                                    <div class="text-xl font-black text-royal-navy">{{ $dish->pivot->porsi_besar }}</div>
+                                </div>
+                                <div>
+                                    <div class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Kecil</div>
+                                    <div class="text-xl font-black text-royal-navy">{{ $dish->pivot->porsi_kecil }}</div>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center font-bold text-royal-navy/40">
+                                <span class="text-[9px] uppercase tracking-widest">Total</span>
+                                <span class="text-xs">{{ $dish->pivot->porsi_besar + $dish->pivot->porsi_kecil }}</span>
+                            </div>
                         </div>
                     @endforeach
                 </div>
@@ -34,10 +47,10 @@
                     <div class="flex items-center justify-between mb-8">
                         <div>
                             <h3 class="text-[10px] font-black text-royal-navy uppercase tracking-[0.2em]">Kebutuhan Bahan Baku (Otomatis)</h3>
-                            <p class="text-[10px] font-bold text-gray-400 mt-1 uppercase tracking-widest">Dihitung berdasarkan resep standar per porsi</p>
+                            <p class="text-[10px] font-bold text-gray-400 mt-1 uppercase tracking-widest text-wrap">Dihitung otomatis: (Porsi Besar + Porsi Kecil) x Resep</p>
                         </div>
                         <button onclick="window.print()" class="px-6 py-3 bg-royal-navy text-gold rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-royal-navy/90 transition-all">
-                            Print Plan
+                            Cetak Rencana
                         </button>
                     </div>
 
@@ -98,7 +111,7 @@
 
             <div class="flex items-center justify-end space-x-4">
                  <a href="{{ route('orders.create', ['menu_id' => $menu->id]) }}" class="px-10 py-4 bg-gold text-royal-navy font-black text-xs uppercase tracking-[0.3em] rounded-2xl shadow-xl shadow-gold/20 hover:bg-gold/80 hover:-translate-y-1 transition-all duration-300">
-                    Generate Purchase Order
+                    Buat Surat Pesanan
                 </a>
             </div>
         </div>

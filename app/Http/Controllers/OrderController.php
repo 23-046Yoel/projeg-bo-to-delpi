@@ -58,7 +58,7 @@ class OrderController extends Controller
                 $requirements = [];
                 foreach ($menus as $menu) {
                     foreach ($menu->dishes as $dish) {
-                        $portions = $dish->pivot->portions;
+                        $portions = ($dish->pivot->porsi_besar + $dish->pivot->porsi_kecil) ?: $dish->pivot->portions;
                         foreach ($dish->recipes as $recipe) {
                             $matId = $recipe->material_id;
                             $needed = $recipe->quantity * $portions;
@@ -129,7 +129,7 @@ class OrderController extends Controller
 
         foreach ($menus as $menu) {
             foreach ($menu->dishes as $dish) {
-                $portions = $dish->pivot->portions;
+                $portions = ($dish->pivot->porsi_besar + $dish->pivot->porsi_kecil) ?: $dish->pivot->portions;
                 foreach ($dish->recipes as $recipe) {
                     $matId = $recipe->material_id;
                     $needed = $recipe->quantity * $portions;
@@ -175,7 +175,7 @@ class OrderController extends Controller
 
         foreach ($menus as $menu) {
             foreach ($menu->dishes as $dish) {
-                $portions = $dish->pivot->portions;
+                $portions = ($dish->pivot->porsi_besar + $dish->pivot->porsi_kecil) ?: $dish->pivot->portions;
                 foreach ($dish->recipes as $recipe) {
                     $matId = $recipe->material_id;
                     $needed = $recipe->quantity * $portions;

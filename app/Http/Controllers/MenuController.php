@@ -35,7 +35,8 @@ class MenuController extends Controller
             'sppg_id' => 'nullable|exists:sppgs,id',
             'dishes' => 'required|array',
             'dishes.*.id' => 'required|exists:dishes,id',
-            'dishes.*.portions' => 'required|integer|min:1',
+            'dishes.*.porsi_kecil' => 'required|integer|min:0',
+            'dishes.*.porsi_besar' => 'required|integer|min:0',
         ]);
 
         $menu = Menu::create([
@@ -45,23 +46,29 @@ class MenuController extends Controller
         ]);
 
         foreach ($validated['dishes'] as $dishData) {
-            $menu->dishes()->attach($dishData['id'], ['portions' => $dishData['portions']]);
+            $menu->dishes()->attach($dishData['id'], [
+                'porsi_kecil' => $dishData['porsi_kecil'],
+                'porsi_besar' => $dishData['porsi_besar'],
+                'portions' => $dishData['porsi_kecil'] + $dishData['porsi_besar']
+            ]);
         }
 
-        return redirect()->route('menus.index')->with('success', 'Menu harian berhasil disimpan.');
+        return redirect()->route('menus.index')->with('success', 'Menu harian berhasil disimpan dengan porsi ganda.');
     }
 
     public function show(Menu $menu)
     {
         $menu->load('dishes.recipes.material');
         
-        // Calculate total material requirement for this menu
         $requirements = [];
         foreach ($menu->dishes as $dish) {
-            $portions = $dish->pivot->portions;
+            // Kita jumlahkan kedua porsi untuk kalkulasi bahan (multiplier 1.0)
+            // Anda bisa menyesuaikan multiplier di sini jika porsi kecil menggunakan gramasi berbeda
+            $totalPortions = $dish->pivot->porsi_kecil + $dish->pivot->porsi_besar;
+            
             foreach ($dish->recipes as $recipe) {
                 $matId = $recipe->material_id;
-                $needed = $recipe->quantity * $portions;
+                $needed = $recipe->quantity * $totalPortions;
                 
                 if (!isset($requirements[$matId])) {
                     $requirements[$matId] = [
@@ -81,7 +88,7 @@ class MenuController extends Controller
     {
         $dishes = Dish::all();
         $sppgs = \App\Models\Sppg::all();
-        $selectedDishes = $menu->dishes->pluck('id')->toArray();
+        $selectedDishes = $menu->dishes; // Ambil object agar pivot data tersedia
         return view('menus.edit', compact('menu', 'dishes', 'selectedDishes', 'sppgs'));
     }
 
@@ -93,7 +100,8 @@ class MenuController extends Controller
             'sppg_id' => 'nullable|exists:sppgs,id',
             'dishes' => 'required|array',
             'dishes.*.id' => 'required|exists:dishes,id',
-            'dishes.*.portions' => 'required|integer|min:1',
+            'dishes.*.porsi_kecil' => 'required|integer|min:0',
+            'dishes.*.porsi_besar' => 'required|integer|min:0',
         ]);
 
         $menu->update([
@@ -104,7 +112,11 @@ class MenuController extends Controller
 
         $syncData = [];
         foreach ($validated['dishes'] as $dishData) {
-            $syncData[$dishData['id']] = ['portions' => $dishData['portions']];
+            $syncData[$dishData['id']] = [
+                'porsi_kecil' => $dishData['porsi_kecil'],
+                'porsi_besar' => $dishData['porsi_besar'],
+                'portions' => $dishData['porsi_kecil'] + $dishData['porsi_besar']
+            ];
         }
         $menu->dishes()->sync($syncData);
 
@@ -115,5 +127,15 @@ class MenuController extends Controller
     {
         $menu->delete();
         return redirect()->route('menus.index')->with('success', 'Menu harian berhasil dihapus.');
+    }
+
+    public function getSppgPortions(\App\Models\Sppg $sppg)
+    {
+        $groups = \App\Models\BeneficiaryGroup::where('sppg_id', $sppg->id)->get();
+        
+        return response()->json([
+            'porsi_kecil' => $groups->sum('porsi_kecil'),
+            'porsi_besar' => $groups->sum('porsi_besar'),
+        ]);
     }
 }

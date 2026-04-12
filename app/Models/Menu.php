@@ -11,7 +11,7 @@ class Menu extends Model
 
     public function dishes()
     {
-        return $this->belongsToMany(Dish::class)->withPivot('portions')->withTimestamps();
+        return $this->belongsToMany(Dish::class)->withPivot('portions', 'porsi_kecil', 'porsi_besar')->withTimestamps();
     }
 
     public function sppg()
