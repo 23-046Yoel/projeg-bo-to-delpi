@@ -160,11 +160,21 @@ class OrderController extends Controller
     public function getRequirementsJson(Request $request)
     {
         $date = $request->get('date');
-        if (!$date) return response()->json([]);
+        $startDate = $request->get('start_date');
+        $endDate = $request->get('end_date');
+        
+        if (!$date && (!$startDate || !$endDate)) {
+            return response()->json([]);
+        }
 
         $user = auth()->user();
-        $query = \App\Models\Menu::with(['dishes.recipes.material'])
-            ->where('date', $date);
+        $query = \App\Models\Menu::with(['dishes.recipes.material']);
+            
+        if ($date) {
+            $query->where('date', $date);
+        } else {
+            $query->whereBetween('date', [$startDate, $endDate]);
+        }
 
         if (!$user->isAdmin()) {
             $query->where('sppg_id', $user->sppg_id);
@@ -175,7 +185,9 @@ class OrderController extends Controller
 
         foreach ($menus as $menu) {
             foreach ($menu->dishes as $dish) {
+                // Gunakan penjumlahan porsi ganda atau porsi lama
                 $portions = ($dish->pivot->porsi_besar + $dish->pivot->porsi_kecil) ?: $dish->pivot->portions;
+                
                 foreach ($dish->recipes as $recipe) {
                     $matId = $recipe->material_id;
                     $needed = $recipe->quantity * $portions;
