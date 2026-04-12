@@ -26,9 +26,11 @@ class BeneficiaryController extends Controller
     {
         $user = auth()->user();
         $sppgs = \App\Models\Sppg::all();
+        // Admin dapat semua group agar bisa filter via JS per SPPG
+        // Non-admin hanya dapat group SPPG mereka sendiri
         $groups = \App\Models\BeneficiaryGroup::when($user->sppg_id && !$user->isAdmin(), function($q) use ($user) {
             return $q->where('sppg_id', $user->sppg_id);
-        })->get();
+        })->with('sppg')->get();
         return view('beneficiaries.create', compact('groups', 'sppgs'));
     }
 

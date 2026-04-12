@@ -50,22 +50,22 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                                 <div>
                                     <label for="sppg_id" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Unit Dapur (SPPG)</label>
-                                    <select id="sppg_id" name="sppg_id" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
-                                        <option value="">Otomatis Deteksi</option>
+                                    <select id="sppg_id" name="sppg_id" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none" onchange="filterGroupsBySppg(this.value)">
+                                        <option value="">-- Pilih SPPG --</option>
                                         @foreach($sppgs as $sppg)
                                             <option value="{{ $sppg->id }}" {{ auth()->user()->sppg_id == $sppg->id ? 'selected' : '' }}>{{ $sppg->name }}</option>
                                         @endforeach
                                     </select>
                                     @error('sppg_id') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
-                                    <p class="mt-2 text-[9px] text-gray-400 font-bold uppercase tracking-widest italic leading-relaxed">Pilih dapur yang bertanggung jawab mengelola bahan baku untuk penerima ini.</p>
+                                    <p class="mt-2 text-[9px] text-gray-400 font-bold uppercase tracking-widest italic leading-relaxed">Pilih SPPG dulu untuk filter daftar sekolah.</p>
                                 </div>
 
                                 <div>
                                     <label for="beneficiary_group_id" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Asal Sekolah / Kelompok</label>
                                     <select id="beneficiary_group_id" name="beneficiary_group_id" required class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
-                                        <option value="">Pilih Sekolah...</option>
+                                        <option value="">-- Pilih SPPG dulu --</option>
                                         @foreach($groups as $group)
-                                            <option value="{{ $group->id }}">{{ $group->name }}</option>
+                                            <option value="{{ $group->id }}" data-sppg="{{ $group->sppg_id }}">{{ $group->name }}</option>
                                         @endforeach
                                     </select>
                                     @error('beneficiary_group_id') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
@@ -148,4 +148,59 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Simpan semua option group dengan data-sppg
+        const allGroupOptions = Array.from(document.querySelectorAll('#beneficiary_group_id option'));
+
+        function filterGroupsBySppg(sppgId) {
+            const groupSelect = document.getElementById('beneficiary_group_id');
+            const currentVal = groupSelect.value;
+
+            // Kosongkan dropdown
+            groupSelect.innerHTML = '';
+
+            // Tambah placeholder
+            const placeholder = document.createElement('option');
+            placeholder.value = '';
+            placeholder.textContent = sppgId ? '-- Pilih Sekolah --' : '-- Pilih SPPG dulu --';
+            groupSelect.appendChild(placeholder);
+
+            if (!sppgId) return;
+
+            // Filter & tampilkan hanya group dari SPPG terpilih
+            let count = 0;
+            allGroupOptions.forEach(opt => {
+                if (opt.value && opt.dataset.sppg == sppgId) {
+                    const newOpt = document.createElement('option');
+                    newOpt.value = opt.value;
+                    newOpt.textContent = opt.textContent;
+                    newOpt.dataset.sppg = opt.dataset.sppg;
+                    if (opt.value == currentVal) newOpt.selected = true;
+                    groupSelect.appendChild(newOpt);
+                    count++;
+                }
+            });
+
+            if (count === 0) {
+                const empty = document.createElement('option');
+                empty.value = '';
+                empty.textContent = '(Belum ada sekolah untuk SPPG ini)';
+                empty.disabled = true;
+                groupSelect.appendChild(empty);
+            }
+        }
+
+        // Jalankan filter saat halaman load (jika ada SPPG yang sudah terpilih)
+        document.addEventListener('DOMContentLoaded', function() {
+            const sppgSelect = document.getElementById('sppg_id');
+            if (sppgSelect.value) {
+                filterGroupsBySppg(sppgSelect.value);
+                // Restore nilai group jika ada old input
+                @if(old('beneficiary_group_id'))
+                document.getElementById('beneficiary_group_id').value = '{{ old('beneficiary_group_id') }}';
+                @endif
+            }
+        });
+    </script>
 </x-app-layout>
