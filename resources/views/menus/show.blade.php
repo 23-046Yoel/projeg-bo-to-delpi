@@ -109,7 +109,10 @@
                 </div>
             </div>
 
-            <div class="flex items-center justify-end space-x-4">
+            <div class="flex items-center justify-end space-x-4 px-4 sm:px-0">
+                 <a href="{{ route('menus.edit', $menu) }}" class="px-8 py-4 bg-silk text-royal-navy border border-gray-200 font-black text-xs uppercase tracking-[0.2em] rounded-2xl hover:bg-gray-100 transition-all">
+                    Edit Perencanaan
+                </a>
                  <a href="{{ route('orders.create', ['menu_id' => $menu->id]) }}" class="px-10 py-4 bg-gold text-royal-navy font-black text-xs uppercase tracking-[0.3em] rounded-2xl shadow-xl shadow-gold/20 hover:bg-gold/80 hover:-translate-y-1 transition-all duration-300">
                     Buat Surat Pesanan
                 </a>
