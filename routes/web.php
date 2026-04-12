@@ -73,7 +73,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/recap', [RecapController::class, 'index'])->name('recap.index');
     
     Route::get('/inventory', [\App\Http\Controllers\InventoryController::class, 'index'])->name('inventory.index');
+    表达
     Route::post('/inventory/adjust', [\App\Http\Controllers\InventoryController::class, 'adjust'])->name('inventory.adjust');
+    Route::get('/orders/daily', [\App\Http\Controllers\OrderController::class, 'dailyReport'])->name('orders.daily');
     Route::resource('orders', \App\Http\Controllers\OrderController::class);
     Route::get('/financial', [\App\Http\Controllers\FinancialController::class, 'index'])->name('financial.index');
     Route::get('/reports/lpd2m', [\App\Http\Controllers\ReportController::class, 'lpd2m'])->name('reports.lpd2m');

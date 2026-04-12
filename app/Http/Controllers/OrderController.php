@@ -9,9 +9,15 @@ use App\Models\Order;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $orders = \App\Models\Order::with('supplier', 'items.material')->latest()->get();
+        $query = \App\Models\Order::with('supplier', 'items.material');
+        
+        if ($request->has('date')) {
+            $query->whereDate('order_date', $request->date);
+        }
+
+        $orders = $query->latest()->get();
         return view('orders.index', compact('orders'));
     }
 
@@ -103,6 +109,52 @@ class OrderController extends Controller
         }
 
         return redirect()->route('orders.index')->with('success', 'Surat Pesanan berhasil dibuat!');
+    }
+
+    public function dailyReport(Request $request)
+    {
+        $date = $request->get('date', now()->toDateString());
+        $user = auth()->user();
+
+        $query = \App\Models\Menu::with(['dishes.recipes.material' => function($q) {
+            $q->withTrashed();
+        }])->where('date', $date);
+
+        if (!$user->isAdmin()) {
+            $query->where('sppg_id', $user->sppg_id);
+        }
+
+        $menus = $query->get();
+        $requirements = [];
+
+        foreach ($menus as $menu) {
+            foreach ($menu->dishes as $dish) {
+                $portions = $dish->pivot->portions;
+                foreach ($dish->recipes as $recipe) {
+                    $matId = $recipe->material_id;
+                    $needed = $recipe->quantity * $portions;
+
+                    if (!isset($requirements[$matId])) {
+                        $requirements[$matId] = [
+                            'name' => $recipe->material->name ?? 'Bahan Terhapus',
+                            'total' => 0,
+                            'unit' => $recipe->unit,
+                            'price' => \App\Models\OrderItem::where('material_id', $matId)
+                                ->whereHas('order', function($q) { $q->where('status', '!=', 'pending'); })
+                                ->latest()->value('price') ?? 0
+                        ];
+                    }
+                    $requirements[$matId]['total'] += $needed;
+                }
+            }
+        }
+
+        // Sort by name
+        uasort($requirements, function($a, $b) {
+            return strcmp($a['name'], $b['name']);
+        });
+
+        return view('orders.daily', compact('requirements', 'date'));
     }
 
     public function receive(Order $order)

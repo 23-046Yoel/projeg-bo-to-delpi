@@ -2,15 +2,38 @@
     <div class="py-12 bg-[#0a192f] min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white/5 backdrop-blur-md overflow-hidden shadow-2xl rounded-2xl border border-white/10 p-8">
-                <div class="flex justify-between items-center mb-10">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
                     <div>
-                        <h2 class="text-4xl font-serif text-[#d4af37] tracking-wider mb-2">Surat Pesanan</h2>
-                        <p class="text-gray-400 font-light italic">Daftar pemesanan bahan baku ke supplier untuk keberlanjutan MBG.</p>
+                        <h2 class="text-4xl font-serif text-[#d4af37] tracking-wider mb-2 uppercase">Surat Pesanan</h2>
+                        <div class="flex items-center space-x-3">
+                            <span class="w-10 h-[1px] bg-[#d4af37]/50"></span>
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest leading-none">Pemesanan Bahan Baku & Rekap Harian</p>
+                        </div>
                     </div>
-                    <a href="{{ route('orders.create') }}" class="bg-[#d4af37] text-[#0a192f] px-8 py-3 rounded-xl font-bold hover:bg-[#c19b2e] transition-all transform hover:scale-105 shadow-2xl shadow-[#d4af37]/20 flex items-center gap-2 uppercase tracking-widest text-xs">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        Buat Surat Pesanan
-                    </a>
+                    <div class="flex items-center gap-4">
+                        <a href="{{ route('orders.daily') }}" class="px-8 py-3 bg-white/5 border border-[#d4af37]/30 text-[#d4af37] rounded-xl font-black uppercase tracking-[0.2em] text-[10px] hover:bg-[#d4af37]/10 transition-all">
+                            Rekap Harian
+                        </a>
+                        <a href="{{ route('orders.create') }}" class="bg-[#d4af37] text-[#0a192f] px-8 py-3 rounded-xl font-bold hover:bg-[#c19b2e] transition-all transform hover:scale-105 shadow-2xl shadow-[#d4af37]/20 flex items-center gap-2 uppercase tracking-[0.2em] text-[10px]">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"></path></svg>
+                            Buat Surat Pesanan
+                        </a>
+                    </div>
+                </div>
+
+                <div class="mb-10 flex justify-between items-center bg-white/5 p-4 rounded-xl border border-white/10">
+                    <form action="{{ route('orders.index') }}" method="GET" class="flex items-center gap-4">
+                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Filter Tanggal:</label>
+                        <input type="date" name="date" value="{{ request('date') }}" 
+                            class="bg-[#0a192f] border-none text-xs font-bold text-[#d4af37] rounded-lg focus:ring-1 focus:ring-[#d4af37] outline-none px-4 py-2">
+                        <button type="submit" class="text-[10px] font-bold text-gray-400 uppercase hover:text-[#d4af37] transition-colors">Cari</button>
+                        @if(request('date'))
+                            <a href="{{ route('orders.index') }}" class="text-[10px] font-bold text-red-400/50 uppercase hover:text-red-400 transition-colors">Reset</a>
+                        @endif
+                    </form>
+                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest italic">
+                        Menampilkan {{ $orders->count() }} Pesanan
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
