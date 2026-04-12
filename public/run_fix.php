@@ -240,10 +240,26 @@ shell_exec("chmod -R 775 " . escapeshellarg($laravelRoot . '/bootstrap/cache') .
 echo "  <span style='color:#3fb950'>✅ Permissions updated</span>\n";
 
 // ============================================
+// LANGKAH 9: Tambah porsi_kecil & porsi_besar ke dish_menu
+// ============================================
+echo "\n--- <span style='color:#ffa657'>LANGKAH 9: Kolom Porsi Ganda (dish_menu)</span> ---\n";
+if (tableExists($pdo, 'dish_menu')) {
+    if (!hasColumn($pdo, 'dish_menu', 'porsi_kecil')) {
+        runSQL($pdo, "Tambah kolom 'porsi_kecil'", "ALTER TABLE `dish_menu` ADD COLUMN `porsi_kecil` int unsigned NOT NULL DEFAULT 0 AFTER `portions` ");
+    } else { echo "  <span style='color:#8b949e'>⏭ Kolom 'porsi_kecil' sudah ada.</span>\n"; }
+    
+    if (!hasColumn($pdo, 'dish_menu', 'porsi_besar')) {
+        runSQL($pdo, "Tambah kolom 'porsi_besar'", "ALTER TABLE `dish_menu` ADD COLUMN `porsi_besar` int unsigned NOT NULL DEFAULT 0 AFTER `porsi_kecil` ");
+    } else { echo "  <span style='color:#8b949e'>⏭ Kolom 'porsi_besar' sudah ada.</span>\n"; }
+} else {
+    echo "  <span style='color:#f85149'>❌ Tabel dish_menu tidak ditemukan!</span>\n";
+}
+
+// ============================================
 // HASIL AKHIR: Verifikasi
 // ============================================
 echo "\n--- <span style='color:#ffa657'>HASIL AKHIR: Verifikasi Tabel</span> ---\n";
-$checkTables = ['community_prices', 'aspirations', 'materials', 'sppgs', 'distribution_routes', 'beneficiary_groups'];
+$checkTables = ['community_prices', 'aspirations', 'materials', 'sppgs', 'distribution_routes', 'beneficiary_groups', 'dish_menu'];
 foreach ($checkTables as $tbl) {
     if (tableExists($pdo, $tbl)) {
         $count = $pdo->query("SELECT COUNT(*) FROM `$tbl`")->fetchColumn();
