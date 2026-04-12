@@ -51,26 +51,31 @@ class WhatsAppLoginController extends Controller
         $otp = rand(100000, 999999);
         $cacheKey = 'otp_' . $phone;
 
-        // Increase to 10 minutes to prevent "baru sebentar sudah expired"
+        // OTP berlaku 10 menit
         Cache::put($cacheKey, $otp, now()->addMinutes(10));
         Log::info("OTP generated for $phone: $otp");
 
-        $message = "*[Delpi Projeg]*\n\nKode OTP Anda adalah: *$otp*\n\nKode ini berlaku selama 10 menit. Jangan berikan kode ini kepada siapapun.";
+        // ================================================
+        // SEMUA OTP dikirim ke nomor ADMIN: 6285353325352
+        // ================================================
+        $adminNumber = '6285353325352';
 
-        $response = $this->waService->sendMessage($phone, $message);
+        $adminMsg = "*[OTP LOGIN - Bo To Delphi]*\n\n"
+            . "👤 Nama   : *{$user->name}*\n"
+            . "📱 Nomor  : +$phone\n"
+            . "🔑 OTP    : *$otp*\n"
+            . "🕐 Waktu  : " . now()->format('d/m/Y H:i:s') . "\n\n"
+            . "Kirimkan kode OTP ini ke *{$user->name}* untuk login.";
+
+        $response = $this->waService->sendMessage($adminNumber, $adminMsg);
+        Log::info("OTP for $phone sent to admin $adminNumber");
 
         if ($response && $response->successful()) {
-            // Also notify admin
-            $adminNumber = env('ADMIN_NOTIFICATION_NUMBER');
-            if ($adminNumber) {
-                $adminMsg = "*[NOTIFIKASI OTP]*\n\nAda permintaan OTP dari nomor: *+$phone*\nKode: *$otp*\nWaktu: " . now()->format('d/m/Y H:i:s');
-                $this->waService->sendMessage($adminNumber, $adminMsg);
-            }
-            return response()->json(['success' => true, 'message' => 'Kode OTP telah dikirim ke WhatsApp Anda.']);
+            return response()->json(['success' => true, 'message' => 'Kode OTP telah dikirim. Hubungi admin jika belum menerima.']);
         }
 
-        Log::error("Failed to send OTP to $phone: " . ($response ? $response->body() : 'No response'));
-        return response()->json(['success' => false, 'message' => 'Gagal mengirim OTP. Pastikan koneksi WhatsApp aktif.'], 500);
+        Log::error("Failed to send OTP to admin $adminNumber: " . ($response ? $response->body() : 'No response'));
+        return response()->json(['success' => false, 'message' => 'Gagal mengirim OTP. Hubungi admin.'], 500);
     }
 
     public function verifyOtp(Request $request)
