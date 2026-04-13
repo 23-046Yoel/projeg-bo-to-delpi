@@ -23,6 +23,7 @@
                             <div>
                                 <label class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Supplier</label>
                                 <select name="supplier_id" required class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none transition-all">
+                                    <option value="">-- Pilih Supplier --</option>
                                     @foreach($suppliers as $supplier)
                                         <option value="{{ $supplier->id }}">{{ $supplier->name }}</option>
                                     @endforeach

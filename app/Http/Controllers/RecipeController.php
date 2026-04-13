@@ -24,6 +24,19 @@ class RecipeController extends Controller
         return redirect()->back()->with('success', 'Bahan dan instruksi berhasil ditambahkan ke resep.');
     }
 
+    public function update(Request $request, Recipe $recipe)
+    {
+        $validated = $request->validate([
+            'quantity' => 'required|numeric|min:0',
+            'unit' => 'required|string|max:20',
+            'notes' => 'nullable|string|max:255',
+        ]);
+
+        $recipe->update($validated);
+
+        return redirect()->back()->with('success', 'Gramasi bahan berhasil diperbarui.');
+    }
+
     public function destroy(Recipe $recipe)
     {
         $recipe->delete();
