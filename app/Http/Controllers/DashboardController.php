@@ -15,9 +15,10 @@ class DashboardController extends Controller
     {
         $stats = [
             'suppliers_count' => Supplier::count(),
-            'beneficiaries_count' => Beneficiary::count(),
+            'beneficiaries_count' => \App\Models\BeneficiaryGroup::sum('total_beneficiaries'),
             'materials_count' => Material::count(),
             'total_payments' => Payment::sum('amount'),
+            'posts_count' => \App\Models\News::count() + \App\Models\Aspiration::count(),
         ];
 
         $latest_suppliers = Supplier::with('sppg')->latest()->take(5)->get();

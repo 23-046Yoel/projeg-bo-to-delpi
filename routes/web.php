@@ -29,7 +29,7 @@ use App\Http\Controllers\Auth\WhatsAppLoginController;
 Route::get('/', function () {
     $totalBeneficiaries = \App\Models\BeneficiaryGroup::sum('total_beneficiaries');
     $stats = [
-        'posts_count' => \App\Models\News::count(),
+        'posts_count' => \App\Models\News::count() + \App\Models\Aspiration::count(),
         'beneficiaries_per_kitchen' => \App\Models\Sppg::count() > 0 
             ? round($totalBeneficiaries / \App\Models\Sppg::count()) 
             : $totalBeneficiaries,
