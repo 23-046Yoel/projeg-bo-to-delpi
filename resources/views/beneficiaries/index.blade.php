@@ -20,6 +20,25 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+            @if(auth()->user()->isAdmin())
+            <div class="mb-6 bg-white rounded-[1.5rem] border border-gray-100 shadow-sm px-6 py-4 flex items-center gap-6">
+                <form action="{{ route('beneficiaries.index') }}" method="GET" class="flex items-center gap-4 flex-wrap">
+                    <label class="text-[10px] font-black text-royal-navy uppercase tracking-[0.2em]">Filter Dapur:</label>
+                    <select name="sppg_id" onchange="this.form.submit()"
+                        class="px-5 py-3 bg-silk border-2 border-transparent rounded-xl text-sm font-bold text-royal-navy focus:border-gold outline-none min-w-[220px]">
+                        <option value="">Semua Dapur (All)</option>
+                        @foreach($sppgs as $sppg)
+                            <option value="{{ $sppg->id }}" {{ request('sppg_id') == $sppg->id ? 'selected' : '' }}>{{ $sppg->name }}</option>
+                        @endforeach
+                    </select>
+                    @if(request('sppg_id'))
+                        <a href="{{ route('beneficiaries.index') }}" class="text-[10px] font-bold text-red-400/60 hover:text-red-500 uppercase tracking-widest transition-colors">Reset</a>
+                    @endif
+                </form>
+            </div>
+            @endif
+
             <div class="glass overflow-hidden shadow-2xl sm:rounded-[2rem] border border-gold/10 relative">
                 <div class="overflow-x-auto custom-scrollbar">
                     <table class="min-w-full divide-y divide-slate-100">
@@ -73,7 +92,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-6 py-12 text-center text-gray-400 text-xs font-bold uppercase tracking-widest italic">Belum ada data penerima</td>
+                                    <td colspan="6" class="px-6 py-12 text-center text-gray-400 text-xs font-bold uppercase tracking-widest italic">Belum ada data penerima untuk dapur ini</td>
                                 </tr>
                             @endforelse
                         </tbody>

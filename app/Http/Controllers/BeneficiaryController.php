@@ -10,16 +10,19 @@ class BeneficiaryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $query = Beneficiary::with('sppg');
 
         if (!auth()->user()->isAdmin() && auth()->user()->sppg_id) {
             $query->where('sppg_id', auth()->user()->sppg_id);
+        } elseif ($request->filled('sppg_id')) {
+            $query->where('sppg_id', $request->sppg_id);
         }
 
         $beneficiaries = $query->latest()->paginate(10);
-        return view('beneficiaries.index', compact('beneficiaries'));
+        $sppgs = \App\Models\Sppg::orderBy('name')->get();
+        return view('beneficiaries.index', compact('beneficiaries', 'sppgs'));
     }
 
     public function create()
