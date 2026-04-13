@@ -10,6 +10,8 @@ $root = '/home/aladelphi.or.id/public_html';
 $output = shell_exec("cd $root && git pull origin main 2>&1");
 echo $output . "\n";
 
+echo "Current Commit: " . shell_exec("cd $root && git rev-parse HEAD") . "\n";
+
 // Clear cache with PHP 8.2
 $php = '/usr/local/lsws/lsphp82/bin/php';
 if (file_exists($php)) {
