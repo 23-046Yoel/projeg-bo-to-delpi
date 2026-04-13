@@ -13,6 +13,10 @@ echo $output . "\n";
 // Clear cache with PHP 8.2
 $php = '/usr/local/lsws/lsphp82/bin/php';
 if (file_exists($php)) {
+    echo "\nRunning Migrations:\n";
+    $out_mig = shell_exec("cd $root && $php artisan migrate --force 2>&1");
+    echo $out_mig . "\n";
+
     $out2 = shell_exec("cd $root && $php artisan optimize:clear 2>&1");
     echo "\nCache cleared:\n" . $out2;
 }
