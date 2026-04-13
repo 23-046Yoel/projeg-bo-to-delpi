@@ -29,15 +29,15 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
             'price' => 'numeric|min:0',
+            'village' => 'nullable|string|max:255',
+            'items' => 'nullable|string',
         ]);
 
-        Supplier::create(array_merge($request->all(), [
-            'sppg_id' => auth()->user()->sppg_id
-        ]));
+        Supplier::create($validated);
 
         return redirect()->route('suppliers.index')->with('success', 'Supplier created successfully.');
     }
@@ -45,32 +45,47 @@ class SupplierController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Supplier $supplier)
     {
-        //
+        return view('suppliers.show', compact('supplier'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Supplier $supplier)
     {
-        //
+        return view('suppliers.edit', compact('supplier'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Supplier $supplier)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'price' => 'numeric|min:0',
+            'village' => 'nullable|string|max:255',
+            'items' => 'nullable|string',
+        ]);
+
+        $supplier->update($validated);
+
+        return redirect()->route('suppliers.index')->with('success', 'Supplier updated successfully.');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Supplier $supplier)
     {
-        //
+        if (auth()->user()->role !== \App\Models\User::ROLE_ADMIN) {
+            abort(403, 'Hanya admin yang dapat menghapus supplier.');
+        }
+
+        $supplier->delete();
+        return redirect()->route('suppliers.index')->with('success', 'Supplier deleted successfully.');
     }
 }

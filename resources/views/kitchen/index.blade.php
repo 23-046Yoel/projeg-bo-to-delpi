@@ -89,7 +89,7 @@
                     </p>
                     @endif
                     <div class="flex items-center justify-between">
-                        <span class="text-[10px] font-black text-[#D4AF37] uppercase tracking-widest">{{ $kitchen->beneficiaries_count ?? 0 }} Penerima</span>
+                        <span class="text-[10px] font-black text-[#D4AF37] uppercase tracking-widest">{{ $kitchen->beneficiary_groups_sum_total_beneficiaries ?? 0 }} Penerima</span>
                         <span class="text-[10px] text-slate-400 font-bold">{{ $kitchen->operational_hours ?? '06:00 - 14:00' }}</span>
                     </div>
                 </div>

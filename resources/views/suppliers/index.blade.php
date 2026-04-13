@@ -61,9 +61,20 @@
                                             </span>
                                         </td>
                                         <td class="px-6 py-6 whitespace-nowrap text-right">
-                                            <a href="{{ route('suppliers.edit', $supplier) }}" class="inline-flex items-center px-4 py-2 border-2 border-gray-100 rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:border-gold hover:text-royal-navy hover:bg-gold/10 transition-all">
-                                                Edit Partner
-                                            </a>
+                                            <div class="flex items-center justify-end space-x-3">
+                                                <a href="{{ route('suppliers.edit', $supplier) }}" class="inline-flex items-center px-4 py-2 border-2 border-gray-100 rounded-xl text-[10px] font-black uppercase tracking-widest text-gray-400 hover:border-gold hover:text-royal-navy hover:bg-gold/10 transition-all">
+                                                    Edit
+                                                </a>
+                                                @if(auth()->user()->role === \App\Models\User::ROLE_ADMIN)
+                                                <form action="{{ route('suppliers.destroy', $supplier) }}" method="POST" onsubmit="return confirm('Hapus partner supplier ini?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="inline-flex items-center px-4 py-2 border-2 border-red-50 rounded-xl text-[10px] font-black uppercase tracking-widest text-red-300 hover:border-red-500 hover:text-red-500 hover:bg-red-50 transition-all">
+                                                        Hapus
+                                                    </button>
+                                                </form>
+                                                @endif
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach

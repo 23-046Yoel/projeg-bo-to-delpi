@@ -24,6 +24,11 @@ class Sppg extends Model
         return $this->hasMany(Beneficiary::class);
     }
 
+    public function beneficiaryGroups()
+    {
+        return $this->hasMany(BeneficiaryGroup::class);
+    }
+
     public function materials()
     {
         return $this->hasMany(Material::class);

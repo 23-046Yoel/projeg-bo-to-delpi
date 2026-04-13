@@ -21,19 +21,36 @@
                     </div>
                 </div>
 
-                <div class="mb-10 flex justify-between items-center bg-white/5 p-4 rounded-xl border border-white/10">
-                    <form action="{{ route('orders.index') }}" method="GET" class="flex items-center gap-4">
-                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Filter Tanggal:</label>
-                        <input type="date" name="date" value="{{ request('date') }}" 
-                            class="bg-[#0a192f] border-none text-xs font-bold text-[#d4af37] rounded-lg focus:ring-1 focus:ring-[#d4af37] outline-none px-4 py-2">
-                        <button type="submit" class="text-[10px] font-bold text-gray-400 uppercase hover:text-[#d4af37] transition-colors">Cari</button>
-                        @if(request('date'))
-                            <a href="{{ route('orders.index') }}" class="text-[10px] font-bold text-red-400/50 uppercase hover:text-red-400 transition-colors">Reset</a>
-                        @endif
+                <div class="mb-10 bg-white/5 p-6 rounded-xl border border-white/10">
+                    <form action="{{ route('orders.index') }}" method="GET" class="flex flex-wrap items-center gap-6">
+                        <div class="flex items-center gap-3">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Filter Tanggal:</label>
+                            <input type="date" name="date" value="{{ request('date') }}" 
+                                class="bg-[#0a192f] border-none text-xs font-bold text-[#d4af37] rounded-lg focus:ring-1 focus:ring-[#d4af37] outline-none px-4 py-2">
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Supplier:</label>
+                            <select name="supplier_id" onchange="this.form.submit()" 
+                                class="bg-[#0a192f] border-none text-xs font-bold text-[#d4af37] rounded-lg focus:ring-1 focus:ring-[#d4af37] outline-none px-4 py-2 min-w-[150px]">
+                                <option value="">Semua Supplier (All)</option>
+                                @foreach($suppliers as $supplier)
+                                    <option value="{{ $supplier->id }}" {{ request('supplier_id') == $supplier->id ? 'selected' : '' }}>
+                                        {{ $supplier->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="flex items-center gap-4">
+                            <button type="submit" class="px-6 py-2 bg-[#d4af37]/10 text-[#d4af37] text-[10px] font-bold uppercase rounded-lg hover:bg-[#d4af37]/20 transition-all">
+                                Cari
+                            </button>
+                            @if(request('date') || request('supplier_id'))
+                                <a href="{{ route('orders.index') }}" class="text-[10px] font-bold text-red-400/50 uppercase hover:text-red-400 transition-colors">Reset</a>
+                            @endif
+                        </div>
                     </form>
-                    <div class="text-[10px] font-bold text-gray-500 uppercase tracking-widest italic">
-                        Menampilkan {{ $orders->count() }} Pesanan
-                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

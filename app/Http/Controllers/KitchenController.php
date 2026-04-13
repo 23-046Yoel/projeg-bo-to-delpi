@@ -12,7 +12,7 @@ class KitchenController extends Controller
     /** Public: List all kitchens */
     public function index()
     {
-        $kitchens = Sppg::withCount('beneficiaries')->latest()->get();
+        $kitchens = Sppg::withSum('beneficiaryGroups', 'total_beneficiaries')->latest()->get();
         return view('kitchen.index', compact('kitchens'));
     }
 

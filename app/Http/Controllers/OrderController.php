@@ -13,12 +13,18 @@ class OrderController extends Controller
     {
         $query = \App\Models\Order::with('supplier', 'items.material');
         
-        if ($request->has('date')) {
+        if ($request->filled('date')) {
             $query->whereDate('order_date', $request->date);
         }
 
+        if ($request->filled('supplier_id')) {
+            $query->where('supplier_id', $request->supplier_id);
+        }
+
         $orders = $query->latest()->get();
-        return view('orders.index', compact('orders'));
+        $suppliers = \App\Models\Supplier::orderBy('name')->get();
+
+        return view('orders.index', compact('orders', 'suppliers'));
     }
 
     public function show(Order $order)
