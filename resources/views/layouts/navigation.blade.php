@@ -80,7 +80,7 @@
 
         @can('manage-distribution')
         <div class="px-8 mt-4 mb-2">
-            <p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Education & Beneficiaries</p>
+            <p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Beneficiaries Management</p>
         </div>
 
         <x-nav-link :href="route('beneficiary-groups.index')" :active="request()->routeIs('beneficiary-groups.*')" class="py-3">
@@ -100,18 +100,19 @@
         </x-nav-link>
         @endcan
 
-        @can('manage-warehouse')
+        @can('manage-materials')
         <div class="px-8 mt-4 mb-2">
-            <p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Supply Chain & Vendor</p>
+            <p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Supply Chain</p>
         </div>
-
         <x-nav-link :href="route('materials.index')" :active="request()->routeIs('materials.*')" class="py-3">
             <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
             </svg>
             <span class="font-bold tracking-tight">{{ __('Bahan Baku') }}</span>
         </x-nav-link>
+        @endcan
 
+        @can('manage-warehouse')
         <x-nav-link :href="route('inventory.index')" :active="request()->routeIs('inventory.*')" class="py-3">
             <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
@@ -139,25 +140,12 @@
             <span class="font-bold tracking-tight">{{ __('Input Transaksi') }}</span>
         </x-nav-link>
 
-        <x-nav-link :href="route('recap.index')" :active="request()->routeIs('recap.*')" class="py-3">
-            <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
-            <span class="font-bold tracking-tight">{{ __('Dashboard Keuangan') }}</span>
-        </x-nav-link>
-
         <x-nav-link :href="route('financial.index')" :active="request()->routeIs('financial.*')" class="py-3">
             <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
             </svg>
             <span class="font-bold tracking-tight">{{ __('Laporan Arus Kas') }}</span>
         </x-nav-link>
-        @endcan
-
-        @can('view-reports')
-        <div class="px-8 mt-4 mb-2">
-            <p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Volunteer Monitoring</p>
-        </div>
 
         <x-nav-link :href="route('reports.lpd2m')" :active="request()->routeIs('reports.lpd2m')" class="py-3">
             <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -179,7 +167,12 @@
             </svg>
             <span class="font-bold tracking-tight">{{ __('BAPSD') }}</span>
         </x-nav-link>
+        @endcan
 
+        @can('view-general-reports')
+        <div class="px-8 mt-4 mb-2">
+            <p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">General Reports</p>
+        </div>
         <x-nav-link :href="route('attendances.index')" :active="request()->routeIs('attendances.*')" class="py-3">
             <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
@@ -196,7 +189,10 @@
         </x-nav-link>
         @endcan
 
-        @if(auth()->user()->isAdmin())
+        @can('manage-system')
+        <div class="px-8 mt-4 mb-2">
+            <p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">System Admin</p>
+        </div>
         <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')" class="py-3">
             <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
@@ -210,25 +206,21 @@
             </svg>
             <span class="font-bold tracking-tight">{{ __('Moderasi Aspirasi') }}</span>
         </x-nav-link>
-        @endif
 
-        <div class="px-8 mt-4 mb-2">
-            <p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Distribution</p>
-        </div>
-
-        @if(auth()->user()->role === \App\Models\User::ROLE_DRIVER)
-        <x-nav-link :href="route('distributions.driver')" :active="request()->routeIs('distributions.driver')" class="py-3">
-            <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 011 1v2a1 1 0 01-1 1h-1m-4-14H5a1 1 0 00-1 1v2a1 1 0 001 1h1m12 0h4a1 1 0 011 1v4a1 1 0 01-1 1h-1m-4 7h1"/>
-            </svg>
-            <span class="font-bold tracking-tight">{{ __('Dashboard Driver') }}</span>
-        </x-nav-link>
-        @else
         <x-nav-link :href="route('distributions.index')" :active="request()->routeIs('distributions.*')" class="py-3">
             <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
             </svg>
             <span class="font-bold tracking-tight">{{ __('Monitoring Rute') }}</span>
+        </x-nav-link>
+        @endcan
+
+        @if(auth()->user()->role === \App\Models\User::ROLE_DRIVER)
+        <x-nav-link :href="route('distributions.driver')" :active="request()->routeIs('distributions.driver')" class="py-3">
+            <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1-1v10a1 1 0 001 1h1m8-1a1 1 0 011 1v2a1 1 0 01-1 1h-1m-4-14H5a1 1 0 00-1 1v2a1 1 0 001 1h1m12 0h4a1 1 0 011 1v4a1 1 0 01-1 1h-1m-4 7h1"/>
+            </svg>
+            <span class="font-bold tracking-tight">{{ __('Dashboard Driver') }}</span>
         </x-nav-link>
         @endif
     </div>
