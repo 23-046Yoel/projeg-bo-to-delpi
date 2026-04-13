@@ -207,6 +207,13 @@
             <span class="font-bold tracking-tight">{{ __('Moderasi Aspirasi') }}</span>
         </x-nav-link>
 
+        <x-nav-link :href="route('news.index')" :active="request()->routeIs('news.*')" class="py-3">
+            <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l4 4v10a2 2 0 01-2 2z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 3v5h5M7 12h10M7 16h10"/>
+            </svg>
+            <span class="font-bold tracking-tight">{{ __('Manajemen Berita') }}</span>
+        </x-nav-link>
+
         <x-nav-link :href="route('distributions.index')" :active="request()->routeIs('distributions.*')" class="py-3">
             <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>

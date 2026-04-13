@@ -85,6 +85,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/test-wablas', [\App\Http\Controllers\WablasTestController::class, 'test'])->name('test.wablas');
 
     Route::resource('users', \App\Http\Controllers\UserController::class);
+    Route::resource('news', \App\Http\Controllers\NewsController::class);
     Route::resource('distributions', \App\Http\Controllers\DistributionController::class);
     Route::get('/driver/dashboard', [\App\Http\Controllers\DistributionController::class, 'driverDashboard'])->name('distributions.driver');
     Route::post('/distributions/{route}/depart', [\App\Http\Controllers\DistributionController::class, 'depart'])->name('distributions.depart');
