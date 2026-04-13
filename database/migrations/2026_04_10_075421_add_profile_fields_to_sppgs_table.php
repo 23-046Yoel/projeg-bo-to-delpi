@@ -12,13 +12,27 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('sppgs', function (Blueprint $table) {
-            $table->string('slug')->unique()->nullable()->after('name');
-            $table->text('description')->nullable()->after('slug');
-            $table->string('image_path')->nullable()->after('description');
-            $table->string('manager_name')->nullable()->after('image_path');
-            $table->string('contact_phone')->nullable()->after('manager_name');
-            $table->string('address')->nullable()->after('contact_phone');
-            $table->string('operational_hours')->default('06:00 - 14:00')->after('address'); // Jam operasional
+            if (!Schema::hasColumn('sppgs', 'slug')) {
+                $table->string('slug')->unique()->nullable()->after('name');
+            }
+            if (!Schema::hasColumn('sppgs', 'description')) {
+                $table->text('description')->nullable()->after('slug');
+            }
+            if (!Schema::hasColumn('sppgs', 'image_path')) {
+                $table->string('image_path')->nullable()->after('description');
+            }
+            if (!Schema::hasColumn('sppgs', 'manager_name')) {
+                $table->string('manager_name')->nullable()->after('image_path');
+            }
+            if (!Schema::hasColumn('sppgs', 'contact_phone')) {
+                $table->string('contact_phone')->nullable()->after('manager_name');
+            }
+            if (!Schema::hasColumn('sppgs', 'address')) {
+                $table->string('address')->nullable()->after('contact_phone');
+            }
+            if (!Schema::hasColumn('sppgs', 'operational_hours')) {
+                $table->string('operational_hours')->default('06:00 - 14:00')->after('address');
+            }
         });
     }
 
