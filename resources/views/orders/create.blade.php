@@ -75,25 +75,25 @@
                                 @forelse($prepopulatedItems as $idx => $item)
                                     <div class="item-row grid grid-cols-12 gap-4 items-center animate-fadeIn bg-white p-2 rounded-2xl hover:shadow-md transition-all border border-transparent hover:border-gold/20">
                                         <div class="col-span-4">
-                                            <select name="items[{{ $idx }}][material_id]" required onchange="updatePrice(this)" class="w-full px-6 py-4 bg-silk/50 border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none">
+                                            <select name="items[{{ $idx }}][material_id]" required onchange="updatePrice(this); calculateGrandTotal();" class="w-full px-6 py-4 bg-silk/50 border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none">
                                                 @foreach($materials as $material)
                                                     <option value="{{ $material->id }}" data-price="{{ $material->price }}" data-unit="{{ $material->unit }}" {{ $item['material_id'] == $material->id ? 'selected' : '' }}>
                                                         {{ $material->name }}
-                                                    </option>
+                                                     </option>
                                                 @endforeach
                                             </select>
                                         </div>
                                         <div class="col-span-2">
-                                            <input type="number" step="0.0001" name="items[{{ $idx }}][quantity]" value="{{ $item['quantity'] }}" required class="w-full px-4 py-4 bg-silk/50 border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Qty">
+                                            <input type="number" step="0.0001" name="items[{{ $idx }}][quantity]" value="{{ $item['quantity'] }}" required oninput="calculateGrandTotal()" class="quantity-input w-full px-4 py-4 bg-silk/50 border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Qty">
                                         </div>
                                         <div class="col-span-2">
                                             <input type="text" name="items[{{ $idx }}][unit]" value="{{ $item['unit'] }}" required class="unit-input w-full px-4 py-4 bg-silk/50 border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Unit">
                                         </div>
                                         <div class="col-span-3">
-                                            <input type="number" name="items[{{ $idx }}][price]" value="{{ $item['price'] }}" required class="price-input w-full px-4 py-4 bg-silk/50 border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Price">
+                                            <input type="number" name="items[{{ $idx }}][price]" value="{{ $item['price'] }}" required oninput="calculateGrandTotal()" class="price-input w-full px-4 py-4 bg-silk/50 border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Price">
                                         </div>
                                         <div class="col-span-1 text-right">
-                                            <button type="button" onclick="removeRow(this)" class="p-2 text-red-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all">
+                                            <button type="button" onclick="removeRow(this); calculateGrandTotal();" class="p-2 text-red-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all">
                                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                             </button>
                                         </div>
@@ -101,7 +101,7 @@
                                 @empty
                                     <div class="item-row grid grid-cols-12 gap-4 items-center bg-white p-2 rounded-2xl border border-gray-100">
                                         <div class="col-span-4">
-                                            <select name="items[0][material_id]" required onchange="updatePrice(this)" class="w-full px-6 py-4 bg-silk/50 border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none">
+                                            <select name="items[0][material_id]" required onchange="updatePrice(this); calculateGrandTotal();" class="w-full px-6 py-4 bg-silk/50 border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none">
                                                 <option value="">Pilih Bahan...</option>
                                                 @foreach($materials as $material)
                                                     <option value="{{ $material->id }}" data-price="{{ $material->price }}" data-unit="{{ $material->unit }}">{{ $material->name }}</option>
@@ -109,21 +109,26 @@
                                             </select>
                                         </div>
                                         <div class="col-span-2">
-                                            <input type="number" step="0.0001" name="items[0][quantity]" required class="w-full px-4 py-4 bg-silk/50 border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Qty">
+                                            <input type="number" step="0.0001" name="items[0][quantity]" required oninput="calculateGrandTotal()" class="quantity-input w-full px-4 py-4 bg-silk/50 border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Qty">
                                         </div>
                                         <div class="col-span-2">
                                             <input type="text" name="items[0][unit]" required class="unit-input w-full px-4 py-4 bg-silk/50 border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Unit">
                                         </div>
                                         <div class="col-span-3">
-                                            <input type="number" name="items[0][price]" required class="price-input w-full px-4 py-4 bg-silk/50 border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Price">
+                                            <input type="number" name="items[0][price]" required oninput="calculateGrandTotal()" class="price-input w-full px-4 py-4 bg-silk/50 border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Price">
                                         </div>
                                         <div class="col-span-1 text-right">
-                                            <button type="button" onclick="removeRow(this)" class="p-2 text-red-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all">
+                                            <button type="button" onclick="removeRow(this); calculateGrandTotal();" class="p-2 text-red-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all">
                                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                             </button>
                                         </div>
                                     </div>
                                 @endforelse
+                            </div>
+
+                            <div class="mt-6 p-6 bg-royal-navy/5 rounded-2xl flex justify-between items-center border border-royal-navy/10">
+                                <span class="text-[10px] font-black text-royal-navy uppercase tracking-widest">Total Estimasi Pesanan</span>
+                                <span class="text-xl font-black text-royal-navy" id="grand-total-display">Rp 0</span>
                             </div>
                         </div>
 
@@ -194,27 +199,28 @@
 
             row.innerHTML = `
                 <div class="col-span-4">
-                    <select name="items[${rowCount}][material_id]" required onchange="updatePrice(this)" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none">
+                    <select name="items[${rowCount}][material_id]" required onchange="updatePrice(this); calculateGrandTotal();" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none">
                         ${options}
                     </select>
                 </div>
                 <div class="col-span-2">
-                    <input type="number" step="0.0001" name="items[${rowCount}][quantity]" value="${item.quantity}" required class="w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Qty">
+                    <input type="number" step="0.0001" name="items[${rowCount}][quantity]" value="${item.quantity}" required oninput="calculateGrandTotal()" class="quantity-input w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Qty">
                 </div>
                 <div class="col-span-2">
                     <input type="text" name="items[${rowCount}][unit]" value="${item.unit}" required class="unit-input w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Unit">
                 </div>
                 <div class="col-span-3">
-                    <input type="number" name="items[${rowCount}][price]" value="${item.price}" required class="price-input w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Price">
+                    <input type="number" name="items[${rowCount}][price]" value="${item.price}" required oninput="calculateGrandTotal()" class="price-input w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Price">
                 </div>
                 <div class="col-span-1 text-right">
-                    <button type="button" onclick="removeRow(this)" class="text-red-300 hover:text-red-500 transition-all">
+                    <button type="button" onclick="removeRow(this); calculateGrandTotal();" class="text-red-300 hover:text-red-500 transition-all">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                     </button>
                 </div>
             `;
             container.appendChild(row);
             rowCount++;
+            calculateGrandTotal();
         }
 
         function updatePrice(select) {
@@ -228,6 +234,7 @@
             
             if (priceInput) priceInput.value = price || 0;
             if (unitInput) unitInput.value = unit || '';
+            calculateGrandTotal();
         }
 
         function addItem() {
@@ -242,21 +249,21 @@
 
             row.innerHTML = `
                 <div class="col-span-4">
-                    <select name="items[${rowCount}][material_id]" required onchange="updatePrice(this)" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none">
+                    <select name="items[${rowCount}][material_id]" required onchange="updatePrice(this); calculateGrandTotal();" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none">
                         ${options}
                     </select>
                 </div>
                 <div class="col-span-2">
-                    <input type="number" step="0.0001" name="items[${rowCount}][quantity]" required class="w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Qty">
+                    <input type="number" step="0.0001" name="items[${rowCount}][quantity]" required oninput="calculateGrandTotal()" class="quantity-input w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Qty">
                 </div>
                 <div class="col-span-2">
                     <input type="text" name="items[${rowCount}][unit]" required class="unit-input w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Unit">
                 </div>
                 <div class="col-span-3">
-                    <input type="number" name="items[${rowCount}][price]" required class="price-input w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Price">
+                    <input type="number" name="items[${rowCount}][price]" required oninput="calculateGrandTotal()" class="price-input w-full px-4 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-black text-royal-navy focus:bg-white focus:border-gold outline-none" placeholder="Price">
                 </div>
                 <div class="col-span-1 text-right">
-                    <button type="button" onclick="removeRow(this)" class="text-red-300 hover:text-red-500 transition-all">
+                    <button type="button" onclick="removeRow(this); calculateGrandTotal();" class="text-red-300 hover:text-red-500 transition-all">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                     </button>
                 </div>
@@ -265,8 +272,22 @@
             rowCount++;
         }
 
+        function calculateGrandTotal() {
+            let total = 0;
+            document.querySelectorAll('.item-row').forEach(row => {
+                const qty = parseFloat(row.querySelector('.quantity-input')?.value || 0);
+                const price = parseFloat(row.querySelector('.price-input')?.value || 0);
+                total += (qty * price);
+            });
+            document.getElementById('grand-total-display').innerText = 'Rp ' + total.toLocaleString('id-ID');
+        }
+
         function removeRow(btn) {
             btn.closest('.item-row').remove();
+            calculateGrandTotal();
         }
+
+        // Run on load
+        document.addEventListener('DOMContentLoaded', calculateGrandTotal);
     </script>
 </x-app-layout>
