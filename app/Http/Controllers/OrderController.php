@@ -78,21 +78,35 @@ class OrderController extends Controller
                                     'price' => 0
                                 ];
                                 
-                                // Get last price for this material
-                                $lastPrice = \App\Models\OrderItem::where('material_id', $matId)
-                                    ->whereHas('order', function($q) { $q->where('status', '!=', 'pending'); })
-                                    ->latest()->value('price');
-                                $requirements[$matId]['price'] = $lastPrice ?? 0;
-                            }
-                            $requirements[$matId]['quantity'] += $needed;
+                        // 1. Cek harga pesanan terakhir
+                        $price = \App\Models\OrderItem::where('material_id', $matId)
+                            ->whereHas('order', function($q) { $q->where('status', '!=', 'pending'); })
+                            ->latest()->value('price');
+                        
+                        // 2. Jika tidak ada, ambil dari master material
+                        if (!$price || $price == 0) {
+                            $price = $recipe->material->price ?? 0;
                         }
+
+                        $requirements[$matId] = [
+                            'material_id' => $matId,
+                            'name' => $recipe->material->name,
+                            'quantity' => 0,
+                            'unit' => $recipe->unit,
+                            'price' => $price
+                        ];
                     }
+                    $requirements[$matId]['quantity'] += $needed;
                 }
+            }
+        }
                 $prepopulatedItems = array_values($requirements);
             }
         }
 
-        return view('orders.create', compact('suppliers', 'materials', 'prepopulatedItems'));
+        $sppgs = \App\Models\Sppg::orderBy('name')->get();
+
+        return view('orders.create', compact('suppliers', 'materials', 'prepopulatedItems', 'sppgs'));
     }
 
     public function store(Request $request)
@@ -182,7 +196,9 @@ class OrderController extends Controller
             $query->whereBetween('date', [$startDate, $endDate]);
         }
 
-        if (!$user->isAdmin()) {
+        if ($request->filled('sppg_id')) {
+            $query->where('sppg_id', $request->sppg_id);
+        } elseif (!$user->isAdmin()) {
             $query->where('sppg_id', $user->sppg_id);
         }
 
@@ -199,14 +215,22 @@ class OrderController extends Controller
                     $needed = $recipe->quantity * $portions;
 
                     if (!isset($requirements[$matId])) {
+                        // 1. Cek harga pesanan terakhir
+                        $price = \App\Models\OrderItem::where('material_id', $matId)
+                            ->whereHas('order', function($q) { $q->where('status', '!=', 'pending'); })
+                            ->latest()->value('price');
+                        
+                        // 2. Jika tidak ada, ambil dari master material
+                        if (!$price || $price == 0) {
+                            $price = $recipe->material->price ?? 0;
+                        }
+
                         $requirements[$matId] = [
                             'material_id' => $matId,
                             'name' => $recipe->material->name ?? 'Unknown',
                             'quantity' => 0,
                             'unit' => $recipe->unit,
-                            'price' => \App\Models\OrderItem::where('material_id', $matId)
-                                ->whereHas('order', function($q) { $q->where('status', '!=', 'pending'); })
-                                ->latest()->value('price') ?? 0
+                            'price' => $price
                         ];
                     }
                     $requirements[$matId]['quantity'] += $needed;

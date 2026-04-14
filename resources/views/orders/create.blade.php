@@ -43,7 +43,16 @@
                                         <h4 class="text-xs font-black text-royal-navy uppercase tracking-widest">Tarik Otomatis dari Menu</h4>
                                         <p class="text-[9px] font-bold text-gray-400 uppercase mt-1">Sistem akan menghitung kebutuhan bahan berdasarkan rencana menu</p>
                                     </div>
-                                    <div class="flex flex-col md:flex-row items-center gap-4">
+                                    <div class="flex flex-col md:flex-row items-end gap-4">
+                                        <div class="flex flex-col">
+                                            <label class="text-[9px] font-black text-royal-navy/50 uppercase mb-1 ml-1">Dapur</label>
+                                            <select id="sppg-filter" class="px-4 py-3 bg-white border-2 border-transparent rounded-xl text-xs font-black text-royal-navy focus:border-gold outline-none shadow-sm min-w-[150px]">
+                                                <option value="">-- Semua Dapur --</option>
+                                                @foreach($sppgs as $sppg)
+                                                    <option value="{{ $sppg->id }}" {{ auth()->user()->sppg_id == $sppg->id ? 'selected' : '' }}>{{ $sppg->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                         <div class="flex flex-col">
                                             <label class="text-[9px] font-black text-royal-navy/50 uppercase mb-1 ml-1">Mulai</label>
                                             <input type="date" id="start-date" value="{{ date('Y-m-d') }}" 
@@ -55,7 +64,7 @@
                                                 class="px-4 py-3 bg-white border-2 border-transparent rounded-xl text-xs font-black text-royal-navy focus:border-gold outline-none shadow-sm">
                                         </div>
                                         <button type="button" onclick="fetchRequirements()" id="fetch-btn"
-                                            class="mt-4 md:mt-0 px-8 py-3 bg-royal-navy text-gold rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-royal-navy/90 transition-all shadow-lg flex items-center">
+                                            class="px-8 py-3 bg-royal-navy text-gold rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-royal-navy/90 transition-all shadow-lg flex items-center">
                                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
                                             Ambil Data Bahan
                                         </button>
@@ -153,6 +162,7 @@
         async function fetchRequirements() {
             const startDate = document.getElementById('start-date').value;
             const endDate = document.getElementById('end-date').value;
+            const sppgId = document.getElementById('sppg-filter').value;
             const btn = document.getElementById('fetch-btn');
             
             if (!startDate || !endDate) {
@@ -164,7 +174,7 @@
             btn.innerHTML = '<svg class="w-4 h-4 mr-2 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Menarik Bahan...';
 
             try {
-                const response = await fetch(`{{ route('orders.calculate') }}?start_date=${startDate}&end_date=${endDate}`);
+                const response = await fetch(`{{ route('orders.calculate') }}?start_date=${startDate}&end_date=${endDate}&sppg_id=${sppgId}`);
                 const data = await response.json();
 
                 if (data.length === 0) {
