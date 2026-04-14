@@ -125,4 +125,26 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('users.index')->with('success', 'Staff berhasil dihapus.');
     }
+
+    public function signatureForm(User $user)
+    {
+        return view('users.signature', compact('user'));
+    }
+
+    public function signatureUpload(Request $request, User $user)
+    {
+        $request->validate([
+            'signature' => 'required|image|mimes:png,jpg,jpeg|max:2048',
+        ]);
+
+        // Delete old signature if exists
+        if ($user->signature_path && \Illuminate\Support\Facades\Storage::exists($user->signature_path)) {
+            \Illuminate\Support\Facades\Storage::delete($user->signature_path);
+        }
+
+        $path = $request->file('signature')->store('signatures', 'public');
+        $user->update(['signature_path' => $path]);
+
+        return redirect()->route('users.index')->with('success', 'Tanda tangan berhasil diupload!');
+    }
 }

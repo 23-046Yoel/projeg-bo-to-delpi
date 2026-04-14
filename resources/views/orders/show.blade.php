@@ -185,7 +185,14 @@
                                 ->first();
                         @endphp
                         <div class="text-center">
-                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-16">Mengetahui,</p>
+                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Mengetahui,</p>
+                            @if($kepalaDapur && $kepalaDapur->signature_path)
+                                <img src="{{ asset('storage/' . $kepalaDapur->signature_path) }}"
+                                     alt="TTD Kepala Dapur"
+                                     class="h-16 mx-auto object-contain mb-1">
+                            @else
+                                <div class="h-16"></div>
+                            @endif
                             <div class="w-full h-px bg-gray-300 mb-2"></div>
                             <p class="text-xs font-black text-royal-navy uppercase">{{ $kepalaDapur->name ?? '( _______________ )' }}</p>
                             <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Kepala Dapur SPPG</p>
@@ -199,7 +206,14 @@
                         @endphp
                         <div class="text-center">
                             <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">{{ \Carbon\Carbon::parse($order->order_date)->translatedFormat('d F Y') }}</p>
-                            <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-14">Pengawas Keuangan,</p>
+                            <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Pengawas Keuangan,</p>
+                            @if($keuangan && $keuangan->signature_path)
+                                <img src="{{ asset('storage/' . $keuangan->signature_path) }}"
+                                     alt="TTD Keuangan"
+                                     class="h-16 mx-auto object-contain mb-1 mt-1">
+                            @else
+                                <div class="h-14"></div>
+                            @endif
                             <div class="w-full h-px bg-gray-300 mb-2"></div>
                             <p class="text-xs font-black text-royal-navy uppercase">{{ $keuangan->name ?? '( _______________ )' }}</p>
                             <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Pengawas Keuangan</p>

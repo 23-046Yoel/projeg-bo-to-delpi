@@ -85,6 +85,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/test-wablas', [\App\Http\Controllers\WablasTestController::class, 'test'])->name('test.wablas');
 
     Route::resource('users', \App\Http\Controllers\UserController::class);
+    Route::get('/users/{user}/signature', [\App\Http\Controllers\UserController::class, 'signatureForm'])->name('users.signature.form');
+    Route::post('/users/{user}/signature', [\App\Http\Controllers\UserController::class, 'signatureUpload'])->name('users.signature.upload');
     Route::resource('news', \App\Http\Controllers\NewsController::class);
     Route::resource('distributions', \App\Http\Controllers\DistributionController::class);
     Route::get('/driver/dashboard', [\App\Http\Controllers\DistributionController::class, 'driverDashboard'])->name('distributions.driver');
