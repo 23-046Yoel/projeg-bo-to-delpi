@@ -18,6 +18,20 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Filter Section -->
+            <div class="mb-8">
+                <form action="{{ route('menus.index') }}" method="GET" class="flex flex-wrap items-end gap-4">
+                    <div class="w-full md:w-64">
+                        <label for="sppg_id" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-2">Filter Dapur (SPPG)</label>
+                        <select name="sppg_id" id="sppg_id" onchange="this.form.submit()" class="w-full px-5 py-3 bg-white border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy shadow-lg shadow-royal-navy/5 focus:border-gold outline-none transition-all">
+                            <option value="">-- SEMUA DAPUR --</option>
+                            @foreach($sppgs as $sppg)
+                                <option value="{{ $sppg->id }}" {{ request('sppg_id') == $sppg->id ? 'selected' : '' }}>{{ $sppg->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </form>
+            </div>
             <div class="premium-card overflow-hidden">
                 <div class="p-8">
                     <div class="overflow-x-auto">

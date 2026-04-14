@@ -13,16 +13,17 @@ class MenuController extends Controller
         $this->middleware('can:manage-menus');
     }
     
-    public function index()
+    public function index(Request $request)
     {
-        $query = Menu::with(['dishes', 'sppg']);
+        $query = Menu::with('sppg');
 
-        if (!auth()->user()->isAdmin() && auth()->user()->sppg_id) {
-            $query->where('sppg_id', auth()->user()->sppg_id);
+        if ($request->has('sppg_id') && $request->sppg_id != '') {
+            $query->where('sppg_id', $request->sppg_id);
         }
 
-        $menus = $query->orderBy('date', 'asc')->paginate(15);
-        return view('menus.index', compact('menus'));
+        $menus = $query->latest()->paginate(15)->withQueryString();
+        $sppgs = Sppg::all();
+        return view('menus.index', compact('menus', 'sppgs'));
     }
 
     public function create()

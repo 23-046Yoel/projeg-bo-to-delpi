@@ -66,9 +66,6 @@
                             <h3 class="text-[10px] font-black text-royal-navy uppercase tracking-[0.2em]">Kebutuhan Bahan Baku (Otomatis)</h3>
                             <p class="text-[10px] font-bold text-gray-400 mt-1 uppercase tracking-widest text-wrap">Dihitung otomatis: (Porsi Besar + Porsi Kecil) x Resep</p>
                         </div>
-                        <button onclick="window.print()" class="px-6 py-3 bg-royal-navy text-gold rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-royal-navy/90 transition-all">
-                            Cetak Rencana
-                        </button>
                     </div>
 
                     <table class="min-w-full">
@@ -101,7 +98,7 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-6 whitespace-nowrap">
-                                        <div class="text-lg font-black text-royal-navy">{{ number_format($req['total'], 4) }}</div>
+                                        <div class="text-lg font-black text-royal-navy">{{ number_format($req['total'], 2) }}</div>
                                     </td>
                                     <td class="px-6 py-6 whitespace-nowrap">
                                         <span class="px-2 py-1 bg-royal-navy/5 text-royal-navy rounded-md text-[10px] font-black uppercase tracking-tight">{{ $req['unit'] }}</span>
