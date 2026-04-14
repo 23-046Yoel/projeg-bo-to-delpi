@@ -5,7 +5,7 @@
         <!-- Logo BGN (Kiri) -->
         <div class="flex items-center space-x-3">
             <div class="w-20 h-20 flex items-center justify-center">
-                <img src="{{ asset('images/logo-bgn.png') }}" alt="Logo BGN" class="h-full w-auto object-contain">
+                <img src="{{ asset('images/logo-bgn-v2.png') }}" alt="Logo BGN" class="h-full w-auto object-contain">
             </div>
             <div>
                 <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-tight">Badan Gizi Nasional</p>
@@ -27,7 +27,7 @@
                 <p class="text-[9px] font-bold text-gray-400 tracking-wide text-right">Foundation</p>
             </div>
             <div class="w-20 h-20 flex items-center justify-center">
-                <img src="{{ asset('images/logo-yayasan.png') }}" alt="Logo Yayasan" class="h-full w-auto object-contain">
+                <img src="{{ asset('images/logo-yayasan-v2.png') }}" alt="Logo Yayasan" class="h-full w-auto object-contain">
             </div>
         </div>
     </div>
