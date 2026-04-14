@@ -23,64 +23,43 @@ class AiBotService
         }
 
         try {
-            $systemPrompt = <<<PROMPT
-Anda adalah **Asisten Virtual Alad Elphi** untuk website resmi Program Makan Bergizi Gratis (MBG) di **aladelphi.or.id**.
+            $systemInstruction = "Anda adalah Asisten Virtual Alad Elphi untuk website resmi Program Makan Bergizi Gratis (MBG) di aladelphi.or.id."
+                . " Jawab dengan ramah, jelas, dan profesional dalam Bahasa Indonesia."
+                . " Nama user yang bertanya: {$userName}."
+                . "\n\nTENTANG PROGRAM: MBG dijalankan oleh Yayasan Alad Elphi dan Badan Gizi Nasional (BGN) untuk menyediakan makanan bergizi gratis bagi anak sekolah."
+                . "\n\nFORMULIR PENTING:"
+                . "\n- Pengaduan: https://aladelphi.or.id/complaints/create"
+                . "\n- Daftar Supplier: https://aladelphi.or.id/pendaftaran-pemasok"
+                . "\n- Harga Komunitas: https://aladelphi.or.id/harga-komunitas"
+                . "\n- Jadwal Menu: https://aladelphi.or.id/jadwal-menu"
+                . "\n- Profil Dapur: https://aladelphi.or.id/dapur"
+                . "\n\nATURAN:"
+                . "\n- Jika ada keluhan, SELALU arahkan ke complaints/create."
+                . "\n- Jika ingin jadi supplier, arahkan ke pendaftaran-pemasok."
+                . "\n- Untuk data keuangan/stok spesifik, minta user login dulu."
+                . "\n- Jika pertanyaan tidak terkait MBG, tolak dengan sopan.";
 
-IDENTITAS ANDA:
-- Nama: Asisten Alad Elphi
-- Bahasa: Indonesia yang ramah, jelas, dan profesional
-- Fokus: Membantu masyarakat memahami program MBG dan mengarahkan ke formulir yang tepat
+            // Combine: system instruction + context + question
+            $fullText = $systemInstruction
+                . "\n\n=== DATA KONTEKS ===\n" . $context
+                . "\n\n=== PERTANYAAN USER ===\n" . $question;
 
-TENTANG PROGRAM:
-Program Makan Bergizi Gratis (MBG) dijalankan oleh Yayasan Alad Elphi bersama Badan Gizi Nasional (BGN). Program ini menyediakan makanan bergizi gratis untuk anak sekolah melalui dapur-dapur SPPG (Satuan Pelayanan Pemenuhan Gizi) yang tersebar di berbagai wilayah.
-
-FORMULIR & HALAMAN PENTING DI aladelphi.or.id:
-1. **Pengaduan / Komplain** → https://aladelphi.or.id/complaints/create
-   - Untuk melaporkan masalah kualitas makanan, keterlambatan distribusi, atau keluhan lainnya
-   
-2. **Pendaftaran Pemasok / Supplier** → https://aladelphi.or.id/pendaftaran-pemasok
-   - Untuk supplier/pedagang yang ingin menjadi mitra penyedia bahan baku MBG
-   
-3. **Harga Komunitas** → https://aladelphi.or.id/harga-komunitas
-   - Cek dan laporkan harga bahan pangan di pasar lokal
-   
-4. **Transparansi Harga** → https://aladelphi.or.id/prices
-   - Lihat harga referensi bahan baku yang digunakan program MBG
-   
-5. **Profil Dapur SPPG** → https://aladelphi.or.id/dapur
-   - Informasi lokasi dan profil dapur-dapur MBG
-   
-6. **Aspirasi & Masukan** → Formulir aspirasi tersedia di halaman utama aladelphi.or.id
-   - Untuk menyampaikan saran dan masukan kepada pengelola program
-
-ATURAN PENTING:
-- Jika ada pertanyaan soal data keuangan/stok spesifik: minta mereka login dulu
-- Jika ada keluhan → SELALU arahkan ke https://aladelphi.or.id/complaints/create
-- Jika ada yang ingin jadi supplier → arahkan ke https://aladelphi.or.id/pendaftaran-pemasok
-- Jika pertanyaan tidak terkait program MBG → tolak dengan sopan
-- Nama user yang sedang bertanya adalah: $userName
-
-DATA KONTEKS SPPG (untuk user yang sudah login):
-$context
-PROMPT;
-
-            $fullPrompt = "PERTANYAAN USER: $question\n\nSILAKAN JAWAB BERDASARKAN INSTRUKSI DI ATAS:";
-
-            Log::info("Calling Gemini 1.5 Flash API");
+            Log::info("Calling Gemini API");
 
             $response = Http::timeout(60)
                 ->withHeaders(['Content-Type' => 'application/json'])
                 ->post($this->baseUrl . '?key=' . $this->apiKey, [
                     'contents' => [
                         [
+                            'role' => 'user',
                             'parts' => [
-                                ['text' => $fullPrompt]
+                                ['text' => $fullText]
                             ]
                         ]
                     ],
                     'generationConfig' => [
                         'temperature' => 0.7,
-                        'maxOutputTokens' => 800,
+                        'maxOutputTokens' => 600,
                     ]
                 ]);
 
@@ -90,8 +69,7 @@ PROMPT;
             }
 
             Log::error("Gemini API Error [" . $response->status() . "]: " . $response->body());
-            
-            return "Terjadi kesalahan saat menghubungi server AI (Code: " . $response->status() . "). Silakan hubungi tim teknis.";
+            return "Maaf, sistem AI sedang tidak tersedia. Silakan hubungi kami langsung di aladelphi.or.id.";
 
         } catch (\Exception $e) {
             Log::error("AiBotService Exception: " . $e->getMessage());
