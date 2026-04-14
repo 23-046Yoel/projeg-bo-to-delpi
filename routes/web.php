@@ -99,6 +99,7 @@ Route::middleware('auth')->group(function () {
 
 // Public Accessibility Routes
 Route::get('/prices', [\App\Http\Controllers\PublicPriceController::class, 'index'])->name('prices.index');
+Route::get('/jadwal-menu', [\App\Http\Controllers\PublicMenuController::class, 'index'])->name('public.menu');
 Route::get('/complaints/create', [\App\Http\Controllers\ComplaintController::class, 'create'])->name('complaints.create');
 Route::post('/complaints', [\App\Http\Controllers\ComplaintController::class, 'store'])->name('complaints.store');
 

@@ -45,7 +45,11 @@ class AiChatController extends Controller
             }
 
             // Fetch context from database (Scoped by user)
-            $context = $user ? $this->getDatabaseContext($user) : "GENERAL MBG PUBLIC INFO: Ini adalah program Makan Bergizi Gratis (MBG) dari Badan Gizi Nasional (BGN). Fokus pada perbaikan gizi anak sekolah.";
+            if ($user) {
+                $context = $this->getDatabaseContext($user);
+            } else {
+                $context = $this->getPublicContext();
+            }
 
             $response = $this->aiService->generateResponse($message, $context, $user ? $user->name : 'Publik');
 
@@ -86,6 +90,47 @@ class AiChatController extends Controller
         foreach ($recentPayments as $p) {
             $context .= "- Pembayaran Rp" . number_format($p->amount, 0, ',', '.') . " (" . ($p->notes ?? 'Tanpa catatan') . ")\n";
         }
+
+        return $context;
+    }
+
+    protected function getPublicContext()
+    {
+        $today = now()->toDateString();
+        $menus = \App\Models\Menu::with(['sppg', 'dishes'])
+            ->whereBetween('date', [$today, now()->addDays(7)->toDateString()])
+            ->orderBy('date')
+            ->get();
+
+        $context = "INFO PUBLIK - PROGRAM MBG ALAD ELPHI\n";
+        $context .= "Website: https://aladelphi.or.id\n";
+        $context .= "Jadwal Menu Publik: https://aladelphi.or.id/jadwal-menu\n\n";
+
+        if ($menus->count() > 0) {
+            $context .= "JADWAL MENU MBG 7 HARI KE DEPAN:\n";
+            foreach ($menus as $menu) {
+                $tanggal = \Carbon\Carbon::parse($menu->date)->translatedFormat('l, d F Y');
+                $dapur = $menu->sppg->name ?? 'Semua Dapur';
+                $dishNames = $menu->dishes->pluck('name')->implode(', ');
+
+                $karbo = $menu->karbo ?? '-';
+                $protein = $menu->protein_hewani ?? '-';
+                $sayur = $menu->sayur ?? '-';
+
+                $context .= "📅 {$tanggal} | Dapur: {$dapur}\n";
+                $context .= "   Karbohidrat: {$karbo} | Protein: {$protein} | Sayur: {$sayur}\n";
+                if ($dishNames) $context .= "   Hidangan: {$dishNames}\n";
+                $context .= "\n";
+            }
+        } else {
+            $context .= "Belum ada jadwal menu yang dipublikasikan untuk minggu ini.\n";
+        }
+
+        $context .= "\nFORMULIR DAN LAYANAN:\n";
+        $context .= "- Pengaduan: https://aladelphi.or.id/complaints/create\n";
+        $context .= "- Daftar Supplier: https://aladelphi.or.id/pendaftaran-pemasok\n";
+        $context .= "- Harga Komunitas: https://aladelphi.or.id/harga-komunitas\n";
+        $context .= "- Profil Dapur: https://aladelphi.or.id/dapur\n";
 
         return $context;
     }
