@@ -96,15 +96,29 @@
                                     </span>
                                 </td>
                                 <td class="px-8 py-6 text-right">
-                                    <form action="{{ route('complaints.update', $complaint) }}" method="POST">
-                                        @csrf
-                                        @method('PATCH')
-                                        <select name="status" onchange="this.form.submit()" class="text-[10px] font-black uppercase tracking-widest rounded-xl border-gold/20 bg-silk focus:ring-4 focus:ring-gold/10 focus:border-gold py-2">
-                                            <option value="Menunggu" {{ $complaint->status == 'Menunggu' ? 'selected' : '' }}>Menunggu</option>
-                                            <option value="Diproses" {{ $complaint->status == 'Diproses' ? 'selected' : '' }}>Diproses</option>
-                                            <option value="Selesai" {{ $complaint->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
-                                        </select>
-                                    </form>
+                                    <div class="flex justify-end gap-2">
+                                        @if($complaint->status == 'Menunggu')
+                                            <form action="{{ route('complaints.update', $complaint) }}" method="POST">
+                                                @csrf @method('PATCH')
+                                                <input type="hidden" name="status" value="Diproses">
+                                                <button type="submit" class="px-3 py-1 bg-blue-600 text-white text-[9px] font-black uppercase tracking-widest rounded-lg hover:bg-blue-700 transition-all shadow-lg shadow-blue-200">
+                                                    Proses
+                                                </button>
+                                            </form>
+                                        @endif
+
+                                        @if($complaint->status != 'Selesai')
+                                            <form action="{{ route('complaints.update', $complaint) }}" method="POST">
+                                                @csrf @method('PATCH')
+                                                <input type="hidden" name="status" value="Selesai">
+                                                <button type="submit" class="px-3 py-1 bg-emerald-600 text-white text-[9px] font-black uppercase tracking-widest rounded-lg hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-200">
+                                                    Selesaikan
+                                                </button>
+                                            </form>
+                                        @else
+                                            <span class="text-[9px] font-black text-emerald-600 uppercase tracking-widest italic">Tuntas</span>
+                                        @endif
+                                    </div>
                                 </td>
                             </tr>
                             @empty

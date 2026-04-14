@@ -20,7 +20,12 @@
                 <h3 class="text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-6">Menu yang Direncanakan (Porsi Ganda)</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     @foreach($menu->dishes as $dish)
-                        <div class="p-6 bg-silk rounded-2xl border border-transparent hover:border-gold/30 transition-all group">
+                        <div class="p-6 bg-silk rounded-2xl border border-transparent hover:border-gold/30 transition-all group relative">
+                            @if($dish->recipes->count() == 0)
+                                <div class="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg animate-pulse" title="Resep belum diatur!">
+                                    <span class="text-[10px] font-black">!</span>
+                                </div>
+                            @endif
                             <div class="text-xs font-black text-royal-navy uppercase tracking-tight mb-3 group-hover:text-gold transition-colors">{{ $dish->name }}</div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
@@ -39,6 +44,18 @@
                         </div>
                     @endforeach
                 </div>
+
+                @if($menu->dishes->contains(fn($d) => $d->recipes->count() == 0))
+                    <div class="mt-6 p-4 bg-red-50 border border-red-100 rounded-2xl flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-xl bg-red-500 flex items-center justify-center text-white shrink-0">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                        </div>
+                        <div>
+                            <p class="text-[10px] font-black text-red-600 uppercase tracking-widest leading-none mb-1">Peringatan Resep!</p>
+                            <p class="text-xs text-red-500">Ada hidangan yang belum diatur bahan bakunya. Silakan isi resep di menu <b>Daftar Hidangan (Resep)</b> agar kalkulasi muncul otomatis.</p>
+                        </div>
+                    </div>
+                @endif
             </div>
 
             <!-- Material Requirements -->

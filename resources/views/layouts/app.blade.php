@@ -79,7 +79,7 @@
                 @endif
 
                 <!-- Page Content -->
-                <main class="flex-1 lg:p-8 animate-fade-in delay-1 overflow-x-hidden" x-cloak>
+                <main class="flex-1 lg:p-8 animate-fade-in delay-1 overflow-x-hidden">
                     <div class="max-w-7xl mx-auto px-6 py-6 sm:px-8 lg:px-0">
                         {{ $slot }}
                     </div>
