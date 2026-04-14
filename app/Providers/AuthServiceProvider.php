@@ -26,9 +26,13 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->role, [\App\Models\User::ROLE_ADMIN, \App\Models\User::ROLE_ASLAP]);
         });
 
-        // 2. Perencanaan Menu & Daftar Hidangan: Pengawas Gizi
+        // 2. Perencanaan Menu & Daftar Hidangan: Pengawas Gizi & Ka SPPG
         \Illuminate\Support\Facades\Gate::define('manage-menus', function ($user) {
-            return in_array($user->role, [\App\Models\User::ROLE_ADMIN, \App\Models\User::ROLE_PENGAWAS_GIZI]);
+            return in_array($user->role, [
+                \App\Models\User::ROLE_ADMIN, 
+                \App\Models\User::ROLE_PENGAWAS_GIZI,
+                \App\Models\User::ROLE_KA_SPPG
+            ]);
         });
 
         // 3. Manajemen Penerima Manfaat: Aslap

@@ -36,40 +36,47 @@
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="bg-slate-900 text-white uppercase text-xs tracking-[0.2em] font-black">
-                            <th class="p-6">Tanggal</th>
-                            <th class="p-6">Bahan Baku</th>
-                            <th class="p-6">Dapur (SPPG)</th>
-                            <th class="p-6">Jumlah</th>
-                            <th class="p-6">Harga Satuan</th>
-                            <th class="p-6 text-right">Total Transaksi</th>
+                            <th class="p-6">Nama Bahan Baku</th>
+                            <th class="p-6">Kategori</th>
+                            <th class="p-6">Satuan</th>
+                            <th class="p-6">Dapur Pengelola (SPPG)</th>
+                            <th class="p-6 text-right">Harga Referensi (Terakhir)</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 bg-white/50">
-                        @forelse($prices as $log)
+                        @forelse($prices as $material)
                         <tr class="hover:bg-slate-50 transition-all">
-                            <td class="p-6 text-sm font-semibold text-slate-500">{{ $log->date ? \Carbon\Carbon::parse($log->date)->format('d M Y') : $log->created_at->format('d M Y') }}</td>
                             <td class="p-6">
-                                <div class="font-black text-slate-900">{{ $log->material->name }}</div>
+                                <div class="font-black text-slate-900 uppercase tracking-tight">{{ $material->name }}</div>
                             </td>
                             <td class="p-6">
-                                <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">{{ $log->sppg->name ?? 'Pusat' }}</span>
+                                <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase">{{ $material->category }}</span>
                             </td>
-                            <td class="p-6 font-black text-emerald-600">+ {{ number_format($log->quantity, 2) }} <span class="text-[10px] text-slate-400 capitalize">{{ $log->material->unit ?? 'Unit' }}</span></td>
-                            <td class="p-6 text-sm font-bold text-slate-600 tracking-tight">
-                                Rp {{ number_format($log->material->price ?? 0, 0, ',', '.') }}
+                            <td class="p-6 text-sm font-bold text-slate-500">{{ $material->unit ?? '-' }}</td>
+                            <td class="p-6">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                                    <span class="text-sm font-bold text-slate-700">{{ $material->sppg->name ?? 'Pusat (Inter-SPPG)' }}</span>
+                                </div>
                             </td>
-                            <td class="p-6 text-right font-black text-slate-900">
+                            <td class="p-6 text-right">
                                 @php
-                                    $totalPrice = ($log->quantity * ($log->material->price ?? 0));
+                                    $displayPrice = $material->last_price > 0 ? $material->last_price : $material->price;
                                 @endphp
-                                <span class="px-3 py-1 rounded-lg bg-emerald-50 text-emerald-700">
-                                    Rp {{ number_format($totalPrice, 0, ',', '.') }}
-                                </span>
+                                <div class="font-black text-xl text-slate-900 tracking-tighter">
+                                    Rp {{ number_format($displayPrice, 0, ',', '.') }}
+                                    <span class="text-[10px] text-slate-400 font-bold uppercase ml-1">/ {{ $material->unit ?? 'Unit' }}</span>
+                                </div>
+                                <div class="text-[9px] font-black text-emerald-600 uppercase tracking-widest mt-1">Verified Real-Time</div>
                             </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="p-20 text-center text-slate-400 font-medium">Belum ada data log harga publik yang tersedia saat ini.</td>
+                            <td colspan="5" class="p-20 text-center text-slate-400 font-medium whitespace-pre-line">
+                                <div class="text-4xl mb-4">🔍</div>
+                                Belum ada data referensi harga bahan baku yang tersedia saat ini.
+                                Administrasi SPPG sedang mensinkronkan data katalog.
+                            </td>
                         </tr>
                         @endforelse
                     </tbody>

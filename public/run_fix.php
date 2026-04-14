@@ -256,6 +256,62 @@ if (tableExists($pdo, 'dish_menu')) {
 }
 
 // ============================================
+// LANGKAH 10: Sinkronisasi Staf SPPG ke Users
+// ============================================
+echo "\n--- <span style='color:#ffa657'>LANGKAH 10: Sinkron Staf SPPG ke Tabel Users</span> ---\n";
+try {
+    $sppgs = $pdo->query("SELECT * FROM sppgs")->fetchAll(PDO::FETCH_ASSOC);
+    $synced = 0;
+    
+    foreach ($sppgs as $sppg) {
+        $staffMap = [
+            'ka_sppg'           => ['phone' => 'phone_ka',       'role' => 'ka_sppg'],
+            'pengawas_keuangan' => ['phone' => 'phone_keuangan', 'role' => 'finance_supervisor'],
+            'pengawas_gizi'     => ['phone' => 'phone_gizi',     'role' => 'nutrition_supervisor'],
+        ];
+
+        foreach ($staffMap as $nameCol => $meta) {
+            $name = $sppg[$nameCol] ?? null;
+            $rawPhone = $sppg[$meta['phone']] ?? null;
+            $role = $meta['role'];
+
+            if (!$name || !$rawPhone) continue;
+
+            // Normalisasi HP
+            $phone = preg_replace('/[^0-9]/', '', $rawPhone);
+            if (str_starts_with($phone, '0')) {
+                $phone = '62' . substr($phone, 1);
+            } elseif (str_starts_with($phone, '8')) {
+                $phone = '62' . $phone;
+            }
+
+            // Cek apakah user sudah ada
+            $stmt = $pdo->prepare("SELECT id FROM users WHERE phone = ? OR email = ?");
+            $email = strtolower(str_replace(' ', '', $name)) . "@delphi.or.id";
+            $stmt->execute([$phone, $email]);
+            $existingUser = $stmt->fetch();
+
+            if (!$existingUser) {
+                // Buat user baru
+                $insert = $pdo->prepare("INSERT INTO users (name, email, phone, role, sppg_id, password, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())");
+                $pass = password_hash('password123', PASSWORD_DEFAULT);
+                $insert->execute([$name, $email, $phone, $role, $sppg['id'], $pass]);
+                echo "  <span style='color:#3fb950'>✅ Created: $name ($role)</span>\n";
+                $synced++;
+            } else {
+                // Update role dan SPPG jika belum sesuai
+                $update = $pdo->prepare("UPDATE users SET role = ?, sppg_id = ?, updated_at = NOW() WHERE id = ?");
+                $update->execute([$role, $sppg['id'], $existingUser['id']]);
+                echo "  <span style='color:#8b949e'>⏭ Updated/Checked: $name</span>\n";
+            }
+        }
+    }
+    echo "  <span style='color:#3fb950'>Total sinkronisasi: $synced user baru.</span>\n";
+} catch (Exception $e) {
+    echo "  <span style='color:#f85149'>❌ Gagal sinkronisasi staf: " . $e->getMessage() . "</span>\n";
+}
+
+// ============================================
 // HASIL AKHIR: Verifikasi
 // ============================================
 echo "\n--- <span style='color:#ffa657'>HASIL AKHIR: Verifikasi Tabel</span> ---\n";

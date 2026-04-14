@@ -9,11 +9,14 @@ class PublicPriceController extends Controller
 {
     public function index()
     {
-        // Ambil log masuk (pembelian bahan baku dari petani/supplier)
-        $prices = MaterialLog::with(['material', 'sppg'])
-            ->where('type', 'in')
-            ->latest('date')
-            ->paginate(15);
+        // Ambil data bahan baku yang memiliki harga (sebagai referensi transparansi)
+        $prices = \App\Models\Material::with('sppg')
+            ->where(function($q) {
+                $q->where('price', '>', 0)
+                  ->orWhere('last_price', '>', 0);
+            })
+            ->latest()
+            ->paginate(20);
 
         return view('prices.index', compact('prices'));
     }
