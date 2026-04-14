@@ -25,6 +25,21 @@
                     {{ session('success') }}
                 </div>
             @endif
+            
+            <!-- Search & Filters -->
+            <div class="mb-8">
+                <form action="{{ route('users.index') }}" method="GET" class="relative group max-w-md">
+                    <input type="text" name="search" value="{{ request('search') }}" 
+                        placeholder="Cari Nama atau Nomor WhatsApp..." 
+                        class="w-full pl-14 pr-6 py-4 bg-white/60 backdrop-blur-xl border-2 border-transparent rounded-[2rem] text-sm font-bold text-royal-navy shadow-lg shadow-royal-navy/5 focus:bg-white focus:border-gold transition-all outline-none">
+                    <div class="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-gold transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </div>
+                    @if(request('search'))
+                        <a href="{{ route('users.index') }}" class="absolute right-6 top-1/2 -translate-y-1/2 text-[10px] font-black text-red-400 uppercase tracking-widest hover:text-red-600 transition-colors">Reset</a>
+                    @endif
+                </form>
+            </div>
 
             <div class="bg-white/40 backdrop-blur-xl rounded-[3rem] shadow-[0_40px_100px_rgba(0,0,0,0.04)] border border-white/60 overflow-hidden">
                 <div class="p-10">
