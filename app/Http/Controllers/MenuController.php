@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use App\Models\Dish;
+use App\Models\Sppg;
 use Illuminate\Http\Request;
 
 class MenuController extends Controller
