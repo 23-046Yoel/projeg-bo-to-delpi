@@ -43,61 +43,63 @@
                                 </span>
                             </div>
 
-                            <table class="min-w-full">
-                                <thead>
-                                    <tr class="border-b border-gray-50">
-                                        <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Material / Bahan</th>
-                                        <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Gramasi</th>
-                                        <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Satuan</th>
-                                        <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-50">
-                                    @forelse($dish->recipes as $recipe)
-                                        <tr class="hover:bg-silk/30 transition-colors group">
-                                            <td class="px-6 py-6 whitespace-nowrap">
-                                                <div class="flex items-center">
-                                                    <div class="w-10 h-10 rounded-xl bg-royal-navy/5 flex items-center justify-center text-royal-navy/40 mr-4 group-hover:bg-gold/10 group-hover:text-gold transition-colors duration-500">
-                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full">
+                                    <thead>
+                                        <tr class="border-b border-gray-50">
+                                            <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Material / Bahan</th>
+                                            <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Gramasi</th>
+                                            <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Satuan</th>
+                                            <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-50">
+                                        @forelse($dish->recipes as $recipe)
+                                            <tr class="hover:bg-silk/30 transition-colors group">
+                                                <td class="px-6 py-6 whitespace-nowrap">
+                                                    <div class="flex items-center">
+                                                        <div class="w-10 h-10 rounded-xl bg-royal-navy/5 flex items-center justify-center text-royal-navy/40 mr-4 group-hover:bg-gold/10 group-hover:text-gold transition-colors duration-500">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                                                        </div>
+                                                        <div class="text-sm font-black text-royal-navy">{{ $recipe->material->name }}</div>
                                                     </div>
-                                                    <div class="text-sm font-black text-royal-navy">{{ $recipe->material->name }}</div>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-6 whitespace-nowrap">
-                                                <div class="text-sm font-black text-royal-navy tracking-tight">{{ number_format($recipe->quantity, 2) }}</div>
-                                            </td>
-                                            <td class="px-6 py-6 whitespace-nowrap">
-                                                <span class="px-3 py-1 bg-royal-navy text-gold rounded-lg text-[9px] font-black uppercase tracking-widest shadow-lg shadow-royal-navy/10">{{ $recipe->unit }}</span>
-                                            </td>
-                                            <td class="px-6 py-6 whitespace-nowrap text-right">
-                                                <div class="flex items-center justify-end space-x-2">
-                                                    <button type="button" 
-                                                        onclick="openEditModal({{ $recipe->id }}, '{{ $recipe->material->name }}', {{ $recipe->quantity }}, '{{ $recipe->unit }}', '{{ $recipe->notes }}')"
-                                                        class="w-10 h-10 rounded-xl flex items-center justify-center text-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300">
-                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                                    </button>
-                                                    <form action="{{ route('recipes.destroy', $recipe) }}" method="POST" onsubmit="return confirm('Hapus bahan ini dari resep?')">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 transition-all duration-300">
-                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                </td>
+                                                <td class="px-6 py-6 whitespace-nowrap">
+                                                    <div class="text-sm font-black text-royal-navy tracking-tight">{{ number_format($recipe->quantity, 2) }}</div>
+                                                </td>
+                                                <td class="px-6 py-6 whitespace-nowrap">
+                                                    <span class="px-3 py-1 bg-royal-navy text-gold rounded-lg text-[9px] font-black uppercase tracking-widest shadow-lg shadow-royal-navy/10">{{ $recipe->unit }}</span>
+                                                </td>
+                                                <td class="px-6 py-6 whitespace-nowrap text-right">
+                                                    <div class="flex items-center justify-end space-x-2">
+                                                        <button type="button" 
+                                                            onclick="openEditModal({{ $recipe->id }}, '{{ $recipe->material->name }}', {{ $recipe->quantity }}, '{{ $recipe->unit }}', '{{ $recipe->notes }}')"
+                                                            class="w-10 h-10 rounded-xl flex items-center justify-center text-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300">
+                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                                         </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @empty
-                                        <tr>
-                                            <td colspan="4" class="px-4 py-20 text-center">
-                                                <div class="w-16 h-16 bg-silk rounded-full flex items-center justify-center mx-auto mb-4 opacity-50">
-                                                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-                                                </div>
-                                                <p class="text-xs text-gray-400 font-bold uppercase tracking-widest italic">Belum ada bahan ditambahkan</p>
-                                            </td>
-                                        </tr>
-                                    @endforelse
-                                </tbody>
-                            </table>
+                                                        <form action="{{ route('recipes.destroy', $recipe) }}" method="POST" onsubmit="return confirm('Hapus bahan ini dari resep?')">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="w-10 h-10 rounded-xl flex items-center justify-center text-gray-300 hover:text-red-500 hover:bg-red-50 transition-all duration-300">
+                                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="4" class="px-4 py-20 text-center">
+                                                    <div class="w-16 h-16 bg-silk rounded-full flex items-center justify-center mx-auto mb-4 opacity-50">
+                                                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                                                    </div>
+                                                    <p class="text-xs text-gray-400 font-bold uppercase tracking-widest italic">Belum ada bahan ditambahkan</p>
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
