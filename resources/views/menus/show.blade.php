@@ -74,11 +74,13 @@
                                 <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Material Item</th>
                                 <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Current Stock</th>
                                 <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Needed Quantity</th>
-                                <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Unit</th>
+                                <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Price / Unit</th>
+                                <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Total Est.</th>
                                 <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Status</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-50">
+                            @php $grandTotal = 0; @endphp
                             @foreach($requirements as $matId => $req)
                                 @php
                                     $material = \App\Models\Material::find($matId);
@@ -87,6 +89,8 @@
                                     $keluar = $material->logs()->where('type', 'out')->sum('quantity');
                                     $stock = $masuk - $keluar;
                                     $isRunningLow = $stock < $req['total'];
+                                    $itemTotal = $req['total'] * $material->price;
+                                    $grandTotal += $itemTotal;
                                 @endphp
                                 <tr class="hover:bg-silk/50 transition-colors">
                                     <td class="px-6 py-6 whitespace-nowrap">
@@ -98,27 +102,37 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-6 whitespace-nowrap">
-                                        <div class="text-lg font-black text-royal-navy">{{ number_format($req['total'], 2) }}</div>
+                                        <div class="text-lg font-black text-royal-navy">{{ number_format($req['total'], 2) }} <span class="text-[10px] text-gray-400">{{ $req['unit'] }}</span></div>
                                     </td>
                                     <td class="px-6 py-6 whitespace-nowrap">
-                                        <span class="px-2 py-1 bg-royal-navy/5 text-royal-navy rounded-md text-[10px] font-black uppercase tracking-tight">{{ $req['unit'] }}</span>
+                                        <div class="text-xs font-bold text-gray-500">Rp {{ number_format($material->price, 0, ',', '.') }}</div>
+                                    </td>
+                                    <td class="px-6 py-6 whitespace-nowrap">
+                                        <div class="text-sm font-black text-royal-navy">Rp {{ number_format($itemTotal, 0, ',', '.') }}</div>
                                     </td>
                                     <td class="px-6 py-6 whitespace-nowrap text-right">
                                         @if($isRunningLow)
                                             <span class="px-3 py-1 bg-red-50 text-red-500 rounded-lg text-[10px] font-black uppercase tracking-wider border border-red-100 flex items-center justify-center inline-flex">
-                                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
-                                                Need Purchase
+                                                Need Buy
                                             </span>
                                         @else
                                             <span class="px-3 py-1 bg-green-50 text-green-600 rounded-lg text-[10px] font-black uppercase tracking-wider border border-green-100 flex items-center justify-center inline-flex">
-                                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                                                Stock Ready
+                                                Ready
                                             </span>
                                         @endif
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr class="bg-gray-50/50">
+                                <td colspan="4" class="px-6 py-6 text-right text-[10px] font-black text-royal-navy uppercase tracking-[0.2em]">Total Estimasi Biaya Menu</td>
+                                <td class="px-6 py-6">
+                                    <div class="text-xl font-black text-gold-dark">Rp {{ number_format($grandTotal, 0, ',', '.') }}</div>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
