@@ -22,21 +22,12 @@
 
             <!-- Main Document -->
             <div class="bg-white shadow-2xl rounded-none md:rounded-[3rem] overflow-hidden border border-gray-100 print:shadow-none print:border-none">
-                <!-- Header -->
-                <div class="p-8 md:p-12 border-b border-gray-100 flex justify-between items-start">
-                    <div>
-                        <div class="flex items-center space-x-3 mb-4">
-                            <div class="w-12 h-12 bg-royal-navy rounded-xl flex items-center justify-center text-gold font-black text-xl">D</div>
-                            <h1 class="text-2xl font-black text-royal-navy tracking-tight uppercase">Bo To Delpi</h1>
-                        </div>
-                        <p class="text-sm font-bold text-gray-400 uppercase tracking-widest leading-none">Satuan Pelayanan Program Gizi</p>
-                        <p class="text-[10px] text-gray-400 mt-1 uppercase tracking-widest font-bold">{{ auth()->user()->sppg->name ?? 'Unit SPPG' }}</p>
-                    </div>
-                    <div class="text-right">
-                        <h2 class="text-4xl font-black text-royal-navy/10 uppercase tracking-tighter leading-none mb-2">Rekap Bahan</h2>
-                        <p class="text-sm font-black text-royal-navy uppercase tracking-widest">{{ \Carbon\Carbon::parse($date)->translatedFormat('d F Y') }}</p>
-                    </div>
-                </div>
+                
+                <x-letterhead 
+                    title="Rekap Kebutuhan Bahan Harian" 
+                    subtitle="Daily Requirement Recap"
+                    :sppgName="auth()->user()->sppg->name ?? 'Unit SPPG'"
+                />
 
                 <!-- Content Body -->
                 <div class="p-8 md:p-12">
