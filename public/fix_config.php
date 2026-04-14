@@ -16,11 +16,18 @@ if (!file_exists($path)) {
 
 $content = file_get_contents($path);
 
-// Update Groq Key (lebih aman pakai regex)
+// Update Groq Key
 if (strpos($content, 'GROQ_API_KEY=') !== false) {
     $content = preg_replace('/GROQ_API_KEY=.*/', 'GROQ_API_KEY=' . $newGroq, $content);
 } else {
     $content .= "\nGROQ_API_KEY=" . $newGroq;
+}
+
+// Nyalakan Debug
+if (strpos($content, 'APP_DEBUG=') !== false) {
+    $content = preg_replace('/APP_DEBUG=.*/', 'APP_DEBUG=true', $content);
+} else {
+    $content .= "\nAPP_DEBUG=true";
 }
 
 file_put_contents($path, $content);
