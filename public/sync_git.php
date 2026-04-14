@@ -20,7 +20,8 @@ echo "Current Directory: " . getcwd() . "\n";
 $commands = [
     'git reset --hard origin/main 2>&1',
     'git pull origin main 2>&1',
-    'php artisan optimize:clear 2>&1'
+    // Gunakan path absolut PHP 8.2 CyberPanel agar tidak bentrok
+    '/usr/local/lsws/lsphp82/bin/php artisan optimize:clear 2>&1'
 ];
 
 foreach ($commands as $cmd) {
