@@ -1,42 +1,71 @@
 <?php
-require 'vendor/autoload.php';
+/**
+ * Script debug: Test Gemini API langsung
+ * Jalankan: php scratch/test_gemini.php
+ */
 
-$apiKey = 'AIzaSyAjzGFCJVDifrLUQle5SW87KF6kwZd_5ow';
+require __DIR__ . '/../vendor/autoload.php';
 
-$candidates = [
-    'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent',
-    'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent',
-    'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent',
-    'https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent',
-    'https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent',
-    'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+$app = require __DIR__ . '/../bootstrap/app.php';
+$app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+
+$apiKey = config('services.gemini.key');
+
+echo "=== DEBUG GEMINI API ===\n";
+echo "API Key: " . (!empty($apiKey) ? substr($apiKey, 0, 10) . "..." : "TIDAK ADA!") . "\n\n";
+
+if (empty($apiKey)) {
+    echo "ERROR: GEMINI_API_KEY tidak ditemukan di .env!\n";
+    exit(1);
+}
+
+$url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={$apiKey}";
+
+$payload = [
+    'contents' => [
+        [
+            'role' => 'user',
+            'parts' => [['text' => 'Halo, ini test. Jawab singkat saja: siapa kamu?']]
+        ]
+    ],
+    'generationConfig' => [
+        'temperature' => 0.7,
+        'maxOutputTokens' => 100,
+    ]
 ];
 
-foreach ($candidates as $url) {
-    echo "Testing URL: $url\n";
-    $testUrl = $url . '?key=' . $apiKey;
+echo "Memanggil Gemini API...\n";
 
-    $data = [
-        'contents' => [['parts' => [['text' => 'hi']]]]
-    ];
+$response = \Illuminate\Support\Facades\Http::timeout(30)
+    ->withHeaders(['Content-Type' => 'application/json'])
+    ->post($url, $payload);
 
-    $ch = curl_init($testUrl);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+echo "Status HTTP: " . $response->status() . "\n";
+echo "Response body:\n" . $response->body() . "\n\n";
 
-    $response = curl_exec($ch);
-    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-
-    echo "Status: $status\n";
-    if ($status === 200) {
-        echo "SUCCESS! Working URL: $url\n";
-        break;
-    } else {
-        echo "Response: $response\n";
-    }
-    echo "-------------------\n";
+if ($response->successful()) {
+    $data = $response->json();
+    $text = $data['candidates'][0]['content']['parts'][0]['text'] ?? 'TIDAK ADA TEKS';
+    echo "✅ SUKSES! Jawaban AI:\n" . $text . "\n";
+} else {
+    echo "❌ GAGAL! Status: " . $response->status() . "\n";
+    echo "Error: " . $response->body() . "\n";
+    
+    // Coba model lain (gemini-1.5-pro)
+    echo "\n--- Mencoba gemini-1.5-pro ---\n";
+    $url2 = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key={$apiKey}";
+    $response2 = \Illuminate\Support\Facades\Http::timeout(30)
+        ->withHeaders(['Content-Type' => 'application/json'])
+        ->post($url2, $payload);
+    echo "Status: " . $response2->status() . "\n";
+    echo "Body: " . $response2->body() . "\n";
+    
+    // Coba model gemini-2.0-flash
+    echo "\n--- Mencoba gemini-2.0-flash ---\n";
+    $url3 = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key={$apiKey}";
+    $response3 = \Illuminate\Support\Facades\Http::timeout(30)
+        ->withHeaders(['Content-Type' => 'application/json'])
+        ->post($url3, $payload);
+    echo "Status: " . $response3->status() . "\n";
+    echo "Body: " . $response3->body() . "\n";
 }

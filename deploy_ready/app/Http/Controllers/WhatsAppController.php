@@ -187,9 +187,8 @@ class WhatsAppController extends Controller
         }
 
         // If message is just "MENU" or greeting for staff, show their role intro
-        if (preg_match('/menu|halo|pagi|siang|malam/i', $message)) {
-            return $this->wa->sendMessage($phone, $this->bot->medanize("Halo " . $user->name . "! Tim MASTER ADMIN ya kau di " . ($user->sppg->name ?? 'SPPG') . "? Ada laporan apa hari ini?"));
-        }
+        // Sapaan dialihkan ke handleIdle / AI Agent
+        return null;
 
         return null; // No internal command matched, continue to idle/state logic
 

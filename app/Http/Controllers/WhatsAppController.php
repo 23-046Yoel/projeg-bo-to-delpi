@@ -10,6 +10,7 @@ use App\Models\Payment;
 use App\Models\Material;
 use App\Models\MaterialLog;
 use App\Models\MbgDistribution;
+use App\Services\AiBotService;
 use App\Services\BoToPersonalityService;
 use App\Services\WhatsAppService;
 use App\Services\GoogleSheetService;
@@ -21,13 +22,15 @@ class WhatsAppController extends Controller
     protected $wa;
     protected $sheets;
     protected $attendance;
+    protected $ai;
 
-    public function __construct(BoToPersonalityService $bot, WhatsAppService $wa, GoogleSheetService $sheets, AttendanceService $attendance)
+    public function __construct(BoToPersonalityService $bot, WhatsAppService $wa, GoogleSheetService $sheets, AttendanceService $attendance, AiBotService $ai)
     {
         $this->bot = $bot;
         $this->wa = $wa;
         $this->sheets = $sheets;
         $this->attendance = $attendance;
+        $this->ai = $ai;
     }
 
     public function webhook(Request $request)
@@ -249,10 +252,9 @@ class WhatsAppController extends Controller
             }
         }
 
-        // If message is just "MENU" or greeting for staff, show their role intro
-        if (preg_match('/menu|halo|pagi|siang|malam/i', $message)) {
-            return $this->wa->sendMessage($phone, $this->bot->medanize("Halo " . $user->name . "! Tim MASTER ADMIN ya kau di " . ($user->sppg->name ?? 'SPPG') . "? Ada laporan apa hari ini?"));
-        }
+        // Sapaan dan pertanyaan umum lainnya tidak lagi ditangani di sini,
+        // melainkan akan jatuh ke AI Agent di bagian bawah alur (handleIdle).
+        return null; // biarkan alur berlanjut ke AI Agent
 
         return null; // No internal command matched, continue to idle/state logic
 
@@ -260,39 +262,97 @@ class WhatsAppController extends Controller
 
     private function handleIdle($phone, $message)
     {
-        if (preg_match('/menu|halo|pagi|siang|malam/i', $message)) {
-            $menu = "Pilih mau ngapain kau bah:\n1. Daftar jadi Pemasok\n2. Daftar Penerima Manfaat\n3. Cek Menu Makan\n4. Konsultasi Gizi\n\nKetik angkanya aja lae!";
-            return $this->wa->sendMessage($phone, $this->bot->medanize($menu));
-        }
-
-        if ($message == '1') {
+        // Deteksi intent daftar supplier via keyword
+        if (preg_match('/daftar.*(pemasok|supplier|jualan|jual)/i', $message)) {
             cache()->put("bot_state_$phone", 'register_supplier', 600);
-            return $this->wa->sendMessage($phone, $this->bot->medanize("Mantap! Siapa namamu lae? Biar kucatat sebagai calon pemasok."));
+            return $this->wa->sendMessage($phone, "Baik! Untuk mendaftar sebagai pemasok program MBG, saya perlu beberapa data.\n\nSiapa nama lengkap Anda?");
         }
 
-        if ($message == '2') {
+        // Deteksi intent daftar penerima manfaat via keyword
+        if (preg_match('/daftar.*(anak|penerima|manfaat|siswa|murid)/i', $message)) {
             cache()->put("bot_state_$phone", 'register_beneficiary', 600);
-            return $this->wa->sendMessage($phone, $this->bot->medanize("Siapa nama anak yang mau didaftarkan bah?"));
+            return $this->wa->sendMessage($phone, "Baik! Untuk mendaftarkan penerima manfaat MBG, siapa nama anak yang ingin didaftarkan?");
         }
 
-        if ($message == '3') {
-            $menu = "Menu hari ini bah: Nasi Putih, Ayam Goreng Medan, Sayur Asem, sama Sambal Teri. Sedap kali pun!\n\nMau pesan? Hubungi aslap dapurmu ya!";
-            return $this->wa->sendMessage($phone, $this->bot->medanize($menu));
+        // Semua pertanyaan lain (termasuk menu, halo, sapaan) → AI Agent
+        return $this->handleAiAgent($phone, $message);
+    }
+
+    /**
+     * AI Agent: jawab semua pertanyaan menggunakan Groq/Gemini
+     * dengan konteks menu harian dan info MBG dari database.
+     */
+    private function handleAiAgent($phone, $message)
+    {
+        try {
+            $context = $this->getPublicWaContext();
+            $aiReply = $this->ai->generateResponse($message, $context, 'Pengguna WhatsApp');
+            return $this->wa->sendMessage($phone, $aiReply);
+        } catch (\Exception $e) {
+            \Log::error("WA AI Agent Error: " . $e->getMessage());
+            return $this->wa->sendMessage($phone, "Maaf, saya sedang mengalami gangguan teknis. Silakan hubungi kami di aladelphi.or.id atau coba lagi beberapa saat.");
+        }
+    }
+
+    /**
+     * Ambil konteks publik untuk AI WA: menu hari ini + 7 hari ke depan + info formulir
+     */
+    private function getPublicWaContext(): string
+    {
+        $today = now()->toDateString();
+        $menus = \App\Models\Menu::with(['sppg', 'dishes'])
+            ->whereBetween('date', [$today, now()->addDays(7)->toDateString()])
+            ->orderBy('date')
+            ->get();
+
+        $context = "=== SISTEM BoTo Delphi — Program MBG Alad Elphi ===\n";
+        $context .= "Website resmi: https://aladelphi.or.id\n";
+        $context .= "Tanggal hari ini: " . now()->translatedFormat('l, d F Y') . "\n\n";
+
+        if ($menus->count() > 0) {
+            $context .= "JADWAL MENU MBG (Hari Ini & 7 Hari ke Depan):\n";
+            foreach ($menus as $menu) {
+                $tgl = \Carbon\Carbon::parse($menu->date)->translatedFormat('l, d F Y');
+                $isToday = $menu->date === $today ? ' [HARI INI]' : '';
+                $dapur = $menu->sppg->name ?? 'Semua Dapur';
+                $items = array_filter([
+                    $menu->karbo       ? "Karbo: {$menu->karbo}" : null,
+                    $menu->protein_hewani ? "Protein Hewani: {$menu->protein_hewani}" : null,
+                    $menu->protein_nabati ? "Protein Nabati: {$menu->protein_nabati}" : null,
+                    $menu->sayur       ? "Sayur: {$menu->sayur}" : null,
+                    $menu->buah        ? "Buah: {$menu->buah}" : null,
+                    $menu->pelengkap   ? "Pelengkap: {$menu->pelengkap}" : null,
+                ]);
+                $dishNames = $menu->dishes->pluck('name')->implode(', ');
+
+                $context .= "📅 {$tgl}{$isToday} | Dapur: {$dapur}\n";
+                $context .= "   " . implode(' | ', $items) . "\n";
+                if ($dishNames) $context .= "   Hidangan: {$dishNames}\n";
+                $context .= "\n";
+            }
+        } else {
+            $context .= "Jadwal menu untuk minggu ini belum dipublikasikan.\n\n";
         }
 
-        if ($message == '4') {
-            cache()->put("bot_state_$phone", 'consultation_gizi', 600);
-            return $this->wa->sendMessage($phone, $this->bot->medanize("Mau nanya gizi? Sebutkan masalahmu bah, biar kukasih tau solusinya!"));
-        }
+        $context .= "FORMULIR DAN LAYANAN (arahkan user ke link ini):\n";
+        $context .= "- Lihat Jadwal Menu Lengkap: https://aladelphi.or.id/jadwal-menu\n";
+        $context .= "- Sampaikan Pengaduan: https://aladelphi.or.id/complaints/create\n";
+        $context .= "- Daftar Jadi Pemasok/Supplier: https://aladelphi.or.id/pendaftaran-pemasok\n";
+        $context .= "- Harga Komunitas: https://aladelphi.or.id/harga-komunitas\n";
+        $context .= "- Profil Dapur SPPG: https://aladelphi.or.id/dapur\n";
+        $context .= "\nATURAN PENTING:\n";
+        $context .= "- Jika user ingin daftar pemasok via WA, minta mereka ketik: 'daftar pemasok'\n";
+        $context .= "- Jika user ingin daftar anak penerima MBG via WA, minta mereka ketik: 'daftar anak'\n";
+        $context .= "- Untuk pengaduan, SELALU arahkan ke link complaints/create di atas\n";
 
-        return $this->wa->sendMessage($phone, $this->bot->medanize("Halo lae! Ketik 'MENU' ya kalo mau nanya-nanya."));
+        return $context;
     }
 
     private function handleConsultation($phone, $message)
     {
+        // Gunakan AI untuk konsultasi gizi
         cache()->forget("bot_state_$phone");
-        $advice = "Walah, kalo itu masalahmu, banyak-banyaklah makan sayur hijau sama ikan teri medan bah! Biar kuat kau macam abang-abang pelabuhan itu!";
-        return $this->wa->sendMessage($phone, $this->bot->medanize("Saran si BoTo: " . $advice));
+        return $this->handleAiAgent($phone, $message);
     }
 
     private function handleSupplierRegistration($phone, $message)

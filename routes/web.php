@@ -109,6 +109,30 @@ Route::post('/pendaftaran-pemasok', [SupplierRegistrationController::class, 'sto
 // AI Chat Bot Route (Public)
 Route::post('/chat/query', [\App\Http\Controllers\AiChatController::class, 'query'])->name('chat.query');
 
+// Public API: Menu Hari Ini (untuk AI & integrasi)
+Route::get('/api/menu-hari-ini', function () {
+    $today = now()->toDateString();
+    $menus = \App\Models\Menu::with(['sppg', 'dishes'])
+        ->whereBetween('date', [$today, now()->addDays(7)->toDateString()])
+        ->orderBy('date')
+        ->get()
+        ->map(function ($menu) use ($today) {
+            return [
+                'tanggal'        => \Carbon\Carbon::parse($menu->date)->translatedFormat('l, d F Y'),
+                'hari_ini'       => $menu->date === $today,
+                'dapur'          => $menu->sppg->name ?? 'Semua Dapur',
+                'karbo'          => $menu->karbo,
+                'protein_hewani' => $menu->protein_hewani,
+                'protein_nabati' => $menu->protein_nabati,
+                'sayur'          => $menu->sayur,
+                'buah'           => $menu->buah,
+                'pelengkap'      => $menu->pelengkap,
+                'hidangan'       => $menu->dishes->pluck('name'),
+            ];
+        });
+    return response()->json(['success' => true, 'data' => $menus]);
+})->name('api.menu-hari-ini');
+
 // Public Portal Routes
 Route::post('/aspirasi', [\App\Http\Controllers\AspirationController::class, 'store'])->name('aspirations.store');
 Route::get('/dapur', [\App\Http\Controllers\KitchenController::class, 'index'])->name('kitchens.index');
