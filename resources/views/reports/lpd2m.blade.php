@@ -5,145 +5,108 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-2xl sm:rounded-3xl border border-gold/10">
-                <div class="p-12 text-gray-900 font-jakarta">
-                    <!-- Document Header -->
-                    <div class="text-center mb-10 border-b-2 border-royal-navy pb-6">
-                        <h3 class="text-xs font-black text-gold-dark uppercase tracking-[0.4em] mb-2 leading-none">Kop surat SPPG</h3>
-                        <h1 class="text-2xl font-black text-royal-navy uppercase tracking-tight font-playfair mb-1">LAPORAN PENGGUNAAN DANA DUA PEKANAN</h1>
-                        <p class="text-sm font-bold text-slate-500 uppercase tracking-widest">Periode : {{ $data['period'] }}</p>
-                    </div>
+    <div class="py-12 no-print">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="bg-blue-50 border border-blue-200 p-4 rounded-2xl flex items-center justify-between shadow-sm">
+                <div class="flex items-center space-x-3">
+                    <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                    <p class="text-sm font-bold text-blue-800 italic">Mode Edit Aktif: Bapak bisa langsung klik dan ketik pada teks di bawah untuk mengubah isinya.</p>
+                </div>
+                <button onclick="window.print()" class="px-6 py-2 bg-royal-navy text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-gold transition-all">Cetak Sekarang</button>
+            </div>
+        </div>
+    </div>
 
-                    <div class="space-y-8">
-                        <!-- Signatory Info -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm leading-relaxed">
-                            <div class="flex">
-                                <span class="w-24 font-bold text-slate-400 uppercase text-[10px] tracking-widest">Nama</span>
-                                <span class="font-bold border-b border-slate-200 flex-1 ml-2">: {{ $data['user_name'] }}</span>
-                            </div>
-                            <div class="flex">
-                                <span class="w-24 font-bold text-slate-400 uppercase text-[10px] tracking-widest">Jabatan</span>
-                                <span class="font-bold border-b border-slate-200 flex-1 ml-2">: {{ $data['jabatan'] }}</span>
-                            </div>
-                            <div class="flex">
-                                <span class="w-24 font-bold text-slate-400 uppercase text-[10px] tracking-widest">Yayasan</span>
-                                <span class="font-bold border-b border-slate-200 flex-1 ml-2">: {{ $data['yayasan'] }}</span>
-                            </div>
-                            <div class="flex">
-                                <span class="w-24 font-bold text-slate-400 uppercase text-[10px] tracking-widest">SPPG</span>
-                                <span class="font-bold border-b border-slate-200 flex-1 ml-2">: {{ $data['sppg_name'] }}</span>
-                            </div>
-                            <div class="flex">
-                                <span class="w-24 font-bold text-slate-400 uppercase text-[10px] tracking-widest">ID SPPG</span>
-                                <span class="font-bold border-b border-slate-200 flex-1 ml-2">: {{ $data['sppg_id'] }}</span>
-                            </div>
-                        </div>
-
-                        <p class="text-sm text-slate-600">Dengan ini menyatakan bahwa laporan penggunaan dana sebagai berikut:</p>
-
-                        <!-- Section I: Financial Rincian -->
-                        <div class="bg-silk rounded-2xl p-8 border border-gold/5 shadow-inner">
-                            <h4 class="font-black text-royal-navy uppercase tracking-widest mb-6 border-l-4 border-gold pl-4 text-sm">I. RINCIAN KEUANGAN</h4>
-                            
-                            <div class="space-y-4">
-                                <div class="flex justify-between items-center text-sm">
-                                    <span class="font-bold text-slate-700">Dana Pemasukan</span>
-                                    <div class="flex items-center">
-                                        <span class="font-black text-royal-navy text-lg">Rp {{ number_format($data['dana_masuk']) }}</span>
-                                        <span class="text-[9px] text-slate-400 ml-3 italic">(termasuk saldo akhir periode lalu)</span>
-                                    </div>
-                                </div>
-
-                                <div class="border-t border-slate-100 pt-4">
-                                    <h5 class="text-[10px] font-black text-gold-dark uppercase tracking-widest mb-3 italic">Realisasi Anggaran</h5>
-                                    <div class="space-y-3">
-                                        <div class="flex justify-between text-sm pl-4">
-                                            <span class="text-slate-600 font-bold">Bahan Baku</span>
-                                            <span class="font-bold">{{ number_format($data['belanja_bahan']) }}</span>
-                                        </div>
-                                        <div class="flex justify-between text-sm pl-4">
-                                            <span class="text-slate-600 font-bold">Operasional</span>
-                                            <span class="font-bold">{{ number_format($data['operasional']) }}</span>
-                                        </div>
-                                        <div class="flex justify-between text-sm pl-4">
-                                            <span class="text-slate-600 font-bold">Insentif Fasilitas</span>
-                                            <span class="font-bold">{{ number_format($data['insentif']) }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="flex justify-between items-center pt-4 border-t-2 border-royal-navy mt-4">
-                                    <span class="font-black text-royal-navy uppercase tracking-tighter">Total Belanja</span>
-                                    <span class="font-black text-xl text-royal-navy underline decoration-gold decoration-4 underline-offset-8">{{ number_format($data['belanja_bahan'] + $data['operasional'] + $data['insentif']) }}</span>
-                                </div>
-
-                                <div class="flex justify-between items-center pt-6">
-                                    <span class="font-black text-gold-dark uppercase tracking-widest text-sm">Sisa Anggaran</span>
-                                    <div class="h-px bg-gold-soft flex-1 mx-4"></div>
-                                    <span class="font-black text-xl text-green-700 bg-green-50 px-4 py-1 rounded-lg border-2 border-green-200">{{ number_format($data['sisa_dana']) }}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Section II: Keterangan -->
-                        <div class="space-y-4">
-                            <h4 class="font-black text-royal-navy uppercase tracking-widest border-l-4 border-gold pl-4 text-sm">II. KETERANGAN</h4>
-                            <p class="text-xs text-slate-500 leading-relaxed italic">Dana yang telah digunakan sesuai dengan kebutuhan kegiatan yang telah direncanakan, dengan rincian sebagai berikut:</p>
-                            
-                            <ul class="space-y-3 text-xs">
-                                <li class="flex items-start">
-                                    <span class="font-black text-royal-navy w-32 uppercase tracking-tighter">Bahan Baku</span>
-                                    <span class="text-slate-600 ml-2">: Pengadaan bahan baku utama untuk pelaksanaan kegiatan</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="font-black text-royal-navy w-32 uppercase tracking-tighter">Operasional</span>
-                                    <span class="text-slate-600 ml-2">: Biaya transportasi, ATK, bahan bakar, dan keperluan teknis lainnya.</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="font-black text-royal-navy w-32 uppercase tracking-tighter">Insentif Fasilitas</span>
-                                    <span class="text-slate-600 ml-2">: Bangunan, dan lain-lain.</span>
-                                </li>
-                                <li class="flex items-start">
-                                    <span class="font-black text-royal-navy w-32 uppercase tracking-tighter">No. Rekening</span>
-                                    <span class="text-royal-navy font-bold ml-2">: {{ $data['virtual_account'] }}</span>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <p class="text-xs text-slate-600 leading-relaxed mt-6">
-                            Sisa dana sebesar Rp {{ number_format($data['sisa_dana']) }} akan dialihkan ke periode selanjutnya.<br>
-                            Pengalihan sisa dana ini bertujuan untuk mendukung kegiatan yang telah direncanakan.
-                        </p>
-
-                        <!-- Signatures -->
-                        <div class="pt-12 grid grid-cols-1 md:grid-cols-2 gap-12 text-center text-xs font-bold uppercase tracking-widest">
-                            <div class="space-y-20">
-                                <div>Pihak Pertama,<br>PENDIDIKAN ALA DELPHI</div>
-                                <div class="border-b-2 border-slate-300 w-48 mx-auto pb-1 text-royal-navy font-black">{{ $data['pimpinan'] }}</div>
-                                <div class="text-[10px] text-slate-400">Ketua/Mewakili</div>
-                            </div>
-                            <div class="space-y-20">
-                                <div>BALIMBINGAN, 18 April 2026<br>Pihak Kedua,<br>Staf Pengawas Keuangan SPPG BALIMBINGAN 2</div>
-                                <div class="border-b-2 border-slate-300 w-48 mx-auto pb-1 text-royal-navy font-black">{{ $data['bendahara'] }}</div>
-                                <div class="text-[10px] text-slate-400">AGITA SEBAYANG</div>
-                            </div>
-                            
-                            <div class="md:col-span-2 mt-12 space-y-20">
-                                <div>Mengetahui,<br>Kepala SPPG BALIMBINGAN 2</div>
-                                <div class="border-b-2 border-slate-300 w-48 mx-auto pb-1 text-royal-navy font-black">{{ $data['ka_sppg'] }}</div>
-                                <div class="text-[10px] text-slate-400">ABDI SEPTIAN</div>
-                            </div>
+    <div class="pb-24">
+        <div class="max-w-[800px] mx-auto bg-white p-[50px] shadow-2xl border border-gray-100 print:shadow-none print:p-0 print:border-none font-serif text-[#1e293b]">
+            <!-- Document Header -->
+            <div class="text-center mb-4">
+                <p class="text-[12px] font-medium mb-4" contenteditable="true">Kop surat SPPG</p>
+                <div class="border-t-4 border-double border-black w-full mb-6"></div>
+                <div class="relative">
+                    <h1 class="text-[18px] font-black tracking-tight mb-1" contenteditable="true">LAPORAN PENGGUNAAN DANA DUA PEKANAN</h1>
+                    <p class="text-[14px] font-bold" contenteditable="true">Periode : {{ $data['period'] }}</p>
+                    <div class="absolute top-0 right-0">
+                        <div class="w-10 h-10 border-2 border-[#1e293b] flex items-center justify-center p-1">
+                            <svg class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                         </div>
                     </div>
-                    
-                    <!-- Print Button -->
-                    <div class="mt-16 text-center no-print">
-                        <button onclick="window.print()" class="px-8 py-3 bg-royal-navy text-white rounded-2xl font-black uppercase tracking-widest shadow-xl hover:bg-gold transition-all transform hover:-translate-y-1 active:scale-95">
-                            Cetak Laporan
-                        </button>
+                </div>
+            </div>
+
+            <div class="space-y-6 text-[13px]">
+                <p contenteditable="true">Yang bertanda tangan di bawah ini:</p>
+                <div class="grid grid-cols-[120px_auto] gap-y-1 ml-4">
+                    <div class="font-bold">Nama</div><div contenteditable="true">: {{ $data['user_name'] }}</div>
+                    <div class="font-bold">Jabatan</div><div contenteditable="true">: {{ $data['jabatan'] }}</div>
+                    <div class="font-bold">Yayasan</div><div contenteditable="true">: {{ $data['yayasan'] }}</div>
+                    <div class="font-bold">SPPG</div><div contenteditable="true">: {{ $data['sppg_name'] }}</div>
+                    <div class="font-bold">ID SPPG</div><div contenteditable="true">: {{ $data['sppg_id'] }}</div>
+                </div>
+
+                <p contenteditable="true" class="mt-4">Dengan ini menyatakan bahwa laporan penggunaan dana sebagai berikut:</p>
+
+                <div class="space-y-4">
+                    <h2 class="font-black" contenteditable="true">I. RINCIAN KEUANGAN</h2>
+                    <div class="grid grid-cols-[auto_150px_auto] gap-x-2 items-center">
+                        <div class="font-bold">Dana Pemasukan</div>
+                        <div class="font-black text-right border-b-2 border-black" contenteditable="true">{{ number_format($data['dana_masuk']) }}</div>
+                        <div class="italic text-[11px]" contenteditable="true">(termasuk saldo akhir periode yang lalu)</div>
                     </div>
+
+                    <div class="space-y-1">
+                        <h3 class="font-bold underline italic mb-2">Realisasi Anggaran</h3>
+                        <div class="grid grid-cols-[auto_150px] gap-x-2 ml-4">
+                            <div>Bahan Baku</div><div class="text-right border-b border-gray-300" contenteditable="true">{{ number_format($data['belanja_bahan']) }}</div>
+                            <div>Operasional</div><div class="text-right border-b border-gray-300" contenteditable="true">{{ number_format($data['operasional']) }}</div>
+                            <div>Insentif Fasilitas</div><div class="text-right border-b border-gray-300" contenteditable="true">{{ number_format($data['insentif']) }}</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-[auto_150px] gap-x-2 border-t-2 border-black pt-1">
+                        <div class="font-black">Total Belanja</div>
+                        <div class="font-black text-right border-b-4 border-double border-black underline" contenteditable="true">{{ number_format($data['belanja_bahan'] + $data['operasional'] + $data['insentif']) }}</div>
+                    </div>
+
+                    <div class="grid grid-cols-[auto_150px] gap-x-2">
+                        <div class="font-black">Sisa Anggaran</div>
+                        <div class="font-black text-right border-b-4 border-double border-black underline" contenteditable="true">{{ number_format($data['sisa_dana']) }}</div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <h2 class="font-black" contenteditable="true">II. KETERANGAN</h2>
+                    <p contenteditable="true">Dana yang telah digunakan sesuai dengan kebutuhan kegiatan yang telah direncanakan, dengan rincian sebagai berikut:</p>
+                    <div class="grid grid-cols-[150px_auto] gap-y-1 ml-4">
+                        <div class="font-bold italic">Bahan Baku</div><div contenteditable="true">: Pengadaan bahan baku utama untuk pelaksanaan kegiatan</div>
+                        <div class="font-bold italic">Operasional</div><div contenteditable="true">: Biaya transportasi, ATK, bahan bakar, dan keperluan teknis lainnya.</div>
+                        <div class="font-bold italic">Insentif Fasilitas</div><div contenteditable="true">: Bangunan, dan lain-lain.</div>
+                        <div class="font-bold italic">Nomor rekening/Virtual Account</div><div contenteditable="true">: {{ $data['virtual_account'] }}</div>
+                    </div>
+                </div>
+
+                <p contenteditable="true" class="mt-4">
+                    Sisa dana sebesar Rp {{ number_format($data['sisa_dana']) }},- akan dialihkan ke periode selanjutnya.<br>
+                    Pengalihan sisa dana ini bertujuan untuk mendukung kegiatan yang telah direncanakan.
+                </p>
+
+                <div class="grid grid-cols-2 gap-x-12 pt-10 text-center">
+                    <div class="space-y-24">
+                        <p contenteditable="true">Pihak Pertama,<br>PENDIDIKAN ALA DELPHI</p>
+                        <p class="font-black underline uppercase" contenteditable="true">{{ $data['pimpinan'] }}</p>
+                        <p class="text-[11px]" contenteditable="true">Ketua/Mewakili</p>
+                    </div>
+                    <div class="space-y-20">
+                        <p contenteditable="true">BALIMBINGAN, 18 April 2026<br>Pihak Kedua,<br>Staf Pengawas Keuangan<br>SPPG BALIMBINGAN 2</p>
+                        <p class="font-black underline uppercase" contenteditable="true">{{ $data['bendahara'] }}</p>
+                        <p class="text-[11px]" contenteditable="true">AGITA SEBAYANG</p>
+                    </div>
+                </div>
+
+                <div class="text-center pt-8 space-y-20">
+                    <p contenteditable="true">Mengetahui,<br>Kepala SPPG BALIMBINGAN 2</p>
+                    <p class="font-black underline uppercase" contenteditable="true">{{ $data['ka_sppg'] }}</p>
+                    <p class="text-[11px]" contenteditable="true">ABDI SEPTIAN</p>
                 </div>
             </div>
         </div>

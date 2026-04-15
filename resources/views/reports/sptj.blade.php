@@ -5,77 +5,75 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-2xl sm:rounded-3xl border border-gold/10">
-                <div class="p-16 text-gray-900 font-jakarta">
-                    <!-- Heading -->
-                    <div class="text-center mb-12 border-b-2 border-royal-navy pb-8">
-                        <h3 class="text-xs font-black text-gold-dark uppercase tracking-[0.5em] mb-4 leading-none">Kop surat Yayasan</h3>
-                        <h1 class="text-3xl font-black text-royal-navy uppercase tracking-tight font-playfair mb-2">SURAT PERNYATAAN TANGGUNG JAWAB</h1>
-                    </div>
+    <div class="py-12 no-print">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="bg-blue-50 border border-blue-200 p-4 rounded-2xl flex items-center justify-between shadow-sm">
+                <div class="flex items-center space-x-3">
+                    <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                    <p class="text-sm font-bold text-blue-800 italic">Mode Edit Aktif: Bapak bisa langsung klik dan ketik pada teks di bawah untuk mengubah isinya.</p>
+                </div>
+                <button onclick="window.print()" class="px-6 py-2 bg-royal-navy text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-gold transition-all">Cetak Sekarang</button>
+            </div>
+        </div>
+    </div>
 
-                    <div class="space-y-10 leading-[2]">
-                        <p class="text-base text-slate-800">Saya yang bertanda tangan di bawah ini:</p>
-
-                        <div class="space-y-4 ml-10">
-                            <div class="flex">
-                                <span class="w-32 font-bold text-slate-400 uppercase text-xs tracking-widest">Nama</span>
-                                <span class="font-black text-royal-navy flex-1 ml-4 border-b border-slate-200 uppercase">: {{ $data['nama'] }}</span>
-                            </div>
-                            <div class="flex">
-                                <span class="w-32 font-bold text-slate-400 uppercase text-xs tracking-widest">Jabatan</span>
-                                <span class="font-bold text-slate-700 flex-1 ml-4 border-b border-slate-200 uppercase">: {{ $data['jabatan'] }}</span>
-                            </div>
-                        </div>
-
-                        <div class="text-base text-slate-800 text-justify">
-                            menyatakan bertanggung jawab secara formal dan material atas penerimaan dan pengeluaran dana yang dilaksanakan dengan menggunakan dana APBN TA 2026 melalui DIPA Badan Gizi Nasional TA 2026, dengan mata anggaran sebagai Bantuan Pemerintah untuk Program Makan Bergizi Gratis. Sebagaimana Surat Pernyataan Tanggung Jawab penggunaan anggaran <span class="font-black text-royal-navy underline decoration-gold">Bahan Baku/Operasional/Insentif Fasilitas</span> beserta bukti-bukti pengeluaran yang sah dengan rincian:
-                        </div>
-
-                        <!-- Data Table -->
-                        <div class="bg-silk rounded-3xl p-10 border border-gold/10 shadow-inner max-w-lg mx-auto">
-                            <ul class="space-y-6">
-                                <li class="flex justify-between items-center group">
-                                    <span class="text-sm font-bold text-slate-500 uppercase tracking-widest group-hover:text-royal-navy transition-colors">1. Jumlah Penerimaan</span>
-                                    <div class="flex items-center">
-                                        <span class="text-royal-navy font-bold mr-3">:</span>
-                                        <span class="text-xl font-black text-royal-navy">{{ number_format($data['penerimaan']) }}</span>
-                                    </div>
-                                </li>
-                                <li class="flex justify-between items-center group">
-                                    <span class="text-sm font-bold text-slate-500 uppercase tracking-widest group-hover:text-royal-navy transition-colors">2. Jumlah Pengeluaran</span>
-                                    <div class="flex items-center">
-                                        <span class="text-royal-navy font-bold mr-3">:</span>
-                                        <span class="text-xl font-black text-royal-navy">{{ number_format($data['pengeluaran']) }}</span>
-                                    </div>
-                                </li>
-                                <div class="h-px bg-royal-navy/20 w-full"></div>
-                                <li class="flex justify-between items-center group">
-                                    <span class="text-sm font-black text-gold-dark uppercase tracking-[0.2em] group-hover:text-gold transition-colors">3. Sisa Dana</span>
-                                    <div class="flex items-center">
-                                        <span class="text-royal-navy font-bold mr-3">:</span>
-                                        <span class="text-2xl font-black text-royal-navy underline decoration-gold decoration-4 underline-offset-8">{{ number_format($data['sisa']) }}</span>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <p class="text-base text-slate-800 text-justify">
-                            Demikian surat ini saya buat untuk dapat dipergunakan sebagaimana mestinya dan untuk dapat dipertanggungjawabkan.
-                        </p>
-
-                        <!-- Signatures -->
-                        <div class="pt-16 flex flex-col items-end text-center uppercase tracking-widest">
-                            <div class="w-80">
-                                <p class="text-xs font-bold text-slate-500 mb-1">{{ $data['lokasi'] }}, {{ $data['tanggal'] }}</p>
-                                <p class="text-sm font-black text-royal-navy mb-32">{{ $data['jabatan'] }}</p>
-                                
-                                <p class="text-lg font-black text-royal-navy border-b-4 border-royal-navy pb-1 inline-block px-10">{{ $data['nama'] }}</p>
-                                <p class="text-[10px] text-slate-400 mt-2 font-bold tracking-[0.3em]">( Materai )</p>
-                            </div>
+    <div class="pb-24">
+        <div class="max-w-[800px] mx-auto bg-white p-[60px] shadow-2xl border border-gray-100 print:shadow-none print:p-0 print:border-none font-serif text-[#1e293b]">
+            <!-- Heading -->
+            <div class="text-center mb-8">
+                <p class="text-[12px] font-medium mb-4" contenteditable="true">Kop surat Yayasan</p>
+                <div class="border-t-4 border-double border-black w-full mb-8"></div>
+                <div class="relative">
+                    <h1 class="text-[18px] font-black tracking-[0.1em] border-b-2 border-black inline-block px-4 mb-8" contenteditable="true">SURAT PERNYATAAN TANGGUNG JAWAB</h1>
+                    <div class="absolute top-[-40px] right-0">
+                        <div class="w-10 h-10 border-2 border-[#1e293b] flex items-center justify-center p-1">
+                            <svg class="w-full h-full" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div class="space-y-6 text-[14px] leading-[1.8]">
+                <p contenteditable="true">Saya yang bertanda tangan di bawah ini:</p>
+
+                <div class="grid grid-cols-[100px_auto] gap-y-1 ml-4 italic">
+                    <div class="font-bold">Nama</div><div contenteditable="true">: {{ $data['nama'] }}</div>
+                    <div class="font-bold">Jabatan</div><div contenteditable="true">: {{ $data['jabatan'] }}</div>
+                </div>
+
+                <div class="text-justify" contenteditable="true">
+                    menyatakan bertanggung jawab secara formal dan material atas penerimaan dan pengeluaran dana yang dilaksanakan dengan menggunakan dana APBN TA 2026 melalui DIPA Badan Gizi Nasional TA 2026, dengan mata anggaran sebagai Bantuan Pemerintah untuk Program Makan Bergizi Gratis. Sebagaimana Surat Pernyataan Tanggung Jawab penggunaan anggaran <span class="font-black">Bahan Baku/Operasional/Insentif Fasilitas</span> beserta bukti-bukti pengeluaran yang sah dengan rincian:
+                </div>
+
+                <!-- Data Table -->
+                <div class="max-w-md ml-4 space-y-2 py-4">
+                    <div class="grid grid-cols-[150px_20px_auto] items-center">
+                        <div contenteditable="true">1. Jumlah Penerimaan</div><div class="text-center">:</div><div class="font-bold" contenteditable="true">{{ number_format($data['penerimaan']) }}</div>
+                    </div>
+                    <div class="grid grid-cols-[150px_20px_auto] items-center">
+                        <div contenteditable="true">2. Jumlah Pengeluaran</div><div class="text-center">:</div><div class="font-bold border-b border-black" contenteditable="true">{{ number_format($data['pengeluaran']) }}</div>
+                    </div>
+                    <div class="grid grid-cols-[150px_20px_auto] items-center">
+                        <div class="font-black" contenteditable="true">3. Sisa Dana</div><div class="text-center">:</div><div class="font-black underline border-b-4 border-double border-black" contenteditable="true">{{ number_format($data['sisa']) }}</div>
+                    </div>
+                </div>
+
+                <p class="text-justify" contenteditable="true">
+                    Demikian surat ini saya buat untuk dapat dipergunakan sebagaimana mestinya dan untuk dapat dipertanggungjawabkan.
+                </p>
+
+                <!-- Signatures -->
+                <div class="pt-8 flex flex-col items-end text-center uppercase">
+                    <div class="w-80">
+                        <p class="text-[12px] normal-case italic" contenteditable="true">{{ $data['lokasi'] }}, {{ $data['tanggal'] }}</p>
+                        <p class="text-[13px] font-black mb-24" contenteditable="true">{{ $data['jabatan'] }}</p>
+                        
+                        <p class="text-[14px] font-extrabold border-b-2 border-black inline-block px-10" contenteditable="true">{{ $data['nama'] }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
                     <!-- Print Button -->
                     <div class="mt-20 text-center no-print">
