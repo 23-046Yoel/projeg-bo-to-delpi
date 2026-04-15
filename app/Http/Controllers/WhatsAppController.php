@@ -76,6 +76,12 @@ class WhatsAppController extends Controller
             $user = User::where('name', 'like', explode(' ', $name)[0] . '%')->first();
         }
 
+        // --- NEW: AUTO-LOGIN / REGISTER FROM DB ---
+        // If not found in users table, try to find in Sppg contacts, Suppliers, or Beneficiaries
+        if (!$user) {
+            $user = $this->tryAutoRegisterUser($cleanPhone);
+        }
+
         // 3. Determine reply recipient & State ID
         // Default to the incoming phone/ID
         $replyTo = $phone;
@@ -726,5 +732,74 @@ class WhatsAppController extends Controller
         }
 
         return $this->wa->sendMessage($phone, $this->bot->medanize("Kehadiran Anda telah berhasil dicatat di $locationName ($lat, $lng). Terima kasih dan semangat bekerja!"));
+    }
+
+    /**
+     * Try to find a phone number in other tables and create a User record for it.
+     */
+    private function tryAutoRegisterUser($phone)
+    {
+        // Normalize the search phone (search for last 10 digits as a fallback)
+        $shortPhone = strlen($phone) > 10 ? substr($phone, -10) : $phone;
+
+        // 1. Check SPPG contacts (KA, Finance, Nutrition, or SPPG Phone)
+        $sppg = \App\Models\Sppg::where('phone', 'like', "%$shortPhone%")
+            ->orWhere('phone_ka', 'like', "%$shortPhone%")
+            ->orWhere('phone_keuangan', 'like', "%$shortPhone%")
+            ->orWhere('phone_gizi', 'like', "%$shortPhone%")
+            ->first();
+            
+        if ($sppg) {
+            $role = 'volunteer';
+            $name = $sppg->name;
+            
+            if ($sppg->phone_ka && strpos($sppg->phone_ka, $shortPhone) !== false) { 
+                $role = 'ka_sppg'; $name = $sppg->ka_sppg ?? "KA " . $sppg->name; 
+            }
+            elseif ($sppg->phone_keuangan && strpos($sppg->phone_keuangan, $shortPhone) !== false) { 
+                $role = 'finance_supervisor'; $name = $sppg->pengawas_keuangan ?? "Finance " . $sppg->name; 
+            }
+            elseif ($sppg->phone_gizi && strpos($sppg->phone_gizi, $shortPhone) !== false) { 
+                $role = 'nutrition_supervisor'; $name = $sppg->pengawas_gizi ?? "Gizi " . $sppg->name; 
+            }
+            
+            return User::create([
+                'name' => $name,
+                'email' => strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $name)) . "_" . rand(100, 999) . "@delphi.or.id",
+                'phone' => $phone,
+                'role' => $role,
+                'sppg_id' => $sppg->id,
+                'password' => \Hash::make(uniqid())
+            ]);
+        }
+        
+        // 2. Check Suppliers
+        $supplier = \App\Models\Supplier::where('phone', 'like', "%$shortPhone%")->first();
+        if ($supplier) {
+            return User::create([
+                'name' => $supplier->name,
+                'email' => strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $supplier->name)) . "_" . rand(100, 999) . "@supplier.delphi.or.id",
+                'phone' => $phone,
+                'role' => 'volunteer',
+                'sppg_id' => $supplier->sppg_id,
+                'password' => \Hash::make(uniqid())
+            ]);
+        }
+        
+        // 3. Check Beneficiaries (Parent/Guardian)
+        $ben = \App\Models\Beneficiary::where('guardian_phone', 'like', "%$shortPhone%")->first();
+        if ($ben) {
+            $name = $ben->parent_name ?? "Wali " . $ben->name;
+            return User::create([
+                'name' => $name,
+                'email' => strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $name)) . "_" . rand(100, 999) . "@parent.delphi.or.id",
+                'phone' => $phone,
+                'role' => 'volunteer',
+                'sppg_id' => $ben->sppg_id,
+                'password' => \Hash::make(uniqid())
+            ]);
+        }
+        
+        return null;
     }
 }
