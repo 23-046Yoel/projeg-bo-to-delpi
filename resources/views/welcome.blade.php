@@ -226,7 +226,102 @@
                     </div>
                 </div>
             </div>
+
+            {{-- Inline Registration Form --}}
+            <div class="mt-16">
+                <div class="text-center mb-10">
+                    <span class="inline-block px-4 py-1 rounded-full bg-gold/10 text-gold-dark font-black text-[10px] uppercase tracking-[0.3em] mb-3">Daftar Sekarang</span>
+                    <h3 class="playfair text-3xl lg:text-4xl font-black italic text-[#0F172A]">Formulir Pendaftaran <span class="text-gold">Konsultasi Gizi</span></h3>
+                    <p class="text-gray-500 mt-3 text-sm max-w-lg mx-auto">Isi form berikut, tim ahli gizi kami akan segera menghubungi Anda untuk jadwal konsultasi gratis.</p>
+                </div>
+
+                @if(session('success'))
+                    <div class="max-w-3xl mx-auto mb-8 p-6 bg-emerald-50 border border-emerald-200 rounded-3xl flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center shrink-0">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                        </div>
+                        <p class="font-bold text-emerald-800">{{ session('success') }}</p>
+                    </div>
+                @endif
+
+                @if ($errors->any())
+                    <div class="max-w-3xl mx-auto mb-8 p-6 bg-red-50 border border-red-200 rounded-3xl">
+                        <p class="text-xs font-black text-red-600 uppercase tracking-widest mb-2">Terdapat Kesalahan:</p>
+                        <ul class="list-disc list-inside text-xs font-bold text-red-800">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form action="{{ route('nutrition.consultation.store') }}" method="POST"
+                      class="max-w-3xl mx-auto bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 p-10 border border-slate-100">
+                    @csrf
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Nama Lengkap *</label>
+                            <input type="text" name="name" value="{{ old('name') }}" required placeholder="contoh: Siti Rahma"
+                                   class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-800 placeholder-slate-300 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">No. WhatsApp</label>
+                            <input type="text" name="phone" value="{{ old('phone') }}" placeholder="contoh: 08123456789"
+                                   class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-800 placeholder-slate-300 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Usia (tahun) *</label>
+                            <input type="number" name="age" value="{{ old('age') }}" required min="0" placeholder="25"
+                                   class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-800 placeholder-slate-300 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Jenis Kelamin *</label>
+                            <select name="gender" required
+                                    class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-800 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all">
+                                <option value="" disabled {{ old('gender') ? '' : 'selected' }}>Pilih...</option>
+                                <option value="Laki-laki" {{ old('gender') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
+                                <option value="Perempuan" {{ old('gender') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Berat Badan (kg) *</label>
+                            <input type="number" name="weight" value="{{ old('weight') }}" required step="0.1" placeholder="60"
+                                   class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-800 placeholder-slate-300 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Tinggi Badan (cm) *</label>
+                            <input type="number" name="height" value="{{ old('height') }}" required step="0.1" placeholder="165"
+                                   class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-800 placeholder-slate-300 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all">
+                        </div>
+                        <div class="space-y-2 md:col-span-2">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Tujuan Konsultasi *</label>
+                            <select name="goal" required
+                                    class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-800 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all">
+                                <option value="" disabled {{ old('goal') ? '' : 'selected' }}>Pilih tujuan konsultasi...</option>
+                                <option value="Perbaikan Gizi Anak">Perbaikan Gizi Anak</option>
+                                <option value="Diet Sehat">Diet Sehat</option>
+                                <option value="Gizi Ibu Hamil">Gizi Ibu Hamil</option>
+                                <option value="Pemulihan Pasca Sakit">Pemulihan Pasca Sakit</option>
+                                <option value="Lainnya">Lainnya</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2 md:col-span-2">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest">Riwayat Medis / Alergi (Opsional)</label>
+                            <textarea name="medical_history" rows="3" placeholder="contoh: Diabetes, Alergi Seafood, dll..."
+                                      class="w-full px-5 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-800 placeholder-slate-300 focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition-all resize-none">{{ old('medical_history') }}</textarea>
+                        </div>
+                    </div>
+                    <div class="mt-8">
+                        <button type="submit"
+                                class="w-full py-5 bg-[#0F172A] text-white font-black text-xs tracking-[0.2em] uppercase rounded-2xl shadow-2xl shadow-slate-900/20 hover:bg-gold transition-all duration-300">
+                            Kirim Pendaftaran Konsultasi Gratis 🥗
+                        </button>
+                        <p class="text-[10px] text-slate-400 text-center mt-3">Data Anda aman dan hanya diakses oleh tim gizi kami.</p>
+                    </div>
+                </form>
+            </div>
         </div>
+
 
     <!-- YouTube & Tutorials -->
     <section class="max-w-7xl mx-auto px-6 py-24">

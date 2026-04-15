@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class NutritionController extends Controller
 {
     /**
-     * Show the nutrition consultation registration form.
+     * Show the nutrition consultation registration form (public).
      */
     public function consultation()
     {
@@ -21,6 +21,7 @@ class NutritionController extends Controller
     {
         $validated = $request->validate([
             'name'            => 'required|string|max:255',
+            'phone'           => 'nullable|string|max:20',
             'age'             => 'required|integer|min:0',
             'gender'          => 'required|string',
             'weight'          => 'required|numeric',
@@ -39,8 +40,16 @@ class NutritionController extends Controller
     }
 
     /**
+     * Admin: list all consultation registrations.
+     */
+    public function consultationList(Request $request)
+    {
+        $consultations = \App\Models\NutritionConsultation::latest()->paginate(20);
+        return view('nutrition.consultation-list', compact('consultations'));
+    }
+
+    /**
      * Show the daily report upload form.
-     * Auth required via routes/web.php
      */
     public function dailyReport()
     {
@@ -56,7 +65,7 @@ class NutritionController extends Controller
             'report_date' => 'required|date',
             'session'     => 'required|string',
             'report_type' => 'required|string',
-            'attachment'  => 'required|file|max:10240', // 10MB
+            'attachment'  => 'required|file|max:10240',
             'notes'       => 'nullable|string',
         ]);
 
@@ -67,7 +76,7 @@ class NutritionController extends Controller
 
         \App\Models\DailyReport::create([
             'user_id'         => auth()->id(),
-            'sppg_id'         => auth()->user()->sppg_id,
+            'sppg_id'         => auth()->user()->sppg_id ?? null,
             'report_date'     => $validated['report_date'],
             'session'         => $validated['session'],
             'report_type'     => $validated['report_type'],

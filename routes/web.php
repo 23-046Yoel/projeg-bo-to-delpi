@@ -96,14 +96,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/kebutuhan-bahan', [RequirementController::class, 'index'])->name('requirements.index');
     Route::post('/kebutuhan-bahan/hitung', [RequirementController::class, 'calculate'])->name('requirements.calculate');
 
-    // Nutrition & Reporting
-    Route::get('/konsultasi-gizi', [\App\Http\Controllers\NutritionController::class, 'consultation'])->name('nutrition.consultation');
-    Route::post('/konsultasi-gizi', [\App\Http\Controllers\NutritionController::class, 'storeConsultation'])->name('nutrition.consultation.store');
+    // Daily Report (auth required)
     Route::get('/laporan-harian', [\App\Http\Controllers\NutritionController::class, 'dailyReport'])->name('reports.daily');
     Route::post('/laporan-harian', [\App\Http\Controllers\NutritionController::class, 'storeDailyReport'])->name('reports.daily.store');
+
+    // Admin: List of consultation registrations
+    Route::get('/admin/konsultasi-gizi', [\App\Http\Controllers\NutritionController::class, 'consultationList'])->name('nutrition.consultation.list');
 });
 
 // Public Accessibility Routes
+// Nutrition Consultation is public - anyone can register
+Route::get('/konsultasi-gizi', [\App\Http\Controllers\NutritionController::class, 'consultation'])->name('nutrition.consultation');
+Route::post('/konsultasi-gizi', [\App\Http\Controllers\NutritionController::class, 'storeConsultation'])->name('nutrition.consultation.store');
+
 Route::get('/prices', [\App\Http\Controllers\PublicPriceController::class, 'index'])->name('prices.index');
 Route::get('/jadwal-menu', [\App\Http\Controllers\PublicMenuController::class, 'index'])->name('public.menu');
 Route::get('/complaints/create', [\App\Http\Controllers\ComplaintController::class, 'create'])->name('complaints.create');

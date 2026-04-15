@@ -206,6 +206,13 @@
             <span class="font-bold tracking-tight">{{ __('Laporan Harian') }}</span>
         </x-nav-link>
 
+        <x-nav-link :href="route('nutrition.consultation.list')" :active="request()->routeIs('nutrition.consultation.list')" class="py-3">
+            <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+            <span class="font-bold tracking-tight">{{ __('Data Pendaftar Gizi') }}</span>
+        </x-nav-link>
+
         @can('manage-system')
         <div class="px-8 mt-4 mb-2">
             <p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">System Admin</p>

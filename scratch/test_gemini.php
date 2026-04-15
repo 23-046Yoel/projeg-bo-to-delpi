@@ -1,4 +1,4 @@
-<?php
+z<?php
 /**
  * Script debug: Test Gemini API langsung
  * Jalankan: php scratch/test_gemini.php
