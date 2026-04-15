@@ -246,6 +246,7 @@
         </x-nav-link>
         @endcan
 
+        @auth
         @if(auth()->user()->role === \App\Models\User::ROLE_DRIVER)
         <x-nav-link :href="route('distributions.driver')" :active="request()->routeIs('distributions.driver')" class="py-3">
             <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -254,10 +255,12 @@
             <span class="font-bold tracking-tight">{{ __('Dashboard Driver') }}</span>
         </x-nav-link>
         @endif
+        @endauth
     </div>
 
     <!-- User Profile & Footer Section -->
     <div class="p-8 border-t border-gold/10 bg-silk">
+        @auth
         <div class="flex items-center space-x-4 mb-8">
             <div class="w-12 h-12 rounded-2xl bg-royal-navy flex items-center justify-center text-white font-bold shadow-lg ring-4 ring-gold/10">
                 {{ substr(Auth::user()->name, 0, 2) }}
@@ -282,5 +285,13 @@
                 </button>
             </form>
         </div>
+        @else
+        <div class="space-y-3">
+            <a href="{{ route('login') }}" class="flex items-center justify-center px-4 py-4 text-xs font-black text-white bg-royal-navy hover:bg-gold rounded-2xl shadow-lg transition-all uppercase tracking-[0.2em]">
+                {{ __('Login to System') }}
+            </a>
+            <p class="text-[9px] text-gray-400 text-center font-bold uppercase tracking-widest">Akses terbatas untuk staff</p>
+        </div>
+        @endauth
     </div>
 </nav>
