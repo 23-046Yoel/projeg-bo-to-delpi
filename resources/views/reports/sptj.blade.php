@@ -50,16 +50,41 @@
                     menyatakan bertanggung jawab secara formal dan material atas penerimaan dan pengeluaran dana yang dilaksanakan dengan menggunakan dana APBN TA 2026 melalui DIPA Badan Gizi Nasional TA 2026, dengan mata anggaran sebagai Bantuan Pemerintah untuk Program Makan Bergizi Gratis. Sebagaimana Surat Pernyataan Tanggung Jawab penggunaan anggaran <span class="font-black">Bahan Baku/Operasional/Insentif Fasilitas</span> beserta bukti-bukti pengeluaran yang sah dengan rincian:
                 </div>
 
-                <!-- Data Table -->
-                <div class="max-w-md ml-4 space-y-2 py-4">
+                <!-- Material Usage Table in SPTJ -->
+                <div class="border border-black overflow-hidden rounded-lg ml-4 mb-6">
+                    <table class="w-full text-left text-[11px]">
+                        <thead class="bg-gray-50 border-b border-black">
+                            <tr>
+                                <th class="px-3 py-2 font-black border-r border-black w-12 text-center">No</th>
+                                <th class="px-3 py-2 font-black border-r border-black">Rincian Penggunaan Bahan Baku</th>
+                                <th class="px-3 py-2 font-black text-right">Volume</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-black">
+                            @forelse($data['usages'] ?? [] as $index => $usage)
+                                <tr>
+                                    <td class="px-3 py-2 border-r border-black text-center">{{ $index + 1 }}</td>
+                                    <td class="px-3 py-2 border-r border-black font-bold uppercase">{{ $usage->material->name }}</td>
+                                    <td class="px-3 py-2 text-right font-black">{{ number_format($usage->total_qty, 2) }} <span class="text-[9px]">{{ $usage->material->unit }}</span></td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="3" class="px-3 py-4 text-center italic text-gray-400">Belum ada rincian bahan baku.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="max-w-md ml-4 space-y-2 py-4 border-t border-black">
                     <div class="grid grid-cols-[150px_20px_auto] items-center">
-                        <div contenteditable="true">1. Jumlah Penerimaan</div><div class="text-center">:</div><div class="font-bold" contenteditable="true">{{ number_format($data['penerimaan']) }}</div>
+                        <div contenteditable="true">1. Jumlah Penerimaan</div><div class="text-center">:</div><div class="font-bold" contenteditable="true">Rp {{ number_format($data['penerimaan']) }}</div>
                     </div>
                     <div class="grid grid-cols-[150px_20px_auto] items-center">
-                        <div contenteditable="true">2. Jumlah Pengeluaran</div><div class="text-center">:</div><div class="font-bold border-b border-black" contenteditable="true">{{ number_format($data['pengeluaran']) }}</div>
+                        <div contenteditable="true">2. Jumlah Pengeluaran</div><div class="text-center">:</div><div class="font-bold border-b border-black" contenteditable="true">Rp {{ number_format($data['pengeluaran']) }}</div>
                     </div>
                     <div class="grid grid-cols-[150px_20px_auto] items-center">
-                        <div class="font-black" contenteditable="true">3. Sisa Dana</div><div class="text-center">:</div><div class="font-black underline border-b-4 border-double border-black" contenteditable="true">{{ number_format($data['sisa']) }}</div>
+                        <div class="font-black" contenteditable="true">3. Sisa Dana</div><div class="text-center">:</div><div class="font-black underline border-b-4 border-double border-black" contenteditable="true">Rp {{ number_format($data['sisa']) }}</div>
                     </div>
                 </div>
 

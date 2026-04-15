@@ -35,10 +35,8 @@
                             $items_count = count($report);
                         @endphp
                         <div class="p-8 bg-silk rounded-[2rem] relative overflow-hidden group">
-                           <div class="relative z-10">
                                 <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Total Materials</div>
                                 <div class="text-3xl font-black text-royal-navy">{{ $items_count }} Items</div>
-                           </div>
                            <div class="absolute -right-4 -bottom-4 opacity-5 group-hover:scale-110 transition-transform">
                                 <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                            </div>
@@ -68,10 +66,10 @@
                            <div class="relative z-10">
                                 <div class="text-[10px] font-black text-gold uppercase tracking-widest mb-4">Aksi Cepat</div>
                                 <div class="flex gap-2">
-                                    <button @click="type = 'in'; $dispatch('open-modal', 'adj')" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-3 px-4 text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-emerald-500/20">
+                                    <button @click="open = true; type = 'in'; $nextTick(() => { $('#select2-adj-input').select2({ dropdownParent: $('#adj-modal'), placeholder: 'Cari bahan...' }); })" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-3 px-4 text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-emerald-500/20">
                                         + Tambah
                                     </button>
-                                    <button @click="type = 'out'; $dispatch('open-modal', 'adj')" class="flex-1 bg-rose-500 hover:bg-rose-600 text-white rounded-xl py-3 px-4 text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-rose-500/20">
+                                    <button @click="open = true; type = 'out'; $nextTick(() => { $('#select2-adj-input').select2({ dropdownParent: $('#adj-modal'), placeholder: 'Cari bahan...' }); })" class="flex-1 bg-rose-500 hover:bg-rose-600 text-white rounded-xl py-3 px-4 text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-rose-500/20">
                                         - Kurang
                                     </button>
                                 </div>
@@ -82,8 +80,7 @@
                                     x-transition:enter="transition ease-out duration-300"
                                     x-transition:enter-start="opacity-0 scale-95"
                                     x-transition:enter-end="opacity-100 scale-100"
-                                    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-royal-navy/60 backdrop-blur-sm" x-cloak
-                                    @open-modal.window="if($event.detail === 'adj') { open = true; $nextTick(() => { $('.select2-adj').select2({ dropdownParent: $('#adj-modal'), placeholder: 'Cari bahan baku...' }); }); }">
+                                    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-royal-navy/60 backdrop-blur-sm" x-cloak>
                                     <div id="adj-modal" @click.away="open = false" class="bg-white rounded-[2.5rem] p-10 w-full max-w-md shadow-2xl border border-gray-100">
                                         <h3 class="text-xl font-black text-royal-navy uppercase tracking-tight mb-6" x-text="type === 'in' ? 'Tambah Stok Manual' : 'Kurangi Stok Manual'"></h3>
                                         
@@ -93,7 +90,7 @@
                                             
                                             <div>
                                                 <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Pilih Bahan Baku</label>
-                                                <select name="material_id" required class="select2-adj w-full px-6 py-4 bg-silk border-none rounded-2xl text-sm font-bold text-royal-navy outline-none">
+                                                <select name="material_id" required id="select2-adj-input" class="select2-adj w-full px-6 py-4 bg-silk border-none rounded-2xl text-sm font-bold text-royal-navy outline-none">
                                                     <option value=""></option>
                                                     @foreach($materials as $m)
                                                         <option value="{{ $m->id }}">{{ $m->name }} ({{ $m->unit }})</option>
