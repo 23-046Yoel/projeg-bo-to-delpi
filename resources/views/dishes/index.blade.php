@@ -119,3 +119,4 @@
             });
         });
     </script>
+</x-app-layout>
