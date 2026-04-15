@@ -151,61 +151,82 @@
         </div>
     </section>
 
-    <!-- Kitchen Gallery Section -->
-    <section class="max-w-7xl mx-auto px-6 py-24 border-t border-slate-100">
-        <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-            <div>
-                <h2 class="playfair text-4xl lg:text-5xl font-black italic text-[#0F172A] mb-4">Profil Dapur MBG</h2>
-                <p class="text-gray-500 max-w-xl">Kunjungi profil lengkap setiap dapur SPPG, menampilkan tim manajemen, situasi, dan kontak langsung.</p>
-            </div>
-            <a href="{{ route('kitchens.index') }}" class="px-6 py-3 rounded-lg border border-slate-200 text-sm font-bold hover:bg-slate-50 transition-all flex items-center gap-2 whitespace-nowrap">
-                Lihat Semua Dapur
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-            </a>
-        </div>
-        @php $kitchens = \App\Models\Sppg::withCount('beneficiaries')->latest()->take(3)->get(); @endphp
-        <div class="grid md:grid-cols-3 gap-6">
-            @forelse($kitchens as $kitchen)
-            @php
-                $now = now();
-                $hours = $kitchen->operational_hours ?? '06:00 - 14:00';
-                [$s, $e] = array_pad(explode(' - ', $hours), 2, '14:00');
-                try { $isOps = $now->between($now->copy()->setTimeFromTimeString($s), $now->copy()->setTimeFromTimeString($e)); } catch(\Exception $ex) { $isOps = false; }
-            @endphp
-            <a href="{{ route('kitchens.show', $kitchen->slug ?? $kitchen->id) }}" class="block group bg-white rounded-[2rem] border border-slate-100 shadow-lg overflow-hidden hover:-translate-y-2 transition-all duration-300">
-                <div class="relative h-40 bg-gradient-to-br from-[#0F172A] to-slate-700">
-                    @if($kitchen->image_path)
-                    <img src="{{ Storage::url($kitchen->image_path) }}" class="w-full h-full object-cover opacity-60 group-hover:opacity-80 transition-opacity" alt="{{ $kitchen->name }}">
-                    @else
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <svg class="w-12 h-12 text-[#D4AF37]/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-                    </div>
-                    @endif
-                    <div class="absolute top-3 left-3">
-                        @if($isOps)
-                        <span class="flex items-center gap-1.5 px-3 py-1 bg-emerald-500/90 backdrop-blur rounded-full text-white text-[10px] font-black">
-                            <span class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></span>Aktif
-                        </span>
-                        @else
-                        <span class="px-3 py-1 bg-slate-700/70 backdrop-blur rounded-full text-slate-300 text-[10px] font-black">Tutup</span>
-                        @endif
-                    </div>
-                </div>
-                <div class="p-6">
-                    <h3 class="font-black text-[#0F172A] playfair italic mb-1">{{ $kitchen->name }}</h3>
-                    <p class="text-[10px] text-[#D4AF37] font-black uppercase tracking-widest">{{ $kitchen->beneficiaries_count }} Penerima Manfaat</p>
-                    @if($kitchen->address)
-                    <p class="text-xs text-slate-400 mt-2">{{ $kitchen->address }}</p>
-                    @endif
-                </div>
-            </a>
-            @empty
-            <div class="col-span-3 text-center py-16 text-slate-400">
-                <p class="font-bold">Data dapur belum tersedia. Admin dapat menambahkan profil dapur melalui Dashboard.</p>
-            </div>
-            @endforelse
-        </div>
     </section>
+
+    <!-- Services Section -->
+    <section class="bg-slate-50 py-24 border-y border-slate-100 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-gold/5 rounded-full blur-[100px] translate-x-1/2 -translate-y-1/2"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-16">
+                <span class="inline-block px-4 py-1 rounded-full bg-gold/10 text-gold-dark font-black text-[10px] uppercase tracking-[0.3em] mb-4">Layanan Unggulan</span>
+                <h2 class="playfair text-4xl lg:text-6xl font-black italic text-[#0F172A] mb-6">Integrasi Gizi & <span class="text-gold">Pelaporan Terpadu</span></h2>
+                <p class="text-gray-500 max-w-2xl mx-auto">Kami menghubungkan tenaga ahli gizi dengan masyarakat, serta memastikan setiap unit dapur melaporkan kegiatan secara real-time demi akuntabilitas publik.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 mt-12">
+                <!-- Nutrition Consultation Card -->
+                <div class="group bg-white rounded-[2.5rem] p-10 border border-slate-100 shadow-xl hover:shadow-2xl transition-all duration-500 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-full -translate-x-1/2 -translate-y-1/2 group-hover:scale-150 transition-transform duration-700"></div>
+                    
+                    <div class="relative z-10">
+                        <div class="w-16 h-16 bg-gold/10 rounded-2xl flex items-center justify-center text-gold mb-8 group-hover:bg-gold group-hover:text-white transition-all duration-300">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                            </svg>
+                        </div>
+                        <h3 class="playfair text-3xl font-black italic text-[#0F172A] mb-4">Konsultasi Gizi Gratis</h3>
+                        <p class="text-gray-500 leading-relaxed mb-8">Dapatkan bimbingan kesehatan langsung dari ahli gizi profesional untuk mendukung pertumbuhan anak dan kesehatan keluarga melalui program MBG.</p>
+                        
+                        <ul class="space-y-3 mb-10">
+                            <li class="flex items-center gap-3 text-sm font-bold text-slate-600">
+                                <svg class="w-5 h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                                Rekomendasi Menu Harian Sehat
+                            </li>
+                            <li class="flex items-center gap-3 text-sm font-bold text-slate-600">
+                                <svg class="w-5 h-5 text-emerald-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+                                Monitoring Grafik Pertumbuhan Anak
+                            </li>
+                        </ul>
+
+                        <a href="{{ route('nutrition.consultation') }}" class="inline-flex items-center gap-3 px-8 py-4 bg-[#0F172A] text-white font-black text-xs tracking-widest uppercase rounded-2xl group-hover:bg-gold transition-all duration-300">
+                            Daftar Konsultasi
+                            <svg class="w-4 h-4 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Daily Reporting Card -->
+                <div class="group bg-[#0F172A] rounded-[2.5rem] p-10 border border-white/5 shadow-2xl hover:shadow-gold/20 transition-all duration-500 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2 group-hover:scale-150 transition-transform duration-700"></div>
+
+                    <div class="relative z-10 text-white">
+                        <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center text-gold mb-8 group-hover:bg-white group-hover:text-[#0F172A] transition-all duration-300">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                            </svg>
+                        </div>
+                        <h3 class="playfair text-3xl font-black italic mb-4">Pelaporan Harian SPPG</h3>
+                        <p class="text-white/60 leading-relaxed mb-8">Pilar utama transparansi program. Seluruh unit dapur (SPPG) wajib melaporkan distribusi makanan setiap sesi secara akurat.</p>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-10">
+                            <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
+                                <p class="text-gold text-xl font-black mb-1">99%</p>
+                                <p class="text-[10px] text-white/40 font-black uppercase tracking-widest leading-tight">Tingkat Kepatuhan Laporan</p>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-white/5 border border-white/10">
+                                <p class="text-gold text-xl font-black mb-1">Harian</p>
+                                <p class="text-[10px] text-white/40 font-black uppercase tracking-widest leading-tight">Update Dokumentasi Real-time</p>
+                            </div>
+                        </div>
+
+                        <a href="{{ route('reports.daily') }}" class="inline-flex items-center gap-3 px-8 py-4 bg-gold text-white font-black text-xs tracking-widest uppercase rounded-2xl hover:bg-white hover:text-[#0F172A] transition-all duration-300">
+                            Upload Laporan Sesi
+                            <svg class="w-4 h-4 group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     <!-- YouTube & Tutorials -->
     <section class="max-w-7xl mx-auto px-6 py-24">
