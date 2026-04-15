@@ -20,9 +20,8 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <!-- Stats Summary (Optional but adds value) -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="premium-card p-6 flex items-center space-x-4">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
+                <div class="premium-card p-6 flex items-center space-x-4 w-full md:w-auto">
                     <div class="w-12 h-12 rounded-2xl bg-gold/10 flex items-center justify-center text-gold">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                     </div>
@@ -31,11 +30,20 @@
                         <p class="text-2xl font-black text-royal-navy leading-none mt-1">{{ $materials->total() }}</p>
                     </div>
                 </div>
+
+                <div class="relative w-full md:w-96 group">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-300 group-focus-within:text-gold transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </div>
+                    <input type="text" id="materialSearch" 
+                        class="w-full pl-12 pr-4 py-4 bg-white border-2 border-gold/5 rounded-2xl text-xs font-bold text-royal-navy placeholder-gray-400 focus:border-gold focus:ring-4 focus:ring-gold/10 outline-none transition-all shadow-xl shadow-royal-navy/5" 
+                        placeholder="Cari bahan baku (nama, kategori...)...">
+                </div>
             </div>
 
             <div class="glass overflow-hidden shadow-2xl sm:rounded-[2rem] border border-gold/10 relative">
                 <div class="overflow-x-auto custom-scrollbar">
-                    <table class="min-w-full divide-y divide-slate-100">
+                    <table class="min-w-full divide-y divide-slate-100" id="materialsTable">
                         <thead>
                             <tr class="bg-silk/50 border-b border-gray-100">
                                 <th class="px-8 py-4 text-left text-[10px] font-black text-royal-navy uppercase tracking-widest">Nama Bahan</th>
@@ -103,4 +111,14 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            $("#materialSearch").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#materialsTable tbody tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
 </x-app-layout>

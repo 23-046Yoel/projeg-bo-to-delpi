@@ -12,7 +12,12 @@
                     <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                     <p class="text-sm font-bold text-blue-800 italic">Mode Edit Aktif: Bapak bisa langsung klik dan ketik pada teks di bawah untuk mengubah isinya.</p>
                 </div>
-                <button onclick="window.print()" class="px-6 py-2 bg-royal-navy text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-gold transition-all">Cetak Sekarang</button>
+                <div class="flex space-x-2">
+                    <button onclick="saveReport()" id="saveBtn" class="px-6 py-2 bg-emerald-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all flex items-center">
+                        Simpan Perubahan
+                    </button>
+                    <button onclick="window.print()" class="px-6 py-2 bg-royal-navy text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-gold transition-all">Cetak Sekarang</button>
+                </div>
             </div>
         </div>
     </div>
@@ -37,8 +42,8 @@
                 <p contenteditable="true">Saya yang bertanda tangan di bawah ini:</p>
 
                 <div class="grid grid-cols-[100px_auto] gap-y-1 ml-4 italic">
-                    <div class="font-bold">Nama</div><div contenteditable="true">: {{ $data['nama'] }}</div>
-                    <div class="font-bold">Jabatan</div><div contenteditable="true">: {{ $data['jabatan'] }}</div>
+                    <div class="font-bold">Nama</div><div contenteditable="true" id="field-nama">: {{ $data['nama'] }}</div>
+                    <div class="font-bold">Jabatan</div><div contenteditable="true" id="field-jabatan">: {{ $data['jabatan'] }}</div>
                 </div>
 
                 <div class="text-justify" contenteditable="true">
@@ -65,7 +70,7 @@
                 <!-- Signatures -->
                 <div class="pt-8 flex flex-col items-end text-center uppercase">
                     <div class="w-80">
-                        <p class="text-[12px] normal-case italic" contenteditable="true">{{ $data['lokasi'] }}, {{ $data['tanggal'] }}</p>
+                        <p class="text-[12px] normal-case italic" contenteditable="true" id="field-waktu">{{ $data['lokasi'] }}, {{ $data['tanggal'] }}</p>
                         <p class="text-[13px] font-black mb-24" contenteditable="true">{{ $data['jabatan'] }}</p>
                         
                         <p class="text-[14px] font-extrabold border-b-2 border-black inline-block px-10" contenteditable="true">{{ $data['nama'] }}</p>
@@ -95,4 +100,39 @@
             .p-16 { padding: 0 !important; }
         }
     </style>
+    <script>
+        function saveReport() {
+            const btn = document.getElementById('saveBtn');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = 'Menyimpan...';
+
+            const data = {
+                nama: document.getElementById('field-nama').innerText.replace(': ', ''),
+                jabatan: document.getElementById('field-jabatan').innerText.replace(': ', ''),
+                lokasi: document.getElementById('field-waktu').innerText.split(', ')[0],
+                tanggal: document.getElementById('field-waktu').innerText.split(', ')[1]
+            };
+
+            fetch('{{ route('reports.save') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    type: 'sptj',
+                    data: data
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) alert(result.message);
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            });
+        }
+    </script>
 </x-app-layout>

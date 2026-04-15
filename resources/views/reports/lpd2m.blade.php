@@ -12,7 +12,12 @@
                     <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                     <p class="text-sm font-bold text-blue-800 italic">Mode Edit Aktif: Bapak bisa langsung klik dan ketik pada teks di bawah untuk mengubah isinya.</p>
                 </div>
-                <button onclick="window.print()" class="px-6 py-2 bg-royal-navy text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-gold transition-all">Cetak Sekarang</button>
+                <div class="flex space-x-2">
+                    <button onclick="saveReport()" id="saveBtn" class="px-6 py-2 bg-emerald-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all flex items-center">
+                        Simpan Perubahan
+                    </button>
+                    <button onclick="window.print()" class="px-6 py-2 bg-royal-navy text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-gold transition-all">Cetak Sekarang</button>
+                </div>
             </div>
         </div>
     </div>
@@ -37,11 +42,11 @@
             <div class="space-y-6 text-[13px]">
                 <p contenteditable="true">Yang bertanda tangan di bawah ini:</p>
                 <div class="grid grid-cols-[120px_auto] gap-y-1 ml-4">
-                    <div class="font-bold">Nama</div><div contenteditable="true">: {{ $data['user_name'] }}</div>
-                    <div class="font-bold">Jabatan</div><div contenteditable="true">: {{ $data['jabatan'] }}</div>
-                    <div class="font-bold">Yayasan</div><div contenteditable="true">: {{ $data['yayasan'] }}</div>
-                    <div class="font-bold">SPPG</div><div contenteditable="true">: {{ $data['sppg_name'] }}</div>
-                    <div class="font-bold">ID SPPG</div><div contenteditable="true">: {{ $data['sppg_id'] }}</div>
+                    <div class="font-bold">Nama</div><div contenteditable="true" id="field-user-name">: {{ $data['user_name'] }}</div>
+                    <div class="font-bold">Jabatan</div><div contenteditable="true" id="field-jabatan">: {{ $data['jabatan'] }}</div>
+                    <div class="font-bold">Yayasan</div><div contenteditable="true" id="field-yayasan">: {{ $data['yayasan'] }}</div>
+                    <div class="font-bold">SPPG</div><div contenteditable="true" id="field-sppg-name">: {{ $data['sppg_name'] }}</div>
+                    <div class="font-bold">ID SPPG</div><div contenteditable="true" id="field-sppg-id">: {{ $data['sppg_id'] }}</div>
                 </div>
 
                 <p contenteditable="true" class="mt-4">Dengan ini menyatakan bahwa laporan penggunaan dana sebagai berikut:</p>
@@ -50,27 +55,27 @@
                     <h2 class="font-black" contenteditable="true">I. RINCIAN KEUANGAN</h2>
                     <div class="grid grid-cols-[auto_150px_auto] gap-x-2 items-center">
                         <div class="font-bold">Dana Pemasukan</div>
-                        <div class="font-black text-right border-b-2 border-black" contenteditable="true">{{ number_format($data['dana_masuk']) }}</div>
+                        <div class="font-black text-right border-b-2 border-black" contenteditable="true" id="field-dana-masuk">{{ number_format($data['dana_masuk']) }}</div>
                         <div class="italic text-[11px]" contenteditable="true">(termasuk saldo akhir periode yang lalu)</div>
                     </div>
 
                     <div class="space-y-1">
                         <h3 class="font-bold underline italic mb-2">Realisasi Anggaran</h3>
                         <div class="grid grid-cols-[auto_150px] gap-x-2 ml-4">
-                            <div>Bahan Baku</div><div class="text-right border-b border-gray-300" contenteditable="true">{{ number_format($data['belanja_bahan']) }}</div>
-                            <div>Operasional</div><div class="text-right border-b border-gray-300" contenteditable="true">{{ number_format($data['operasional']) }}</div>
-                            <div>Insentif Fasilitas</div><div class="text-right border-b border-gray-300" contenteditable="true">{{ number_format($data['insentif']) }}</div>
+                            <div>Bahan Baku</div><div class="text-right border-b border-gray-300" contenteditable="true" id="field-belanja-bahan">{{ number_format($data['belanja_bahan']) }}</div>
+                            <div>Operasional</div><div class="text-right border-b border-gray-300" contenteditable="true" id="field-operasional">{{ number_format($data['operasional']) }}</div>
+                            <div>Insentif Fasilitas</div><div class="text-right border-b border-gray-300" contenteditable="true" id="field-insentif">{{ number_format($data['insentif']) }}</div>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-[auto_150px] gap-x-2 border-t-2 border-black pt-1">
                         <div class="font-black">Total Belanja</div>
-                        <div class="font-black text-right border-b-4 border-double border-black underline" contenteditable="true">{{ number_format($data['belanja_bahan'] + $data['operasional'] + $data['insentif']) }}</div>
+                        <div class="font-black text-right border-b-4 border-double border-black underline" contenteditable="true" id="field-total-belanja">{{ number_format($data['belanja_bahan'] + $data['operasional'] + $data['insentif']) }}</div>
                     </div>
 
                     <div class="grid grid-cols-[auto_150px] gap-x-2">
                         <div class="font-black">Sisa Anggaran</div>
-                        <div class="font-black text-right border-b-4 border-double border-black underline" contenteditable="true">{{ number_format($data['sisa_dana']) }}</div>
+                        <div class="font-black text-right border-b-4 border-double border-black underline" contenteditable="true" id="field-sisa-dana">{{ number_format($data['sisa_dana']) }}</div>
                     </div>
                 </div>
 
@@ -120,4 +125,47 @@
             .bg-silk { background: #f8fafc !important; }
         }
     </style>
+    <script>
+        function saveReport() {
+            const btn = document.getElementById('saveBtn');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = 'Menyimpan...';
+
+            const data = {
+                period: '{{ $data['period'] }}',
+                user_name: document.getElementById('field-user-name').innerText.replace(': ', ''),
+                jabatan: document.getElementById('field-jabatan').innerText.replace(': ', ''),
+                yayasan: document.getElementById('field-yayasan').innerText.replace(': ', ''),
+                sppg_name: document.getElementById('field-sppg-name').innerText.replace(': ', ''),
+                sppg_id: document.getElementById('field-sppg-id').innerText.replace(': ', ''),
+                dana_masuk: parseInt(document.getElementById('field-dana-masuk').innerText.replace(/,/g, '')),
+                belanja_bahan: parseInt(document.getElementById('field-belanja-bahan').innerText.replace(/,/g, '')),
+                operasional: parseInt(document.getElementById('field-operasional').innerText.replace(/,/g, '')),
+                insentif: parseInt(document.getElementById('field-insentif').innerText.replace(/,/g, '')),
+                sisa_dana: parseInt(document.getElementById('field-sisa-dana').innerText.replace(/,/g, '')),
+                virtual_account: '{{ $data['virtual_account'] }}'
+            };
+
+            fetch('{{ route('reports.save') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    type: 'lpd2m',
+                    data: data
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) alert(result.message);
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            });
+        }
+    </script>
 </x-app-layout>

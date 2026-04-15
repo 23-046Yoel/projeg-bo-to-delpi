@@ -31,7 +31,7 @@
 
                                 <div>
                                     <label for="category" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Kategori</label>
-                                    <select id="category" name="category" required class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
+                                    <select id="category" name="category" required class="select2 w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
                                         <option value="Karbohidrat">Karbohidrat</option>
                                         <option value="Protein Hewani">Protein Hewani</option>
                                         <option value="Protein Nabati">Protein Nabati</option>
@@ -44,7 +44,7 @@
                                 <div x-data="{ unitType: 'fixed', customUnit: '' }">
                                     <label for="unit" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Satuan (Unit)</label>
                                     <div class="space-y-3">
-                                        <select id="unit_select" x-model="unitType" @change="if(unitType !== 'custom') $refs.unit_input.value = unitType" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
+                                        <select id="unit_select" x-model="unitType" @change="if(unitType !== 'custom') $refs.unit_input.value = unitType" class="select2 w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
                                             <option value="Kg">Kg</option>
                                             <option value="Liter">Liter</option>
                                             <option value="Butir">Butir</option>

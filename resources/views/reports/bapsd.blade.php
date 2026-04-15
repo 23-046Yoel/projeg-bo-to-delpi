@@ -12,7 +12,12 @@
                     <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                     <p class="text-sm font-bold text-blue-800 italic">Mode Edit Aktif: Bapak bisa langsung klik dan ketik pada teks di bawah untuk mengubah isinya.</p>
                 </div>
-                <button onclick="window.print()" class="px-6 py-2 bg-royal-navy text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-gold transition-all">Cetak Sekarang</button>
+                <div class="flex space-x-2">
+                    <button onclick="saveReport()" id="saveBtn" class="px-6 py-2 bg-emerald-600 text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-emerald-700 transition-all flex items-center">
+                        Simpan Perubahan
+                    </button>
+                    <button onclick="window.print()" class="px-6 py-2 bg-royal-navy text-white rounded-xl font-black text-xs uppercase tracking-widest hover:bg-gold transition-all">Cetak Sekarang</button>
+                </div>
             </div>
         </div>
     </div>
@@ -35,8 +40,8 @@
 
             <div class="space-y-8 text-[15px] leading-[1.8]">
                 <div class="text-justify" contenteditable="true">
-                    Sehubungan dengan telah berakhirnya periode <span class="font-black underline">{{ $data['periode_berakhir'] }}</span>, sisa dana sebesar
-                    <span class="font-black">Rp {{ number_format($data['sisa_dana']) }},-</span> akan dialihkan ke periode selanjutnya yang dimulai pada tanggal <span class="font-black underline">{{ $data['periode_mulai'] }}</span>.
+                    Sehubungan dengan telah berakhirnya periode <span class="font-black underline" id="field-periode-berakhir">{{ $data['periode_berakhir'] }}</span>, sisa dana sebesar
+                    <span class="font-black">Rp <span id="field-sisa-dana">{{ number_format($data['sisa_dana']) }}</span>,-</span> akan dialihkan ke periode selanjutnya yang dimulai pada tanggal <span class="font-black underline" id="field-periode-mulai">{{ $data['periode_mulai'] }}</span>.
                 </div>
 
                 <p class="text-justify" contenteditable="true">
@@ -45,24 +50,24 @@
 
                 <!-- Signatures Grid -->
                 <div class="pt-16">
-                    <div class="text-center text-[13px] italic mb-12" contenteditable="true">BALIMBINGAN, {{ $data['tanggal'] }}</div>
+                    <div class="text-center text-[13px] italic mb-12" contenteditable="true" id="field-waktu">BALIMBINGAN, {{ $data['tanggal'] }}</div>
                     
                     <div class="grid grid-cols-2 gap-x-20 text-center uppercase font-bold text-[13px]">
                         <div class="space-y-24">
                             <div contenteditable="true">Pihak Pertama,<br>PENDIDIKAN ALA DELPHI</div>
-                            <div class="border-b-2 border-black w-full pb-1 font-black" contenteditable="true">{{ $data['pihak_pertama'] }}</div>
+                            <div class="border-b-2 border-black w-full pb-1 font-black" contenteditable="true" id="field-pihak-pertama">{{ $data['pihak_pertama'] }}</div>
                             <div class="text-[11px] normal-case" contenteditable="true">Ketua/Mewakili</div>
                         </div>
                         
                         <div class="space-y-24">
                             <div contenteditable="true">Pihak Kedua,<br>Staf Pengawas Keuangan<br>SPPG BALIMBINGAN 2</div>
-                            <div class="border-b-2 border-black w-full pb-1 font-black" contenteditable="true">{{ $data['pihak_kedua'] }}</div>
+                            <div class="border-b-2 border-black w-full pb-1 font-black" contenteditable="true" id="field-pihak-kedua">{{ $data['pihak_kedua'] }}</div>
                             <div class="text-[11px] normal-case" contenteditable="true">Staf Pengawas Keuangan</div>
                         </div>
 
                         <div class="col-span-2 mt-12 space-y-24">
                             <div contenteditable="true">Mengetahui,<br>Kepala SPPG BALIMBINGAN 2</div>
-                            <div class="border-b-2 border-black w-64 mx-auto pb-1 font-black" contenteditable="true">{{ $data['mengetahui'] }}</div>
+                            <div class="border-b-2 border-black w-64 mx-auto pb-1 font-black" contenteditable="true" id="field-mengetahui">{{ $data['mengetahui'] }}</div>
                             <div class="text-[11px] normal-case" contenteditable="true">Kepala SPPG BALIMBINGAN 2</div>
                         </div>
                     </div>
@@ -90,4 +95,42 @@
             .p-20 { padding: 0 !important; }
         }
     </style>
+    <script>
+        function saveReport() {
+            const btn = document.getElementById('saveBtn');
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = 'Menyimpan...';
+
+            const data = {
+                periode_berakhir: document.getElementById('field-periode-berakhir').innerText,
+                sisa_dana: parseInt(document.getElementById('field-sisa-dana').innerText.replace(/,/g, '')),
+                periode_mulai: document.getElementById('field-periode-mulai').innerText,
+                pihak_pertama: document.getElementById('field-pihak-pertama').innerText,
+                pihak_kedua: document.getElementById('field-pihak-kedua').innerText,
+                mengetahui: document.getElementById('field-mengetahui').innerText,
+                tanggal: document.getElementById('field-waktu').innerText.split(', ')[1]
+            };
+
+            fetch('{{ route('reports.save') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    type: 'bapsd',
+                    data: data
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) alert(result.message);
+            })
+            .finally(() => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            });
+        }
+    </script>
 </x-app-layout>

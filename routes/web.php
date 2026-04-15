@@ -83,6 +83,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/sptj', [\App\Http\Controllers\ReportController::class, 'sptj'])->name('reports.sptj');
     Route::get('/reports/bapsd', [\App\Http\Controllers\ReportController::class, 'bapsd'])->name('reports.bapsd');
     Route::get('/reports/upload', [\App\Http\Controllers\ReportController::class, 'uploadIndex'])->name('reports.upload');
+    Route::post('/reports/save', [\App\Http\Controllers\ReportController::class, 'saveReport'])->name('reports.save');
     Route::post('/reports/upload', [\App\Http\Controllers\ReportController::class, 'uploadStore'])->name('reports.upload.store');
     Route::get('/test-wablas', [\App\Http\Controllers\WablasTestController::class, 'test'])->name('test.wablas');
 

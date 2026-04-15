@@ -116,7 +116,24 @@
                         </div>
                     </div>
 
-                    <table class="min-w-full">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                        <h3 class="text-[11px] font-black text-royal-navy uppercase tracking-[0.3em] flex items-center">
+                            <svg class="w-4 h-4 mr-2 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                            Daftar Saldo Bahan Baku
+                        </h3>
+                        
+                        <div class="relative w-full md:w-80 group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-300 group-focus-within:text-gold">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            </div>
+                            <input type="text" id="tableSearch" 
+                                class="w-full pl-12 pr-4 py-3 bg-silk border-none rounded-xl text-xs font-bold text-royal-navy placeholder-gray-400 focus:ring-2 focus:ring-gold outline-none transition-all shadow-inner" 
+                                placeholder="Ketik nama bahan untuk mencari...">
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full" id="inventoryTable">
                         <thead>
                             <tr class="border-b border-gray-50">
                                 <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Material Name</th>
@@ -136,17 +153,17 @@
                                         </div>
                                     </td>
                                     <td class="px-6 py-6 whitespace-nowrap text-right font-bold text-gray-400 text-sm">
-                                        {{ number_format($item['saldo_awal'], 2) }}
+                                        {{ number_format($item['saldo_awal'], 2) }} <span class="text-[10px] uppercase font-black ml-1 text-slate-300">{{ $item['unit'] }}</span>
                                     </td>
                                     <td class="px-6 py-6 whitespace-nowrap text-right font-black text-emerald-500 text-sm">
-                                        +{{ number_format($item['masuk'], 2) }}
+                                        +{{ number_format($item['masuk'], 2) }} <span class="text-[10px] uppercase font-black ml-1 text-emerald-300">{{ $item['unit'] }}</span>
                                     </td>
                                     <td class="px-6 py-6 whitespace-nowrap text-right font-black text-rose-500 text-sm">
-                                        -{{ number_format($item['keluar'], 2) }}
+                                        -{{ number_format($item['keluar'], 2) }} <span class="text-[10px] uppercase font-black ml-1 text-rose-300">{{ $item['unit'] }}</span>
                                     </td>
                                     <td class="px-6 py-6 whitespace-nowrap text-right">
                                         <div class="inline-block px-4 py-2 rounded-xl {{ $item['saldo_akhir'] < 0 ? 'bg-rose-50 text-rose-600' : 'bg-royal-navy text-gold' }} text-lg font-black font-playfair">
-                                            {{ number_format($item['saldo_akhir'], 2) }}
+                                            {{ number_format($item['saldo_akhir'], 2) }} <span class="text-[10px] uppercase font-black ml-1 opacity-60">{{ $item['unit'] }}</span>
                                         </div>
                                     </td>
                                 </tr>
@@ -157,4 +174,14 @@
             </div>
         </div>
     </div>
+    <script>
+        $(document).ready(function() {
+            $("#tableSearch").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#inventoryTable tbody tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
 </x-app-layout>
