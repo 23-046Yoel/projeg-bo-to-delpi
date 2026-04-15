@@ -188,6 +188,23 @@
             <span class="font-bold tracking-tight">{{ __('Layanan Pengaduan') }}</span>
         </x-nav-link>
         @endcan
+        
+        <div class="px-8 mt-4 mb-2">
+            <p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Services & Reporting</p>
+        </div>
+        <x-nav-link :href="route('nutrition.consultation')" :active="request()->routeIs('nutrition.consultation')" class="py-3">
+            <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+            </svg>
+            <span class="font-bold tracking-tight">{{ __('Konsultasi Gizi') }}</span>
+        </x-nav-link>
+
+        <x-nav-link :href="route('reports.daily')" :active="request()->routeIs('reports.daily')" class="py-3">
+            <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 13h6m-3-3v6m-9 1V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+            </svg>
+            <span class="font-bold tracking-tight">{{ __('Laporan Harian') }}</span>
+        </x-nav-link>
 
         @can('manage-system')
         <div class="px-8 mt-4 mb-2">
