@@ -82,6 +82,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/lpd2m', [\App\Http\Controllers\ReportController::class, 'lpd2m'])->name('reports.lpd2m');
     Route::get('/reports/sptj', [\App\Http\Controllers\ReportController::class, 'sptj'])->name('reports.sptj');
     Route::get('/reports/bapsd', [\App\Http\Controllers\ReportController::class, 'bapsd'])->name('reports.bapsd');
+    Route::get('/reports/upload', [\App\Http\Controllers\ReportController::class, 'uploadIndex'])->name('reports.upload');
+    Route::post('/reports/upload', [\App\Http\Controllers\ReportController::class, 'uploadStore'])->name('reports.upload.store');
     Route::get('/test-wablas', [\App\Http\Controllers\WablasTestController::class, 'test'])->name('test.wablas');
 
     Route::resource('users', \App\Http\Controllers\UserController::class);

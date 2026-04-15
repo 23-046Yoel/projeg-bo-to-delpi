@@ -1,59 +1,100 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <title>SPTJ - Surat Pernyataan Tanggung Jawab</title>
-    <style>
-        body { font-family: 'Times New Roman', serif; font-size: 12pt; line-height: 1.8; margin: 3cm 2.5cm; color: #111; }
-        h2 { font-size: 14pt; text-align: center; text-transform: uppercase; text-decoration: underline; margin-bottom: 6pt; }
-        .center { text-align: center; }
-        .sub { font-size: 11pt; text-align: center; margin-bottom: 24pt; }
-        p { margin-bottom: 8pt; text-align: justify; }
-        .signature-block { margin-top: 48pt; display: flex; justify-content: space-between; }
-        .sig { text-align: center; width: 45%; }
-        .sig-space { height: 72pt; }
-        table { width: 100%; border-collapse: collapse; margin: 16pt 0; }
-        th, td { border: 1px solid #000; padding: 6pt 8pt; }
-        th { background: #eee; font-weight: bold; text-align: center; }
-        @media print { .no-print { display: none; } body { margin: 2cm; } }
-    </style>
-</head>
-<body>
-    <button class="no-print" onclick="window.print()" style="position:fixed;top:20px;right:20px;background:#0a192f;color:#d4af37;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:bold;">🖨️ Cetak PDF</button>
+<x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight italic">
+            {{ __('Surat Pernyataan Tanggung Jawab') }}
+        </h2>
+    </x-slot>
 
-    <h2>Surat Pernyataan Tanggung Jawab (SPTJ)</h2>
-    <p class="sub">Program Makan Bergizi Gratis (MBG) — SPPG DELPHI<br>
-    Periode: {{ \Carbon\Carbon::parse($date)->format('F Y') }}</p>
+    <div class="py-12">
+        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-2xl sm:rounded-3xl border border-gold/10">
+                <div class="p-16 text-gray-900 font-jakarta">
+                    <!-- Heading -->
+                    <div class="text-center mb-12 border-b-2 border-royal-navy pb-8">
+                        <h3 class="text-xs font-black text-gold-dark uppercase tracking-[0.5em] mb-4 leading-none">Kop surat Yayasan</h3>
+                        <h1 class="text-3xl font-black text-royal-navy uppercase tracking-tight font-playfair mb-2">SURAT PERNYATAAN TANGGUNG JAWAB</h1>
+                    </div>
 
-    <p>Yang bertanda tangan di bawah ini:</p>
+                    <div class="space-y-10 leading-[2]">
+                        <p class="text-base text-slate-800">Saya yang bertanda tangan di bawah ini:</p>
 
-    <table>
-        <tr><td width="200">Nama</td><td>: {{ auth()->user()->name }}</td></tr>
-        <tr><td>Jabatan</td><td>: Kepala SPPG / Penanggung Jawab</td></tr>
-        <tr><td>Nama SPPG</td><td>: SPPG DELPHI</td></tr>
-        <tr><td>Lokasi</td><td>: Laguboti, Sumatera Utara</td></tr>
-    </table>
+                        <div class="space-y-4 ml-10">
+                            <div class="flex">
+                                <span class="w-32 font-bold text-slate-400 uppercase text-xs tracking-widest">Nama</span>
+                                <span class="font-black text-royal-navy flex-1 ml-4 border-b border-slate-200 uppercase">: {{ $data['nama'] }}</span>
+                            </div>
+                            <div class="flex">
+                                <span class="w-32 font-bold text-slate-400 uppercase text-xs tracking-widest">Jabatan</span>
+                                <span class="font-bold text-slate-700 flex-1 ml-4 border-b border-slate-200 uppercase">: {{ $data['jabatan'] }}</span>
+                            </div>
+                        </div>
 
-    <p>Dengan ini menyatakan bahwa:</p>
-    <ol>
-        <li>Seluruh anggaran program MBG yang tercantum dalam dokumen Rencana Kegiatan dan Anggaran (RKA) SPPG telah digunakan secara efisien, efektif, dan ekonomis sesuai dengan peruntukannya.</li>
-        <li>Bukti-bukti pengeluaran yang sah atas penggunaan anggaran pada periode laporan tersebut di atas tersimpan dengan baik dan dapat dipergunakan sewaktu-waktu untuk keperluan pemeriksaan.</li>
-        <li>Apabila di kemudian hari ditemukan ketidaksesuaian atau penyimpangan dalam penggunaan anggaran, saya bertanggung jawab penuh dan bersedia menerima sanksi sesuai peraturan yang berlaku.</li>
-    </ol>
+                        <div class="text-base text-slate-800 text-justify">
+                            menyatakan bertanggung jawab secara formal dan material atas penerimaan dan pengeluaran dana yang dilaksanakan dengan menggunakan dana APBN TA 2026 melalui DIPA Badan Gizi Nasional TA 2026, dengan mata anggaran sebagai Bantuan Pemerintah untuk Program Makan Bergizi Gratis. Sebagaimana Surat Pernyataan Tanggung Jawab penggunaan anggaran <span class="font-black text-royal-navy underline decoration-gold">Bahan Baku/Operasional/Insentif Fasilitas</span> beserta bukti-bukti pengeluaran yang sah dengan rincian:
+                        </div>
 
-    <p>Demikian surat pernyataan ini dibuat dengan sebenar-benarnya.</p>
+                        <!-- Data Table -->
+                        <div class="bg-silk rounded-3xl p-10 border border-gold/10 shadow-inner max-w-lg mx-auto">
+                            <ul class="space-y-6">
+                                <li class="flex justify-between items-center group">
+                                    <span class="text-sm font-bold text-slate-500 uppercase tracking-widest group-hover:text-royal-navy transition-colors">1. Jumlah Penerimaan</span>
+                                    <div class="flex items-center">
+                                        <span class="text-royal-navy font-bold mr-3">:</span>
+                                        <span class="text-xl font-black text-royal-navy">{{ number_format($data['penerimaan']) }}</span>
+                                    </div>
+                                </li>
+                                <li class="flex justify-between items-center group">
+                                    <span class="text-sm font-bold text-slate-500 uppercase tracking-widest group-hover:text-royal-navy transition-colors">2. Jumlah Pengeluaran</span>
+                                    <div class="flex items-center">
+                                        <span class="text-royal-navy font-bold mr-3">:</span>
+                                        <span class="text-xl font-black text-royal-navy">{{ number_format($data['pengeluaran']) }}</span>
+                                    </div>
+                                </li>
+                                <div class="h-px bg-royal-navy/20 w-full"></div>
+                                <li class="flex justify-between items-center group">
+                                    <span class="text-sm font-black text-gold-dark uppercase tracking-[0.2em] group-hover:text-gold transition-colors">3. Sisa Dana</span>
+                                    <div class="flex items-center">
+                                        <span class="text-royal-navy font-bold mr-3">:</span>
+                                        <span class="text-2xl font-black text-royal-navy underline decoration-gold decoration-4 underline-offset-8">{{ number_format($data['sisa']) }}</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
 
-    <div class="signature-block">
-        <div class="sig">
-            <p>Mengetahui,<br>Kepala Yayasan</p>
-            <div class="sig-space"></div>
-            <p>( .................................... )<br>NIP/NIK: .........................</p>
-        </div>
-        <div class="sig">
-            <p>{{ \Carbon\Carbon::parse($date)->format('d F Y') }},<br>Yang Membuat Pernyataan,</p>
-            <div class="sig-space"></div>
-            <p>( {{ auth()->user()->name }} )<br>Kepala SPPG</p>
+                        <p class="text-base text-slate-800 text-justify">
+                            Demikian surat ini saya buat untuk dapat dipergunakan sebagaimana mestinya dan untuk dapat dipertanggungjawabkan.
+                        </p>
+
+                        <!-- Signatures -->
+                        <div class="pt-16 flex flex-col items-end text-center uppercase tracking-widest">
+                            <div class="w-80">
+                                <p class="text-xs font-bold text-slate-500 mb-1">{{ $data['lokasi'] }}, {{ $data['tanggal'] }}</p>
+                                <p class="text-sm font-black text-royal-navy mb-32">{{ $data['jabatan'] }}</p>
+                                
+                                <p class="text-lg font-black text-royal-navy border-b-4 border-royal-navy pb-1 inline-block px-10">{{ $data['nama'] }}</p>
+                                <p class="text-[10px] text-slate-400 mt-2 font-bold tracking-[0.3em]">( Materai )</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Print Button -->
+                    <div class="mt-20 text-center no-print">
+                        <button onclick="window.print()" class="px-10 py-4 bg-royal-navy text-white rounded-2xl font-black uppercase tracking-[0.2em] shadow-xl hover:bg-gold transition-all transform hover:-translate-y-1 active:scale-95">
+                            Cetak Surat Pertanggungjawaban
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-</body>
-</html>
+
+    <style>
+        @media print {
+            .no-print { display: none !important; }
+            body { background: white !important; }
+            .shadow-2xl { shadow: none !important; }
+            .bg-silk { background: #f8fafc !important; }
+            .p-16 { padding: 0 !important; }
+        }
+    </style>
+</x-app-layout>
