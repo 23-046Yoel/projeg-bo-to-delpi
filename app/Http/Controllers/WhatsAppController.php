@@ -170,12 +170,34 @@ class WhatsAppController extends Controller
 
         if (strpos($msg, 'TERIMA BAHAN') !== false) {
             cache()->put("bot_state_$phone", 'internal_material_in', 600);
-            return $this->wa->sendMessage($phone, $this->bot->medanize("Bahan apa yang masuk? Dan berapa banyak? (Format: NamaBahan, Jumlah)"));
+            return $this->wa->sendMessage($phone, $this->bot->medanize("Bahan apa yang masuk ke gudang? Sebutkan jumlah barangnya ya lae, bukan harga duitnya!\n\n(Format: Bahan, Jumlah. Misal: Ayam, 10)"));
         }
 
         if (strpos($msg, 'PAKAI BAHAN') !== false) {
             cache()->put("bot_state_$phone", 'internal_material_out', 600);
-            return $this->wa->sendMessage($phone, $this->bot->medanize("Bahan apa yang kau pakai? Dan berapa banyak? (Format: NamaBahan, Jumlah)"));
+            return $this->wa->sendMessage($phone, $this->bot->medanize("Bahan apa yang mau kau pakai? Sebutkan jumlah barangnya ya!\n\n(Format: Bahan, Jumlah. Misal: Beras, 25)"));
+        }
+
+        if (strpos($msg, 'CEK STOK') !== false) {
+            $materials = \App\Models\Material::all();
+            $report = "*LAPORAN STOK GUDANG*\n\n";
+            $totalValue = 0;
+
+            foreach ($materials as $m) {
+                // Calculate stock based on logs
+                $in = \App\Models\MaterialLog::where('material_id', $m->id)->where('type', 'in')->sum('quantity');
+                $out = \App\Models\MaterialLog::where('material_id', $m->id)->where('type', 'out')->sum('quantity');
+                $currentStock = $in - $out;
+                $value = $currentStock * $m->price;
+                $totalValue += $value;
+
+                if ($currentStock != 0) {
+                    $report .= "- *{$m->name}*: " . number_format($currentStock) . " " . ($m->unit ?? 'Unit') . "\n";
+                    $report .= "  Nilai: Rp " . number_format($value) . "\n";
+                }
+            }
+            $report .= "\n*Total Nilai Aset: Rp " . number_format($totalValue) . "*";
+            return $this->wa->sendMessage($phone, $this->bot->medanize($report));
         }
 
         if (strpos($msg, 'UPDATE MENU') !== false) {
@@ -462,6 +484,7 @@ class WhatsAppController extends Controller
         $data = [
             'material_id' => $mat->id,
             'material_name' => $mat->name,
+            'material_unit' => $mat->unit ?? 'Unit',
             'type' => $type,
             'quantity' => trim($parts[1]),
             'sppg_id' => $user->sppg_id ?? null
@@ -471,12 +494,12 @@ class WhatsAppController extends Controller
         
         if ($type == 'in') {
             cache()->put("bot_state_$phone", "verify_material_color", 600);
-            return $this->wa->sendMessage($phone, $this->bot->medanize("Gimana warnanya lae? (Sesuai / Tidak Sesuai)"));
+            return $this->wa->sendMessage($phone, $this->bot->medanize("Oke, kucatat masuk {$data['quantity']} {$data['material_unit']} {$data['material_name']}.\n\nGimana warnanya lae? (Sesuai / Tidak Sesuai)"));
         }
 
         cache()->put("bot_state_$phone", "confirm_material_$type", 600);
         $action = 'pakai';
-        return $this->wa->sendMessage($phone, $this->bot->medanize("Betul kau mau $action {$data['material_name']} sebanyak {$data['quantity']}? (Y/N)"));
+        return $this->wa->sendMessage($phone, $this->bot->medanize("Betul kau mau $action {$data['material_name']} sebanyak {$data['quantity']} {$data['material_unit']}? (Y/N)"));
     }
 
     private function handleMaterialVerification($phone, $message, $stage)
@@ -504,8 +527,8 @@ class WhatsAppController extends Controller
                 cache()->put("conf_data_$phone", $data, 600);
                 cache()->put("bot_state_$phone", "confirm_material_in", 600);
                 
-                $summary = "Bahan: {$data['material_name']}\nJumlah: {$data['quantity']}\nWarna: {$data['color']}\nAroma: {$data['aroma']}\nSuhu: {$data['temperature']}\nTempat: {$data['storage_location']}";
-                return $this->wa->sendMessage($phone, $this->bot->medanize("Sudah pas pendataanmu ini lae?\n\n$summary\n\nKetik 'Y' kalo pas!"));
+                $summary = "Bahan: {$data['material_name']}\nJumlah: {$data['quantity']} {$data['material_unit']}\nWarna: {$data['color']}\nAroma: {$data['aroma']}\nSuhu: {$data['temperature']}\nTempat: {$data['storage_location']}";
+                return $this->wa->sendMessage($phone, $this->bot->medanize("Sudah pas pendataanmu ini lae? Ingat ya, ini jumlah barang, bukan rupiah!\n\n$summary\n\nKetik 'Y' kalo pas!"));
         }
     }
 
@@ -607,10 +630,10 @@ class WhatsAppController extends Controller
                 ]));
                 $this->sheets->syncMaterialLog($log);
                 $head = User::where('role', 'head')->where('sppg_id', $data['sppg_id'])->first();
-                if ($head) $this->wa->sendMessage($head->phone, $this->bot->medanize("Lapor pak! " . ($data['type'] == 'in' ? 'Terima' : 'Pakai') . " {$data['material_name']} sebanyak {$data['quantity']}. Kualitas: {$data['color']}/{$data['aroma']}/{$data['temperature']}!"));
+                if ($head) $this->wa->sendMessage($head->phone, $this->bot->medanize("Lapor pak! " . ($data['type'] == 'in' ? 'Terima' : 'Pakai') . " {$data['material_name']} sebanyak {$data['quantity']} {$data['material_unit']}. Kualitas: {$data['color']}/{$data['aroma']}/{$data['temperature']}!"));
                 
                 // Always notify master number
-                $this->wa->sendMessage($this->wa->getMasterNumber(), $this->bot->medanize("Lapor Bos! " . ($data['type'] == 'in' ? 'Terima' : 'Pakai') . " {$data['material_name']} sebanyak {$data['quantity']} di " . ($user->sppg->name ?? 'SPPG')));
+                $this->wa->sendMessage($this->wa->getMasterNumber(), $this->bot->medanize("Lapor Bos! " . ($data['type'] == 'in' ? 'Terima' : 'Pakai') . " {$data['material_name']} sebanyak {$data['quantity']} {$data['material_unit']} di " . ($user->sppg->name ?? 'SPPG')));
                 break;
             case 'mbg_dist':
                 $dist = MbgDistribution::create(array_merge($data, ['distributed_at' => now()]));
