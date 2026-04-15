@@ -18,8 +18,12 @@ class ReportController extends Controller
         $sppgId = $user->sppg_id;
         $sppg = $user->sppg;
 
-        // Check if there is a saved version
-        $saved = SavedReport::where('user_id', $user->id)->where('type', 'lpd2m')->first();
+        // Check if there is a saved version (Safety check if table doesn't exist yet)
+        $saved = null;
+        if (\Illuminate\Support\Facades\Schema::hasTable('saved_reports')) {
+            $saved = SavedReport::where('user_id', $user->id)->where('type', 'lpd2m')->first();
+        }
+
         if ($saved && !$request->has('refresh')) {
             $data = $saved->data;
             return view('reports.lpd2m', compact('data'));
