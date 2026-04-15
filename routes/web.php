@@ -174,4 +174,14 @@ Route::get('/pindah-storage', function () {
     return "Storage link berhasil dibuat! <br><a href='/'>Kembali ke Home</a>";
 });
 
+Route::get('/jalankan-migrasi-baru-8x92k', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        $output = \Illuminate\Support\Facades\Artisan::output();
+        return "<pre style='font-family:monospace;padding:20px;background:#0F172A;color:#D4AF37'>✅ MIGRASI BERHASIL!\n\n" . $output . "\n\n<a href='/' style='color:white'>Kembali ke Home</a></pre>";
+    } catch (\Exception $e) {
+        return "<pre style='color:red;padding:20px'>❌ Gagal: " . $e->getMessage() . "</pre>";
+    }
+});
+
 require __DIR__.'/auth.php';
