@@ -179,14 +179,21 @@ class WhatsAppController extends Controller
         }
 
         if (strpos($msg, 'CEK STOK') !== false) {
-            $materials = \App\Models\Material::all();
-            $report = "*LAPORAN STOK GUDANG*\n\n";
+            $sppgId = $user->sppg_id;
+            $materials = \App\Models\Material::where(function($q) use ($sppgId) {
+                $q->whereNull('sppg_id')->orWhere('sppg_id', $sppgId);
+            })->get();
+            
+            $report = "*LAPORAN STOK GUDANG (" . ($user->sppg->name ?? 'Global') . ")*\n\n";
             $totalValue = 0;
 
             foreach ($materials as $m) {
-                // Calculate stock based on logs
-                $in = \App\Models\MaterialLog::where('material_id', $m->id)->where('type', 'in')->sum('quantity');
-                $out = \App\Models\MaterialLog::where('material_id', $m->id)->where('type', 'out')->sum('quantity');
+                // Calculate stock based on logs for this SPPG
+                $query = \App\Models\MaterialLog::where('material_id', $m->id);
+                if ($sppgId) $query->where('sppg_id', $sppgId);
+                
+                $in = (clone $query)->where('type', 'in')->sum('quantity');
+                $out = (clone $query)->where('type', 'out')->sum('quantity');
                 $currentStock = $in - $out;
                 $value = $currentStock * $m->price;
                 $totalValue += $value;
@@ -196,7 +203,7 @@ class WhatsAppController extends Controller
                     $report .= "  Nilai: Rp " . number_format($value) . "\n";
                 }
             }
-            $report .= "\n*Total Nilai Aset: Rp " . number_format($totalValue) . "*";
+            $report .= "\n*Total Nilai Aset Gudang: Rp " . number_format($totalValue) . "*";
             return $this->wa->sendMessage($phone, $this->bot->medanize($report));
         }
 
@@ -476,17 +483,18 @@ class WhatsAppController extends Controller
     {
         $user = User::where('phone', $phone)->first();
         $parts = explode(',', $message);
-        if (count($parts) < 2) return $this->wa->sendMessage($phone, $this->bot->medanize("Kurang datanya lae! 'Bahan, Jumlah'."));
+        // Sanitize quantity string to float
+        $qtyString = trim($parts[1]);
+        $qty = (float) preg_replace('/[^0-9.]/', '', $qtyString);
 
-        $mat = Material::where('name', 'like', "%".trim($parts[0])."%")->first();
-        if (!$mat) return $this->wa->sendMessage($phone, $this->bot->medanize("Bahan apa itu? Gak ada di daftar kita bah!"));
+        if ($qty <= 0) return $this->wa->sendMessage($phone, $this->bot->medanize("Jumlahnya mana bah? Kasih angka yang bener lah!"));
 
         $data = [
             'material_id' => $mat->id,
             'material_name' => $mat->name,
             'material_unit' => $mat->unit ?? 'Unit',
             'type' => $type,
-            'quantity' => trim($parts[1]),
+            'quantity' => $qty,
             'sppg_id' => $user->sppg_id ?? null
         ];
 
@@ -536,10 +544,11 @@ class WhatsAppController extends Controller
     {
         $user = User::where('phone', $phone)->first();
         $parts = explode(',', $message);
-        if (count($parts) < 2) return $this->wa->sendMessage($phone, $this->bot->medanize("Formatnya: 'Jumlah, Tujuan'."));
+        $qty = (float) preg_replace('/[^0-9.]/', '', trim($parts[0]));
+        if ($qty <= 0) return $this->wa->sendMessage($phone, $this->bot->medanize("Berapa porsinya? Kasih angka lah!"));
 
         $data = [
-            'quantity' => trim($parts[0]),
+            'quantity' => $qty,
             'tujuan' => trim($parts[1]),
             'sppg_id' => $user->sppg_id ?? null,
             'beneficiary_id' => 1

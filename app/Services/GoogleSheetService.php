@@ -58,6 +58,7 @@ class GoogleSheetService
             $log->material->name ?? 'Unknown',
             $log->type,
             $log->quantity,
+            $log->material->unit ?? 'Unit', // Added Qty Unit explicitly
             $log->date,
             $log->created_at
         ]);
@@ -70,6 +71,7 @@ class GoogleSheetService
             $dist->sppg_id,
             $dist->beneficiary->name ?? 'Bulk',
             $dist->quantity,
+            'Porsi', // Implicit unit for distribution
             $dist->distributed_at,
             $dist->created_at
         ]);
