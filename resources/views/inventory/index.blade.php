@@ -68,51 +68,56 @@
                            <div class="relative z-10">
                                 <div class="text-[10px] font-black text-gold uppercase tracking-widest mb-4">Aksi Cepat</div>
                                 <div class="flex gap-2">
-                                    <button @click="open = true; type = 'in'" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-3 px-4 text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-emerald-500/20">
+                                    <button @click="type = 'in'; $dispatch('open-modal', 'adj')" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-3 px-4 text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-emerald-500/20">
                                         + Tambah
                                     </button>
-                                    <button @click="open = true; type = 'out'" class="flex-1 bg-rose-500 hover:bg-rose-600 text-white rounded-xl py-3 px-4 text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-rose-500/20">
+                                    <button @click="type = 'out'; $dispatch('open-modal', 'adj')" class="flex-1 bg-rose-500 hover:bg-rose-600 text-white rounded-xl py-3 px-4 text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-rose-500/20">
                                         - Kurang
                                     </button>
                                 </div>
                            </div>
                            
                            {{-- Adjustment Modal --}}
-                           <div x-show="open" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-royal-navy/60 backdrop-blur-sm" x-cloak>
-                                <div @click.away="open = false" class="bg-white rounded-[2.5rem] p-10 w-full max-w-md shadow-2xl border border-gray-100 animate-fadeIn">
-                                    <h3 class="text-xl font-black text-royal-navy uppercase tracking-tight mb-6" x-text="type === 'in' ? 'Tambah Stok Manual' : 'Kurangi Stok Manual'"></h3>
-                                    
-                                    <form action="{{ route('inventory.adjust') }}" method="POST" class="space-y-6">
-                                        @csrf
-                                        <input type="hidden" name="type" :value="type">
+                               <div x-show="open" 
+                                    x-transition:enter="transition ease-out duration-300"
+                                    x-transition:enter-start="opacity-0 scale-95"
+                                    x-transition:enter-end="opacity-100 scale-100"
+                                    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-royal-navy/60 backdrop-blur-sm" x-cloak
+                                    @open-modal.window="if($event.detail === 'adj') { open = true; $nextTick(() => { $('.select2-adj').select2({ dropdownParent: $('#adj-modal'), placeholder: 'Cari bahan baku...' }); }); }">
+                                    <div id="adj-modal" @click.away="open = false" class="bg-white rounded-[2.5rem] p-10 w-full max-w-md shadow-2xl border border-gray-100">
+                                        <h3 class="text-xl font-black text-royal-navy uppercase tracking-tight mb-6" x-text="type === 'in' ? 'Tambah Stok Manual' : 'Kurangi Stok Manual'"></h3>
                                         
-                                        <div>
-                                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Pilih Bahan Baku</label>
-                                            <select name="material_id" required class="select2 w-full px-6 py-4 bg-silk border-none rounded-2xl text-sm font-bold text-royal-navy focus:ring-2 focus:ring-gold outline-none">
-                                                <option value=""></option>
-                                                @foreach($materials as $m)
-                                                    <option value="{{ $m->id }}">{{ $m->name }} ({{ $m->unit }})</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
+                                        <form action="{{ route('inventory.adjust') }}" method="POST" class="space-y-6">
+                                            @csrf
+                                            <input type="hidden" name="type" :value="type">
+                                            
+                                            <div>
+                                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Pilih Bahan Baku</label>
+                                                <select name="material_id" required class="select2-adj w-full px-6 py-4 bg-silk border-none rounded-2xl text-sm font-bold text-royal-navy outline-none">
+                                                    <option value=""></option>
+                                                    @foreach($materials as $m)
+                                                        <option value="{{ $m->id }}">{{ $m->name }} ({{ $m->unit }})</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
 
-                                        <div>
-                                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Jumlah (Quantity)</label>
-                                            <input type="number" step="0.01" name="quantity" required class="w-full px-6 py-4 bg-silk border-none rounded-2xl text-sm font-bold text-royal-navy focus:ring-2 focus:ring-gold outline-none" placeholder="0.00">
-                                        </div>
+                                            <div>
+                                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Jumlah (Quantity)</label>
+                                                <input type="number" step="0.01" name="quantity" required class="w-full px-6 py-4 bg-silk border-none rounded-2xl text-sm font-bold text-royal-navy focus:ring-2 focus:ring-gold outline-none" placeholder="0.00">
+                                            </div>
 
-                                        <div>
-                                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Catatan (Optional)</label>
-                                            <input type="text" name="note" class="w-full px-6 py-4 bg-silk border-none rounded-2xl text-sm font-bold text-royal-navy focus:ring-2 focus:ring-gold outline-none" placeholder="Contoh: Stok rusak, bonus supplier...">
-                                        </div>
+                                            <div>
+                                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Catatan (Optional)</label>
+                                                <input type="text" name="note" class="w-full px-6 py-4 bg-silk border-none rounded-2xl text-sm font-bold text-royal-navy focus:ring-2 focus:ring-gold outline-none" placeholder="Contoh: Stok rusak, bonus supplier...">
+                                            </div>
 
-                                        <div class="flex gap-4 pt-4">
-                                            <button type="button" @click="open = false" class="flex-1 py-4 bg-gray-100 text-gray-400 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-gray-200 transition-all">Batal</button>
-                                            <button type="submit" class="flex-1 py-4 bg-royal-navy text-gold text-[10px] font-black uppercase tracking-widest rounded-2xl hover:scale-105 transition-all shadow-xl shadow-royal-navy/20">Proses</button>
-                                        </div>
-                                    </form>
-                                </div>
-                           </div>
+                                            <div class="flex gap-4 pt-4">
+                                                <button type="button" @click="open = false" class="flex-1 py-4 bg-gray-100 text-gray-400 text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-gray-200 transition-all">Batal</button>
+                                                <button type="submit" class="flex-1 py-4 bg-royal-navy text-gold text-[10px] font-black uppercase tracking-widest rounded-2xl hover:scale-105 transition-all shadow-xl shadow-royal-navy/20">Proses</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                               </div>
                         </div>
                     </div>
 

@@ -34,6 +34,15 @@ class ReportController extends Controller
         $totalBelanja = $belanjaBahan + $operasional + $insentif;
         $sisaDana = $danaMasuk - $totalBelanja; // Simplified calculation
 
+        // Fetch detailed material usage
+        $materialUsages = MaterialLog::with('material')
+            ->where('sppg_id', $sppgId)
+            ->where('type', 'out')
+            ->whereBetween('date', [$startDate, $endDate])
+            ->select('material_id', \Illuminate\Support\Facades\DB::raw('SUM(quantity) as total_qty'))
+            ->groupBy('material_id')
+            ->get();
+
         $data = [
             'period' => Carbon::parse($startDate)->format('d M Y') . ' s.d. ' . Carbon::parse($endDate)->format('d M Y'),
             'user_name' => $user->name,
@@ -49,7 +58,8 @@ class ReportController extends Controller
             'sisa_dana' => $sisaDana,
             'ka_sppg' => $user->name,
             'bendahara' => 'AGITA SEBAYANG',
-            'pimpinan' => 'SILVERIUS BANGUN'
+            'pimpinan' => 'SILVERIUS BANGUN',
+            'usages' => $materialUsages // Added detail
         ];
 
         return view('reports.lpd2m', compact('data'));

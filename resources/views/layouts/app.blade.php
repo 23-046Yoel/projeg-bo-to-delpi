@@ -134,23 +134,31 @@
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script>
             $(document).ready(function() {
-                $('.select2').each(function() {
-                    $(this).select2({
-                        placeholder: "Ketik / Cari data...",
-                        allowClear: true,
-                        width: '100%',
-                        minimumInputLength: 0,
-                        tags: $(this).attr('name') === 'material_name', // Only allow new tags for material naming
-                        createTag: function (params) {
-                            var term = $.trim(params.term);
-                            if (term === '') { return null; }
-                            return {
-                                id: term,
-                                text: term + ' (Bahan Baru)',
-                                newTag: true
+                // Initialize Select2 for all elements with .select2 class
+                function initSelect2() {
+                    $('.select2').each(function() {
+                        $(this).select2({
+                            placeholder: $(this).data('placeholder') || "Ketik / Cari data (min 1 huruf)...",
+                            allowClear: true,
+                            width: '100%',
+                            minimumInputLength: 0, // Show all by default
+                            language: {
+                                noResults: function() {
+                                    return "Data tidak ditemukan...";
+                                },
+                                searching: function() {
+                                    return "Mencari...";
+                                }
                             }
-                        }
+                        });
                     });
+                }
+
+                initSelect2();
+
+                // Re-init for dynamically added elements if any
+                $(document).on('select2:open', () => {
+                    document.querySelector('.select2-search__field').focus();
                 });
             });
         </script>

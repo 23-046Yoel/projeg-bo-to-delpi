@@ -79,14 +79,39 @@
                     </div>
                 </div>
 
-                <div class="space-y-2">
-                    <h2 class="font-black" contenteditable="true">II. KETERANGAN</h2>
-                    <p contenteditable="true">Dana yang telah digunakan sesuai dengan kebutuhan kegiatan yang telah direncanakan, dengan rincian sebagai berikut:</p>
-                    <div class="grid grid-cols-[150px_auto] gap-y-1 ml-4">
-                        <div class="font-bold italic">Bahan Baku</div><div contenteditable="true">: Pengadaan bahan baku utama untuk pelaksanaan kegiatan</div>
-                        <div class="font-bold italic">Operasional</div><div contenteditable="true">: Biaya transportasi, ATK, bahan bakar, dan keperluan teknis lainnya.</div>
-                        <div class="font-bold italic">Insentif Fasilitas</div><div contenteditable="true">: Bangunan, dan lain-lain.</div>
-                        <div class="font-bold italic">Nomor rekening/Virtual Account</div><div contenteditable="true">: {{ $data['virtual_account'] }}</div>
+                <div class="space-y-4">
+                    <h2 class="font-black" contenteditable="true">II. RINCIAN KETERANGAN</h2>
+                    <p contenteditable="true">Dana yang telah digunakan sesuai dengan kebutuhan kegiatan yang telah direncanakan, dengan rincian pemakaian bahan baku sebagai berikut:</p>
+                    
+                    <!-- New Materials Qty Table -->
+                    <div class="border border-black overflow-hidden rounded-lg">
+                        <table class="w-full text-left text-[11px]">
+                            <thead class="bg-gray-50 border-b border-black">
+                                <tr>
+                                    <th class="px-3 py-2 font-black border-r border-black w-12 text-center">No</th>
+                                    <th class="px-3 py-2 font-black border-r border-black">Nama Bahan Baku</th>
+                                    <th class="px-3 py-2 font-black text-right">Volume / Qty</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-black">
+                                @forelse($data['usages'] ?? [] as $index => $usage)
+                                    <tr>
+                                        <td class="px-3 py-2 border-r border-black text-center">{{ $index + 1 }}</td>
+                                        <td class="px-3 py-2 border-r border-black font-bold uppercase">{{ $usage->material->name }}</td>
+                                        <td class="px-3 py-2 text-right font-black">{{ number_format($usage->total_qty, 2) }} <span class="text-[9px]">{{ $usage->material->unit }}</span></td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="px-3 py-4 text-center italic text-gray-400">Belum ada pemakaian bahan terekam pada periode ini.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="grid grid-cols-[150px_auto] gap-y-1 ml-4 mt-4">
+                        <div class="font-bold italic">Rekening Operasional</div><div contenteditable="true">: {{ $data['virtual_account'] }}</div>
+                        <div class="font-bold italic">Keterangan Tambahan</div><div contenteditable="true">: Pemakaian bahan baku di atas adalah alokasi untuk operasional harian SPPG sesuai menu yang dijalankan.</div>
                     </div>
                 </div>
 
