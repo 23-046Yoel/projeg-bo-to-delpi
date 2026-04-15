@@ -124,14 +124,21 @@
                             Daftar Saldo Bahan Baku
                         </h3>
                         
-                        <div class="relative w-full md:w-80 group">
+                        <form action="{{ route('inventory.index') }}" method="GET" class="relative w-full md:w-80 group" id="inventorySearchForm">
+                            {{-- Preserve date filters --}}
+                            <input type="hidden" name="start_date" value="{{ $startDate }}">
+                            <input type="hidden" name="end_date" value="{{ $endDate }}">
+                            
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-300 group-focus-within:text-gold">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                             </div>
-                            <input type="text" id="tableSearch" 
+                            <input type="text" name="search" id="inventorySearch" 
+                                value="{{ request('search') }}"
+                                autofocus
+                                onfocus="var val=this.value; this.value=''; this.value=val;"
                                 class="w-full pl-12 pr-4 py-3 bg-silk border-none rounded-xl text-xs font-bold text-royal-navy placeholder-gray-400 focus:ring-2 focus:ring-gold outline-none transition-all shadow-inner" 
-                                placeholder="Ketik nama bahan untuk mencari...">
-                        </div>
+                                placeholder="Cari bahan (ketik & Enter)...">
+                        </form>
                     </div>
 
                     <div class="overflow-x-auto">
@@ -178,11 +185,16 @@
     </div>
     <script>
         $(document).ready(function() {
-            $("#tableSearch").on("keyup", function() {
-                var value = $(this).val().toLowerCase();
-                $("#inventoryTable tbody tr").filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
+            let invTimeout = null;
+            $("#inventorySearch").on("keyup", function(e) {
+                clearTimeout(invTimeout);
+                if (e.keyCode === 13) {
+                    $("#inventorySearchForm").submit();
+                } else {
+                    invTimeout = setTimeout(function() {
+                        $("#inventorySearchForm").submit();
+                    }, 800);
+                }
             });
         });
     </script>

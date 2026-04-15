@@ -12,10 +12,18 @@ class DishController extends Controller
         $this->middleware('can:manage-menus');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $dishes = Dish::withCount('recipes')->paginate(10);
-        return view('dishes.index', compact('dishes'));
+        $search = $request->input('search');
+        $query = Dish::query()->withCount('recipes');
+
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+        }
+
+        $dishes = $query->paginate(9)->withQueryString();
+        return view('dishes.index', compact('dishes', 'search'));
     }
 
     public function create()

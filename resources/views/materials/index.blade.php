@@ -31,14 +31,17 @@
                     </div>
                 </div>
 
-                <div class="relative w-full md:w-96 group">
+                <form action="{{ route('materials.index') }}" method="GET" class="relative w-full md:w-96 group" id="searchForm">
                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-300 group-focus-within:text-gold transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     </div>
-                    <input type="text" id="materialSearch" 
+                    <input type="text" name="search" id="materialSearch" 
+                        value="{{ request('search') }}"
+                        autofocus
+                        onfocus="var val=this.value; this.value=''; this.value=val;"
                         class="w-full pl-12 pr-4 py-4 bg-white border-2 border-gold/5 rounded-2xl text-xs font-bold text-royal-navy placeholder-gray-400 focus:border-gold focus:ring-4 focus:ring-gold/10 outline-none transition-all shadow-xl shadow-royal-navy/5" 
-                        placeholder="Cari bahan baku (nama, kategori...)...">
-                </div>
+                        placeholder="Cari bahan baku (ketik & Enter)...">
+                </form>
             </div>
 
             <div class="glass overflow-hidden shadow-2xl sm:rounded-[2rem] border border-gold/10 relative">
@@ -113,11 +116,17 @@
     </div>
     <script>
         $(document).ready(function() {
-            $("#materialSearch").on("keyup", function() {
-                var value = $(this).val().toLowerCase();
-                $("#materialsTable tbody tr").filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-                });
+            let timeout = null;
+            $("#materialSearch").on("keyup", function(e) {
+                // Auto-submit after 800ms of inactivity or immediately on Enter
+                clearTimeout(timeout);
+                if (e.keyCode === 13) {
+                    $("#searchForm").submit();
+                } else {
+                    timeout = setTimeout(function() {
+                        $("#searchForm").submit();
+                    }, 800);
+                }
             });
         });
     </script>

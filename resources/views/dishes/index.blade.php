@@ -10,13 +10,26 @@
                     <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em]">Master Standar Resep & Komposisi</p>
                 </div>
             </div>
-            <a href="{{ route('dishes.create') }}" class="group relative px-10 py-4 bg-royal-navy rounded-[1.5rem] font-black text-[10px] text-gold uppercase tracking-[0.25em] shadow-2xl shadow-royal-navy/20 hover:bg-royal-navy/90 transition-all duration-500 transform hover:-translate-y-1 overflow-hidden">
-                <span class="relative z-10 flex items-center">
-                    <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"/></svg>
-                    Tambah Hidangan Baru
-                </span>
-                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-            </a>
+            <div class="flex items-center space-x-6">
+                <form action="{{ route('dishes.index') }}" method="GET" class="relative group" id="dishSearchForm">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-300 group-focus-within:text-gold transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </div>
+                    <input type="text" name="search" id="dishSearch" 
+                        value="{{ request('search') }}"
+                        autofocus
+                        onfocus="var val=this.value; this.value=''; this.value=val;"
+                        class="w-64 pl-12 pr-4 py-3 bg-white border-2 border-gold/5 rounded-2xl text-[10px] font-bold text-royal-navy placeholder-gray-400 focus:border-gold focus:ring-4 focus:ring-gold/10 outline-none transition-all shadow-xl shadow-royal-navy/5" 
+                        placeholder="Cari Hidangan...">
+                </form>
+                <a href="{{ route('dishes.create') }}" class="group relative px-10 py-4 bg-royal-navy rounded-[1.5rem] font-black text-[10px] text-gold uppercase tracking-[0.25em] shadow-2xl shadow-royal-navy/20 hover:bg-royal-navy/90 transition-all duration-500 transform hover:-translate-y-1 overflow-hidden">
+                    <span class="relative z-10 flex items-center">
+                        <svg class="w-4 h-4 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"/></svg>
+                        Tambah Hidangan Baru
+                    </span>
+                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                </a>
+            </div>
         </div>
     </x-slot>
 
@@ -91,4 +104,18 @@
             overflow: hidden;
         }
     </style>
-</x-app-layout>
+    <script>
+        $(document).ready(function() {
+            let dishTimeout = null;
+            $("#dishSearch").on("keyup", function(e) {
+                clearTimeout(dishTimeout);
+                if (e.keyCode === 13) {
+                    $("#dishSearchForm").submit();
+                } else {
+                    dishTimeout = setTimeout(function() {
+                        $("#dishSearchForm").submit();
+                    }, 800);
+                }
+            });
+        });
+    </script>

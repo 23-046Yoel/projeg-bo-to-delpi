@@ -10,8 +10,13 @@ class InventoryController extends Controller
     {
         $startDate = $request->input('start_date', now()->startOfMonth()->toDateString());
         $endDate = $request->input('end_date', now()->toDateString());
+        $search = $request->input('search');
         
-        $materials = \App\Models\Material::all();
+        $query = \App\Models\Material::query();
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+        $materials = $query->get();
         $report = [];
 
         foreach ($materials as $mat) {
@@ -38,7 +43,7 @@ class InventoryController extends Controller
             ];
         }
 
-        return view('inventory.index', compact('report', 'startDate', 'endDate', 'materials'));
+        return view('inventory.index', compact('report', 'startDate', 'endDate', 'materials', 'search'));
     }
 
     public function adjust(Request $request)

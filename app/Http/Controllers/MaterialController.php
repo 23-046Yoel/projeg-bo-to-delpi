@@ -10,16 +10,24 @@ class MaterialController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->input('search');
         $query = Material::query();
 
         if (auth()->check() && !auth()->user()->isAdmin() && auth()->user()->sppg_id) {
             $query->where('sppg_id', auth()->user()->sppg_id);
         }
 
-        $materials = $query->latest()->paginate(10);
-        return view('materials.index', compact('materials'));
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('category', 'like', "%{$search}%");
+            });
+        }
+
+        $materials = $query->latest()->paginate(10)->withQueryString();
+        return view('materials.index', compact('materials', 'search'));
     }
 
     public function create()
