@@ -121,7 +121,8 @@
                                 <div class="space-y-6">
                                     <div>
                                         <label class="block text-[10px] font-black text-gold/50 uppercase tracking-[0.2em] mb-3 ml-1">Pilih Material / Bahan</label>
-                                        <select name="material_id" required class="w-full px-5 py-4 bg-white/5 border-2 border-transparent rounded-[1.5rem] text-sm font-bold text-white focus:bg-white/10 focus:border-gold outline-none transition-all duration-300">
+                                        <select name="material_id" required class="select2 w-full px-5 py-4 bg-white/5 border-2 border-transparent rounded-[1.5rem] text-sm font-bold text-white focus:bg-white/10 focus:border-gold outline-none transition-all duration-300">
+                                            <option value=""></option>
                                             @foreach(\App\Models\Material::all() as $material)
                                                 <option value="{{ $material->id }}" class="text-royal-navy">{{ $material->name }} ({{ $material->unit }})</option>
                                             @endforeach

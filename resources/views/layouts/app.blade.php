@@ -18,6 +18,46 @@
         
         <!-- Tailwind CDN Fallback -->
         <script src="https://cdn.tailwindcss.com"></script>
+        
+        <!-- Select2 CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <style>
+            .select2-container--default .select2-selection--single {
+                background-color: #F8FAFC;
+                border: 2px solid transparent;
+                border-radius: 1rem;
+                height: 56px;
+                display: flex;
+                align-items: center;
+                padding-left: 1rem;
+                font-weight: 700;
+                font-size: 0.875rem;
+                color: #0F172A;
+                transition: all 0.3s;
+            }
+            .select2-container--default.select2-container--focus .select2-selection--single {
+                background-color: white;
+                border-color: #D4AF37;
+                box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1);
+            }
+            .select2-dropdown {
+                border-radius: 1.5rem;
+                border: 1px solid #F1F5F9;
+                box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+                overflow: hidden;
+                padding: 10px;
+            }
+            .select2-results__option {
+                padding: 12px 20px;
+                border-radius: 0.75rem;
+                font-size: 13px;
+                font-weight: 700;
+                color: #0F172A;
+            }
+            .select2-results__option--highlighted[aria-selected] {
+                background-color: #D4AF37 !important;
+            }
+        </style>
         <script>
             tailwind.config = {
                 theme: {
@@ -88,5 +128,31 @@
         </div>
 
         <x-ai-chatbot />
+
+        <!-- Select2 JS -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('.select2').each(function() {
+                    $(this).select2({
+                        placeholder: "Ketik / Cari data...",
+                        allowClear: true,
+                        width: '100%',
+                        minimumInputLength: 0,
+                        tags: $(this).attr('name') === 'material_name', // Only allow new tags for material naming
+                        createTag: function (params) {
+                            var term = $.trim(params.term);
+                            if (term === '') { return null; }
+                            return {
+                                id: term,
+                                text: term + ' (Bahan Baru)',
+                                newTag: true
+                            }
+                        }
+                    });
+                });
+            });
+        </script>
     </body>
 </html>

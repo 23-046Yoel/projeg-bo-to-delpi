@@ -88,7 +88,8 @@
                                         
                                         <div>
                                             <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Pilih Bahan Baku</label>
-                                            <select name="material_id" required class="w-full px-6 py-4 bg-silk border-none rounded-2xl text-sm font-bold text-royal-navy focus:ring-2 focus:ring-gold outline-none">
+                                            <select name="material_id" required class="select2 w-full px-6 py-4 bg-silk border-none rounded-2xl text-sm font-bold text-royal-navy focus:ring-2 focus:ring-gold outline-none">
+                                                <option value=""></option>
                                                 @foreach($materials as $m)
                                                     <option value="{{ $m->id }}">{{ $m->name }} ({{ $m->unit }})</option>
                                                 @endforeach

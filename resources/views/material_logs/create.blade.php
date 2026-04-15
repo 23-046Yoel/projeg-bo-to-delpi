@@ -39,16 +39,15 @@
                             <div class="group">
                                 <x-input-label for="material_name" :value="__('Nama Bahan Baku')" />
                                 <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-gray-300 group-focus-within:text-gold transition-colors">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                                    </div>
-                                    <x-text-input id="material_name" name="material_name" list="material-list" class="pl-14 w-full" :value="old('material_name', $prefilledMaterial)" required placeholder="Ketik nama bahan (contoh: Beras, Telur...)" />
+                                    <select id="material_name" name="material_name" class="select2 w-full" required>
+                                        <option value=""></option>
+                                        @foreach ($materials as $material)
+                                            <option value="{{ $material->name }}" {{ old('material_name', $prefilledMaterial) == $material->name ? 'selected' : '' }}>
+                                                {{ $material->name }} ({{ $material->unit }})
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
-                                <datalist id="material-list">
-                                    @foreach ($materials as $material)
-                                        <option value="{{ $material->name }}">
-                                    @endforeach
-                                </datalist>
                                 <x-input-error :messages="$errors->get('material_name')" class="mt-2" />
                             </div>
 
