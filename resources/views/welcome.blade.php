@@ -30,56 +30,151 @@
         .hero-gradient {
             background: linear-gradient(135deg, #0F172A 0%, #1e293b 100%);
         }
-        .ticker-wrap {
+        .ticker-container {
             width: 100%;
             overflow: hidden;
             background: #0F172A;
-            color: #fff;
-            padding: 10px 0;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 1px solid rgba(212,175,55,0.2);
         }
-        .ticker {
+        .ticker-header {
+            background: #D4AF37;
+            color: #0F172A;
+            padding: 0 20px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            font-weight: 900;
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            z-index: 2;
+            position: relative;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.3);
+        }
+        .ticker-header::after {
+            content: '';
+            position: absolute;
+            right: -15px;
+            top: 0;
+            border-left: 15px solid #D4AF37;
+            border-bottom: 44px solid transparent;
+        }
+        .ticker-content-wrap {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+        .ticker-content-wrap::before,
+        .ticker-content-wrap::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 60px;
+            height: 100%;
+            z-index: 1;
+        }
+        .ticker-content-wrap::before {
+            left: 0;
+            background: linear-gradient(to right, #0F172A 0%, transparent 100%);
+        }
+        .ticker-content-wrap::after {
+            right: 0;
+            background: linear-gradient(to left, #0F172A 0%, transparent 100%);
+        }
+        .ticker-track {
             display: inline-block;
             white-space: nowrap;
             padding-right: 100%;
-            animation: ticker 30s linear infinite;
+            animation: ticker-premium 40s linear infinite;
         }
-        @keyframes ticker {
+        .ticker-item {
+            display: inline-flex;
+            align-items: center;
+            padding: 0 40px;
+            color: rgba(255,255,255,0.8);
+            font-size: 13px;
+        }
+        .ticker-label {
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 11px;
+            margin-right: 12px;
+            padding: 2px 10px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.05);
+        }
+        .ticker-item strong {
+            color: #fff;
+            font-weight: 700;
+        }
+        @keyframes ticker-premium {
             0% { transform: translate3d(0, 0, 0); }
             100% { transform: translate3d(-100%, 0, 0); }
         }
-        .youtube-card {
-            transition: transform 0.3s ease;
+        .animate-pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
-        .youtube-card:hover { transform: translateY(-5px); }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .7; }
+        }
     </style>
 </head>
 <body class="antialiased">
 
-    <!-- News Ticker -->
+    <!-- Premium News Ticker -->
     @php
         $latest_news = \App\Models\News::latest()->take(3)->get()->map(function($item) {
-            $item->ticker_text = "📢 Berita: " . $item->title . " baru saja diupload";
-            return $item;
+            return [
+                'type' => 'news',
+                'label' => 'Berita',
+                'icon' => '📢',
+                'color' => '#3b82f6',
+                'content' => "<strong>" . $item->title . "</strong> baru saja diupload",
+                'created_at' => $item->created_at
+            ];
         });
         
         $latest_suppliers = \App\Models\Supplier::latest()->take(3)->get()->map(function($item) {
-            $item->ticker_text = "🤝 " . $item->name . " baru saja mendaftar jadi pemasok";
-            return $item;
+            return [
+                'type' => 'supplier',
+                'label' => 'Pemasok',
+                'icon' => '🤝',
+                'color' => '#10b981',
+                'content' => "<strong>" . $item->name . "</strong> baru saja mendaftar jadi pemasok",
+                'created_at' => $item->created_at
+            ];
         });
 
         $latest_complaints = \App\Models\Complaint::latest()->take(3)->get()->map(function($item) {
-            $item->ticker_text = "⚠️ Input pengaduan baru saja diterima dari " . ($item->name ?? 'Anonim');
-            return $item;
+            return [
+                'type' => 'complaint',
+                'label' => 'Pengaduan',
+                'icon' => '⚠️',
+                'color' => '#f59e0b',
+                'content' => "Input aduan diterima dari <strong>" . ($item->name ?? 'Anonim') . "</strong>",
+                'created_at' => $item->created_at
+            ];
         });
 
         $latest_consultations = \App\Models\NutritionConsultation::latest()->take(3)->get()->map(function($item) {
-            $item->ticker_text = "🥗 " . $item->name . " baru saja mengisi jadwal konsul gizi";
-            return $item;
-        });
-
-        $latest_beneficiaries = \App\Models\BeneficiaryGroup::latest()->take(3)->get()->map(function($item) {
-            $item->ticker_text = "📦 Data baru untuk penerima manfaat baru saja diinput";
-            return $item;
+            return [
+                'type' => 'nutrition',
+                'label' => 'Konsul Gizi',
+                'icon' => '🥗',
+                'color' => '#8b5cf6',
+                'content' => "<strong>" . $item->name . "</strong> mengisi jadwal konsultasi",
+                'created_at' => $item->created_at
+            ];
         });
 
         $ticker_items = collect()
@@ -87,18 +182,35 @@
             ->concat($latest_suppliers)
             ->concat($latest_complaints)
             ->concat($latest_consultations)
-            ->concat($latest_beneficiaries)
             ->sortByDesc('created_at')
             ->take(10);
     @endphp
+
     @if($ticker_items->count() > 0)
-    <div class="ticker-wrap sticky top-0 z-50">
-        <div class="ticker">
-            @foreach($ticker_items as $item)
-                <span class="mx-8 font-semibold text-sm uppercase tracking-widest text-[#D4AF37]">
-                    {{ $item->ticker_text }}
-                </span>
-            @endforeach
+    <div class="ticker-container">
+        <div class="ticker-header">
+            <span class="animate-pulse-slow">UPDATE TERKINI</span>
+        </div>
+        <div class="ticker-content-wrap">
+            <div class="ticker-track">
+                @foreach($ticker_items as $item)
+                    <div class="ticker-item">
+                        <span class="ticker-label" style="color: {{ $item['color'] }}; background: {{ $item['color'] }}15">
+                            {{ $item['icon'] }} {{ $item['label'] }}
+                        </span>
+                        <span>{!! $item['content'] !!}</span>
+                    </div>
+                @endforeach
+                {{-- Duplicate for seamless loop --}}
+                @foreach($ticker_items as $item)
+                    <div class="ticker-item">
+                        <span class="ticker-label" style="color: {{ $item['color'] }}; background: {{ $item['color'] }}15">
+                            {{ $item['icon'] }} {{ $item['label'] }}
+                        </span>
+                        <span>{!! $item['content'] !!}</span>
+                    </div>
+                @endforeach
+            </div>
         </div>
     </div>
     @endif
