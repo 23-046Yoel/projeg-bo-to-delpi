@@ -24,7 +24,7 @@
         </div>
     </x-slot>
 
-    <div class="py-12" x-data="{ open: false, type: 'in', activeForm: false }">
+    <div class="py-12" x-data="{ openAdjustment: false, type: 'in' }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white rounded-[3rem] shadow-2xl border border-gray-50 overflow-hidden">
                 <div class="p-10">
@@ -62,62 +62,91 @@
                            </div>
                         </div>
 
-                        <div class="md:col-span-1 lg:col-span-1 border border-gold/10 transition-all duration-500 rounded-[2rem] overflow-hidden group shadow-xl relative" 
-                             :class="activeForm ? 'md:col-span-2 lg:col-span-2 bg-white' : 'bg-royal-navy'">
+                        <div class="p-8 bg-royal-navy rounded-[2rem] relative overflow-hidden group shadow-xl">
+                            <!-- Royal Accent Decorative -->
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-gold/10 -mr-16 -mt-16 rounded-full"></div>
                             
-                            <!-- State 1: Buttons -->
-                            <div x-show="!activeForm" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-4" x-transition:enter-end="opacity-100 translate-x-0" class="p-8 h-full flex flex-col justify-center relative z-10">
+                            <div class="relative z-10">
                                 <div class="text-[10px] font-black text-gold uppercase tracking-widest mb-4">Aksi Cepat Audit</div>
                                 <div class="flex gap-2">
-                                    <button @click="activeForm = true; type = 'in'; $nextTick(() => { $('#select2-adj-input').select2({ placeholder: 'Cari bahan...' }); })" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-3 px-4 text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-emerald-500/20">
+                                    <button @click="openAdjustment = true; type = 'in'; $nextTick(() => { $('#select2-adj-input').select2({ placeholder: 'Cari bahan...' }); })" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-3.5 px-4 text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-emerald-500/20 active:scale-95">
                                         + Tambah
                                     </button>
-                                    <button @click="activeForm = true; type = 'out'; $nextTick(() => { $('#select2-adj-input').select2({ placeholder: 'Cari bahan...' }); })" class="flex-1 bg-rose-500 hover:bg-rose-600 text-white rounded-xl py-3 px-4 text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-rose-500/20">
+                                    <button @click="openAdjustment = true; type = 'out'; $nextTick(() => { $('#select2-adj-input').select2({ placeholder: 'Cari bahan...' }); })" class="flex-1 bg-rose-500 hover:bg-rose-600 text-white rounded-xl py-3.5 px-4 text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-rose-500/20 active:scale-95">
                                         - Kurang
                                     </button>
                                 </div>
-                                <!-- Decorative background -->
-                                <div class="absolute top-0 right-0 w-32 h-32 bg-gold/10 -mr-16 -mt-16 rounded-full -z-10"></div>
                             </div>
+                        </div>
+                    </div>
 
-                            <!-- State 2: Inline Form -->
-                            <div x-show="activeForm" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-x-4" x-transition:enter-end="opacity-100 translate-x-0" class="p-8 h-full flex flex-col relative z-10" x-cloak>
-                                <div class="flex items-center justify-between mb-6">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-8 h-8 rounded-xl flex items-center justify-center" :class="type === 'in' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'">
-                                            <svg x-show="type === 'in'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-                                            <svg x-show="type === 'out'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"/></svg>
+                    {{-- NEW BIG INTEGRATED FORM SECTION --}}
+                    <div x-show="openAdjustment" 
+                         x-transition:enter="transition ease-out duration-500"
+                         x-transition:enter-start="opacity-0 -translate-y-8"
+                         x-transition:enter-end="opacity-100 translate-y-0"
+                         x-transition:leave="transition ease-in duration-300"
+                         x-transition:leave-start="opacity-100 translate-y-0"
+                         x-transition:leave-end="opacity-0 -translate-y-8"
+                         class="mb-12" x-cloak>
+                        
+                        <div class="bg-silk/50 border-2 border-dashed border-gold/20 rounded-[3rem] p-12 relative overflow-hidden">
+                            <!-- Background Pattern -->
+                            <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: url('data:image/svg+xml,%3Csvg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"%23000\" fill-opacity=\"1\" fill-rule=\"evenodd\"%3E%3Ccircle cx=\"3\" cy=\"3\" r=\"3\"/%3E%3C/g%3E%3C/svg%3E');"></div>
+
+                            <div class="relative z-10">
+                                <div class="flex items-center justify-between mb-10">
+                                    <div class="flex items-center space-x-6">
+                                        <div class="w-16 h-16 rounded-[2rem] flex items-center justify-center shadow-xl" :class="type === 'in' ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'">
+                                            <svg x-show="type === 'in'" class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                                            <svg x-show="type === 'out'" class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"/></svg>
                                         </div>
-                                        <h4 class="text-xs font-black text-royal-navy uppercase tracking-tight" x-text="type === 'in' ? 'Tambah Stok' : 'Kurang Stok'"></h4>
+                                        <div>
+                                            <h3 class="text-3xl font-black text-royal-navy uppercase tracking-tighter" x-text="type === 'in' ? 'Informasi Penambahan Stok' : 'Informasi Pengurangan Stok'"></h3>
+                                            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.3em] mt-2">Lengkapi data audit bahan baku di bawah ini</p>
+                                        </div>
                                     </div>
-                                    <button @click="activeForm = false" class="text-[9px] font-black text-gray-300 hover:text-rose-500 uppercase tracking-widest transition-colors">Batal</button>
+                                    <button @click="openAdjustment = false" class="px-6 py-3 bg-white text-gray-400 text-[10px] font-black uppercase tracking-widest rounded-xl hover:text-rose-500 transition-all border border-gray-100 shadow-sm">Batal / Tutup</button>
                                 </div>
 
-                                <form action="{{ route('inventory.adjust') }}" method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <form action="{{ route('inventory.adjust') }}" method="POST" class="grid grid-cols-1 lg:grid-cols-4 gap-8">
                                     @csrf
                                     <input type="hidden" name="type" :value="type">
                                     
-                                    <div class="group">
-                                        <label class="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Bahan</label>
-                                        <select name="material_id" required id="select2-adj-input" class="w-full">
-                                            <option value=""></option>
-                                            @foreach($materials as $m)
-                                                <option value="{{ $m->id }}">{{ $m->name }} ({{ $m->unit }})</option>
-                                            @endforeach
-                                        </select>
+                                    <div class="lg:col-span-2">
+                                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4 ml-4">1. Pilih Bahan Baku Utama</label>
+                                        <div class="relative">
+                                            <select name="material_id" required id="select2-adj-input" class="w-full">
+                                                <option value=""></option>
+                                                @foreach($materials as $m)
+                                                    <option value="{{ $m->id }}">{{ $m->name }} ({{ $m->unit }})</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
 
-                                    <div class="group">
-                                        <label class="block text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Jumlah</label>
-                                        <x-text-input type="number" step="0.01" name="quantity" required class="w-full px-5 py-3 bg-silk border-none rounded-xl text-xs font-bold text-royal-navy focus:ring-4 focus:ring-gold/10 outline-none transition-all" placeholder="0.00" />
+                                    <div>
+                                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4 ml-4">2. Jumlah (Kuantitas)</label>
+                                        <div class="relative group">
+                                            <x-text-input type="number" step="0.01" name="quantity" required class="w-full px-8 py-5 bg-white border-none rounded-[1.5rem] text-lg font-black text-royal-navy focus:ring-8 focus:ring-gold/10 transition-all shadow-sm group-hover:shadow-md" placeholder="0.00" />
+                                            <div class="absolute inset-y-0 right-0 pr-8 flex items-center pointer-events-none text-[10px] font-black text-gold-dark uppercase tracking-widest opacity-40">Unit</div>
+                                        </div>
                                     </div>
 
-                                    <div class="group flex items-end">
-                                        <button type="submit" class="w-full py-3 bg-royal-navy text-gold text-[10px] font-black uppercase tracking-widest rounded-xl hover:shadow-lg transition-all">Submit</button>
+                                    <div class="flex items-end">
+                                        <button type="submit" class="w-full py-5 bg-royal-navy text-gold text-[11px] font-black uppercase tracking-[0.2em] rounded-[1.5rem] hover:shadow-2xl hover:shadow-royal-navy/30 hover:-translate-y-1 active:translate-y-0 transition-all">
+                                            Proses Perubahan Stok
+                                        </button>
+                                    </div>
+
+                                    <div class="lg:col-span-4">
+                                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4 ml-4">3. Catatan / Alasan Perubahan (Opsional)</label>
+                                        <x-text-input type="text" name="note" class="w-full px-8 py-5 bg-white border-none rounded-[1.5rem] text-sm font-bold text-royal-navy focus:ring-8 focus:ring-gold/10 transition-all shadow-sm" placeholder="Contoh: Stok rusak saat pengiriman, bonus dari supplier baru, hasil opname fisik bulanan..." />
                                     </div>
                                 </form>
                             </div>
                         </div>
+                    </div>
                     </div>
 
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
