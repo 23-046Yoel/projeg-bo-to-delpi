@@ -46,8 +46,11 @@ class ReportController extends Controller
         $budgetOpsHarian = ($porsiBesar + $porsiKecil) * 3000;
         $budgetOpsPeriode = $budgetOpsHarian * 12;
 
-        $totalBudget = $budgetBahanPeriode + $budgetOpsPeriode;
-        
+        // Real realization calculations
+        $belanjaBahan = \App\Models\Payment::where('sppg_id', $sppgId)->where('status', 'paid')->whereBetween('date', [$startDate, $endDate])->where('transaction_type', 'Biaya Bahan Baku')->sum('amount_out');
+        $operasional = \App\Models\Payment::where('sppg_id', $sppgId)->where('status', 'paid')->whereBetween('date', [$startDate, $endDate])->where('transaction_type', 'Biaya Operasional')->sum('amount_out');
+        $insentif = \App\Models\Payment::where('sppg_id', $sppgId)->where('status', 'paid')->whereBetween('date', [$startDate, $endDate])->where('transaction_type', 'Insentif Fasilitas')->sum('amount_out');
+
         $totalBelanja = $belanjaBahan + $operasional + $insentif;
         $sisaDana = $totalBudget - $totalBelanja; 
 
