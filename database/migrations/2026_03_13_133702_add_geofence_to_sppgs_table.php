@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('sppgs', function (Blueprint $table) {
             $table->decimal('latitude', 10, 8)->nullable()->after('location');
             $table->decimal('longitude', 11, 8)->nullable()->after('latitude');
-            $table->integer('radius')->default(100)->after('longitude'); // radius in meters
+            $table->integer('radius')->default(150)->after('longitude'); // radius in meters
         });
     }
 

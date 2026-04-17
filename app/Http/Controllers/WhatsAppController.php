@@ -733,12 +733,13 @@ class WhatsAppController extends Controller
         // Detect SPPG via Geofence
         $targetSppg = $this->attendance->findSppgByCoordinates($lat, $lng);
         
-        if (!$targetSppg) {
-            return $this->wa->sendMessage($phone, $this->bot->medanize("Maaf, kehadiran Anda tidak dapat dicatat. Lokasi Anda ($lat, $lng) berada di luar area SPPG. Harap berada di lokasi SPPG untuk dapat melakukan absen."));
-        }
+        $sppgId = $targetSppg ? $targetSppg->id : ($user->sppg_id ?? null);
+        $locationName = $targetSppg ? $targetSppg->name : ($user->sppg->name ?? 'Lokasi Luar');
+        $isOutside = !$targetSppg;
 
-        $sppgId = $targetSppg->id;
-        $locationName = $targetSppg->name;
+        if (!$sppgId) {
+            return $this->wa->sendMessage($phone, $this->bot->medanize("Maaf lae, belum terdaftar SPPG-mu di database. Hubungi admin ya biar didaftarkan dulu!"));
+        }
 
         \App\Models\VolunteerAttendance::create([
             'user_id' => $user->id,
@@ -754,7 +755,7 @@ class WhatsAppController extends Controller
         // Notify admin of attendance
         $adminNumber = env('ADMIN_NOTIFICATION_NUMBER');
         if ($adminNumber) {
-            $adminMsg = "*[NOTIFIKASI ABSEN]*\n\n" .
+            $adminMsg = "*[NOTIFIKASI ABSEN" . ($isOutside ? " - LUAR AREA" : "") . "]*\n\n" .
                 "Nama: *" . $user->name . "*\n" .
                 "Nomor: +62" . ltrim($phone, '62') . "\n" .
                 "SPPG: *$locationName*\n" .
@@ -763,7 +764,12 @@ class WhatsAppController extends Controller
             $this->wa->sendMessage($adminNumber, $adminMsg);
         }
 
-        return $this->wa->sendMessage($phone, $this->bot->medanize("Kehadiran Anda telah berhasil dicatat di $locationName ($lat, $lng). Terima kasih dan semangat bekerja!"));
+        $msg = "Kehadiran Anda telah berhasil dicatat di $locationName. Terima kasih dan semangat bekerja!";
+        if ($isOutside) {
+            $msg = "Kehadiran Anda berhasil dicatat meskipun di luar area SPPG ($locationName). Semangat bekerja ya lae!";
+        }
+
+        return $this->wa->sendMessage($phone, $this->bot->medanize($msg));
     }
 
     /**
