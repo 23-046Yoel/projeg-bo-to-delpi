@@ -214,6 +214,72 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <div class="mt-16 mb-8 border-t border-gray-100 pt-12">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                            <div>
+                                <h3 class="text-[11px] font-black text-royal-navy uppercase tracking-[0.3em] flex items-center">
+                                    <svg class="w-4 h-4 mr-2 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    Riwayat Audit Bahan Baku (Terkini)
+                                </h3>
+                                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1">Daftar penyesuaian stok terbaru dengan bukti foto</p>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto -mx-6 lg:mx-0">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr class="bg-silk/50">
+                                        <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Waktu & Dapur</th>
+                                        <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Bahan Baku</th>
+                                        <th class="px-6 py-4 text-center text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Tipe</th>
+                                        <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Kuantitas</th>
+                                        <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Catatan</th>
+                                        <th class="px-6 py-4 text-center text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Foto Bukti</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-50">
+                                    @forelse($recentLogs as $log)
+                                        <tr class="hover:bg-silk/20 transition-colors">
+                                            <td class="px-6 py-5 whitespace-nowrap">
+                                                <div class="text-[11px] font-black text-royal-navy">{{ $log->created_at->format('d/m/y H:i') }}</div>
+                                                <div class="text-[9px] font-bold text-gold uppercase tracking-widest">{{ $log->sppg->name ?? 'Global' }}</div>
+                                            </td>
+                                            <td class="px-6 py-5 whitespace-nowrap text-sm font-bold text-royal-navy">
+                                                {{ $log->material->name ?? '-' }}
+                                            </td>
+                                            <td class="px-6 py-5 whitespace-nowrap text-center">
+                                                @if($log->type === 'in')
+                                                    <span class="px-3 py-1 bg-emerald-100 text-emerald-600 text-[9px] font-black uppercase rounded-full">Masuk</span>
+                                                @else
+                                                    <span class="px-3 py-1 bg-rose-100 text-rose-600 text-[9px] font-black uppercase rounded-full">Keluar</span>
+                                                @endif
+                                            </td>
+                                            <td class="px-6 py-5 whitespace-nowrap text-right text-sm font-black text-royal-navy">
+                                                {{ number_format($log->quantity, 2) }} <span class="text-[9px] text-gray-400 uppercase ml-1">{{ $log->material->unit ?? '' }}</span>
+                                            </td>
+                                            <td class="px-6 py-5 text-xs text-gray-500 max-w-xs truncate">
+                                                {{ $log->notes ?? '-' }}
+                                            </td>
+                                            <td class="px-6 py-5 whitespace-nowrap text-center">
+                                                @if($log->photo_path)
+                                                    <a href="{{ asset('storage/' . $log->photo_path) }}" target="_blank" class="inline-flex items-center justify-center p-2 bg-royal-navy/5 text-royal-navy hover:text-gold transition-colors rounded-lg group">
+                                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                                    </a>
+                                                @else
+                                                    <span class="text-[9px] font-bold text-gray-300 uppercase italic">No Photo</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" class="px-6 py-12 text-center text-gray-400 text-[10px] font-black uppercase tracking-widest">Belum ada riwayat audit baru</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

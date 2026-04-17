@@ -58,7 +58,17 @@ class InventoryController extends Controller
             ];
         }
 
-        return view('inventory.index', compact('report', 'startDate', 'endDate', 'materials', 'sppgs', 'search', 'sppgId'));
+        $recentLogsQuery = \App\Models\MaterialLog::with(['material', 'sppg'])
+            ->orderBy('created_at', 'desc')
+            ->limit(15);
+
+        if ($sppgId) {
+            $recentLogsQuery->where('sppg_id', $sppgId);
+        }
+
+        $recentLogs = $recentLogsQuery->get();
+
+        return view('inventory.index', compact('report', 'startDate', 'endDate', 'materials', 'sppgs', 'search', 'sppgId', 'recentLogs'));
     }
 
     public function adjust(Request $request)
