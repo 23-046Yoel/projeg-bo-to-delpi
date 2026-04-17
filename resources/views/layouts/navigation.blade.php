@@ -8,7 +8,7 @@
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
     @click="sidebarOpen = false"
-    class="fixed inset-0 bg-royal-navy/60 backdrop-blur-sm z-40 lg:hidden"
+    class="fixed inset-0 bg-royal-navy/60 backdrop-blur-sm z-40 lg:hidden no-print"
     style="display: none;"
 ></div>
 
@@ -20,7 +20,7 @@
     x-transition:leave="transition ease-in duration-200"
     x-transition:leave-start="translate-x-0"
     x-transition:leave-end="-translate-x-full"
-    class="fixed lg:static top-0 left-0 w-72 h-full min-h-screen bg-white border-r border-gold/20 flex flex-col z-50 shadow-[20px_0_50px_rgba(0,0,0,0.02)] lg:translate-x-0"
+    class="fixed lg:static top-0 left-0 w-72 h-full min-h-screen bg-white border-r border-gold/20 flex flex-col z-50 shadow-[20px_0_50px_rgba(0,0,0,0.02)] lg:translate-x-0 no-print"
     :class="{ 'translate-x-0': sidebarOpen, '-translate-x-full': !sidebarOpen }"
     x-cloak
     @resize.window="if (window.innerWidth >= 1024) sidebarOpen = true"

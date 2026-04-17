@@ -8,6 +8,10 @@
                 <p class="text-slate-500 text-sm mt-1 uppercase tracking-widest font-bold">Monitoring Kehadiran STAFF & VOLUNTEER secara Real-time</p>
             </div>
             <div class="flex items-center space-x-3">
+                <a href="{{ route('reports.attendance-recap') }}" class="px-5 py-2.5 bg-royal-navy text-gold-light rounded-xl border border-gold/20 flex items-center space-x-2 hover:bg-gold hover:text-white transition-all shadow-lg group">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span class="text-[10px] font-black uppercase tracking-widest">Lihat Rekap Bulanan</span>
+                </a>
                 <div class="px-4 py-2 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center space-x-2">
                     <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                     <span class="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Sistem Aktif</span>

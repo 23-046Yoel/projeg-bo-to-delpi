@@ -131,17 +131,35 @@
         .bg-gold-premium\/10 { background-color: rgba(142, 109, 16, 0.1); }
 
         @media print {
-            .no-print { display: none !important; }
-            body { background: white !important; }
-            .shadow-2xl { shadow: none !important; }
-            .bg-white\/70 { background: white !important; }
-            .py-12 { padding: 0 !important; }
-            .rounded-\[2\.5rem\] { border-radius: 0 !important; }
+            @page {
+                size: landscape;
+                margin: 0.5cm;
+            }
+            .no-print, form, .mb-12 > form { display: none !important; }
+            body { background: white !important; color: black !important; }
+            .bg-silk { background: white !important; }
+            .shadow-2xl, .shadow-sm, .shadow-xl { box-shadow: none !important; }
+            .bg-white\/70, .bg-white\/50, .bg-white { background: white !important; border: 1px solid #eee !important; }
+            .py-12, .p-8 { padding: 5px !important; }
+            .mb-12 { margin-bottom: 20px !important; }
+            .rounded-\[2\.5rem\], .rounded-\[2rem\], .rounded-2xl { border-radius: 0 !important; }
             .sticky { position: static !important; }
-            .min-w-\[1200px\] { min-width: auto !important; width: 100% !important; }
+            .min-w-\[1200px\] { min-width: 100% !important; width: 100% !important; }
             .overflow-x-auto { overflow: visible !important; }
-            table { font-size: 8pt !important; border: 1px solid #ddd !important; }
-            th, td { border: 1px solid #ddd !important; padding: 4px !important; }
+            
+            table { width: 100% !important; border-collapse: collapse !important; font-size: 7pt !important; }
+            th, td { border: 1px solid #ddd !important; padding: 2px 4px !important; }
+            th { background-color: #f3f4f6 !important; color: black !important; }
+            
+            .bg-slate-900 { background: #eee !important; color: black !important; }
+            .text-gold-light { color: black !important; }
+            .text-white\/40 { color: #666 !important; }
+            .bg-red-900\/10, .bg-red-50\/30 { background-color: #fef2f2 !important; }
+            .bg-emerald-500\/10 { background-color: #ecfdf5 !important; }
+            .text-emerald-600 { color: #059669 !important; }
+            
+            /* Ensure the content takes full width since sidebar is hidden */
+            .max-w-\[95\%\], .max-w-7xl { max-width: 100% !important; width: 100% !important; margin: 0 !important; }
         }
     </style>
 </x-app-layout>

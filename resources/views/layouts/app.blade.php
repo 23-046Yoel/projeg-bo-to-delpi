@@ -82,7 +82,7 @@
     </head>
     <body class="font-jakarta antialiased text-slate-900 bg-silk-premium min-h-screen" x-data="{ sidebarOpen: false }">
         <!-- Mobile Header -->
-        <header class="lg:hidden bg-white/70 backdrop-blur-xl border-b border-gold/10 sticky top-0 z-50 flex items-center justify-between px-6 h-20 shadow-sm">
+        <header class="lg:hidden bg-white/70 backdrop-blur-xl border-b border-gold/10 sticky top-0 z-50 flex items-center justify-between px-6 h-20 shadow-sm no-print">
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 rounded-xl bg-royal-navy flex items-center justify-center p-2 shadow-lg shadow-royal-navy/20">
                     <x-application-logo class="w-full h-full text-gold" />
