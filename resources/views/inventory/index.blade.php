@@ -72,7 +72,7 @@
                         </div>
                     </div>
 
-                    {{-- MOBILE FRIENDLY ADJUSTMENT FORM --}}
+                    {{-- ADJUSTMENT FORM --}}
                     <div x-show="openAdjustment" 
                          x-transition:enter="transition ease-out duration-500"
                          x-transition:enter-start="opacity-0 -translate-y-8"
@@ -158,6 +158,7 @@
                         </div>
                     </div>
 
+                    {{-- TABLE 1: STOCK BALANCES --}}
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                         <h3 class="text-[11px] font-black text-royal-navy uppercase tracking-[0.3em] flex items-center">
                             <svg class="w-4 h-4 mr-2 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
@@ -172,7 +173,7 @@
                         </form>
                     </div>
 
-                    <div class="overflow-x-auto -mx-6 lg:mx-0">
+                    <div class="overflow-x-auto -mx-6 lg:mx-0 mb-16">
                         <table class="min-w-full">
                             <thead>
                                 <tr class="border-b border-gray-50">
@@ -209,13 +210,14 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="px-6 py-12 text-center text-gray-400 text-xs font-bold uppercase tracking-widest">Data tidak ditemukan untuk dapur ini</td>
+                                        <td colspan="5" class="px-6 py-12 text-center text-gray-400 text-xs font-bold uppercase tracking-widest">Data tidak ditemukan</td>
                                     </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
 
+                    {{-- TABLE 2: AUDIT HISTORY --}}
                     <div class="mt-16 mb-8 border-t border-gray-100 pt-12">
                         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                             <div>
