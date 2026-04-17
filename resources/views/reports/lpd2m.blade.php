@@ -52,31 +52,39 @@
                 <p contenteditable="true" class="mt-4">Dengan ini menyatakan bahwa laporan penggunaan dana sebagai berikut:</p>
 
                 <div class="space-y-4">
-                    <h2 class="font-black" contenteditable="true">I. RINCIAN KEUANGAN</h2>
-                    <div class="grid grid-cols-[auto_150px_auto] gap-x-2 items-center">
-                        <div class="font-bold">Dana Pemasukan</div>
-                        <div class="font-black text-right border-b-2 border-black" contenteditable="true" id="field-dana-masuk">{{ number_format($data['dana_masuk']) }}</div>
-                        <div class="italic text-[11px]" contenteditable="true">(termasuk saldo akhir periode yang lalu)</div>
+                    <h2 class="font-black" contenteditable="true">I. RINCIAN KEUANGAN (ANGGARAN)</h2>
+                    
+                    <div class="space-y-1 mb-4">
+                        <div class="grid grid-cols-[auto_150px_auto] gap-x-2 items-center">
+                            <div class="font-bold">1. Anggaran Bahan Baku</div>
+                            <div class="font-black text-right border-b-2 border-black" contenteditable="true" id="field-budget-bahan">{{ number_format($data['budget_bahan_periode']) }}</div>
+                            <div class="italic text-[11px]" contenteditable="true">({{ $data['porsi_besar'] }} P.Besar, {{ $data['porsi_kecil'] }} P.Kecil)</div>
+                        </div>
+                        <div class="grid grid-cols-[auto_150px_auto] gap-x-2 items-center">
+                            <div class="font-bold">2. Anggaran Operasional</div>
+                            <div class="font-black text-right border-b-2 border-black" contenteditable="true" id="field-budget-ops">{{ number_format($data['budget_ops_periode']) }}</div>
+                            <div class="italic text-[11px]" contenteditable="true">(Rp 3.000 x {{ $data['porsi_besar'] + $data['porsi_kecil'] }} porsi x 12 hari)</div>
+                        </div>
                     </div>
 
-                    <div class="space-y-1">
-                        <h3 class="font-bold underline italic mb-2">Realisasi Anggaran</h3>
+                    <div class="space-y-1 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <h3 class="font-bold underline italic mb-2">Realisasi Belanja (Aktual)</h3>
                         <div class="grid grid-cols-[auto_150px] gap-x-2 ml-4">
                             <div>Bahan Baku</div><div class="text-right border-b border-gray-300" contenteditable="true" id="field-belanja-bahan">{{ number_format($data['belanja_bahan']) }}</div>
                             <div>Operasional</div><div class="text-right border-b border-gray-300" contenteditable="true" id="field-operasional">{{ number_format($data['operasional']) }}</div>
                             <div>Insentif Fasilitas</div><div class="text-right border-b border-gray-300" contenteditable="true" id="field-insentif">{{ number_format($data['insentif']) }}</div>
                         </div>
+                        <div class="grid grid-cols-[auto_150px] gap-x-2 border-t-2 border-black pt-1 mt-2">
+                            <div class="font-black">Total Realisasi Belanja</div>
+                            <div class="font-black text-right border-b-4 border-double border-black underline" contenteditable="true" id="field-total-belanja">{{ number_format($data['belanja_bahan'] + $data['operasional'] + $data['insentif']) }}</div>
+                        </div>
                     </div>
 
-                    <div class="grid grid-cols-[auto_150px] gap-x-2 border-t-2 border-black pt-1">
-                        <div class="font-black">Total Belanja</div>
-                        <div class="font-black text-right border-b-4 border-double border-black underline" contenteditable="true" id="field-total-belanja">{{ number_format($data['belanja_bahan'] + $data['operasional'] + $data['insentif']) }}</div>
+                    <div class="grid grid-cols-[auto_150px] gap-x-2 pt-4">
+                        <div class="font-black text-lg">SISA ANGGARAN PERIODE</div>
+                        <div class="font-black text-lg text-right border-b-4 border-double border-black bg-yellow-50" contenteditable="true" id="field-sisa-dana">{{ number_format($data['sisa_dana']) }}</div>
                     </div>
-
-                    <div class="grid grid-cols-[auto_150px] gap-x-2">
-                        <div class="font-black">Sisa Anggaran</div>
-                        <div class="font-black text-right border-b-4 border-double border-black underline" contenteditable="true" id="field-sisa-dana">{{ number_format($data['sisa_dana']) }}</div>
-                    </div>
+                    <p class="text-[10px] italic text-gray-500">* Sisa Anggaran = (Total Anggaran) - (Total Realisasi Belanja)</p>
                 </div>
 
                 <div class="space-y-4">

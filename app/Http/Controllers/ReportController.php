@@ -32,14 +32,24 @@ class ReportController extends Controller
             return view('reports.lpd2m', compact('data'));
         }
 
-        // Real calculations
-        $danaMasuk = Payment::where('sppg_id', $sppgId)->where('status', 'paid')->where('date', '<=', $endDate)->sum('amount_in');
-        $belanjaBahan = Payment::where('sppg_id', $sppgId)->where('status', 'paid')->whereBetween('date', [$startDate, $endDate])->where('transaction_type', 'Biaya Bahan Baku')->sum('amount_out');
-        $operasional = Payment::where('sppg_id', $sppgId)->where('status', 'paid')->whereBetween('date', [$startDate, $endDate])->where('transaction_type', 'Biaya Operasional')->sum('amount_out');
-        $insentif = Payment::where('sppg_id', $sppgId)->where('status', 'paid')->whereBetween('date', [$startDate, $endDate])->where('transaction_type', 'Insentif Fasilitas')->sum('amount_out');
+        // Portion-based Budget Calculations
+        $portions = \App\Models\BeneficiaryGroup::where('sppg_id', $sppgId)
+            ->selectRaw('SUM(porsi_besar) as total_besar, SUM(porsi_kecil) as total_kecil')
+            ->first();
+
+        $porsiBesar = $portions->total_besar ?? 0;
+        $porsiKecil = $portions->total_kecil ?? 0;
+
+        $budgetBahanHarian = ($porsiBesar * 10000) + ($porsiKecil * 8000);
+        $budgetBahanPeriode = $budgetBahanHarian * 12;
+
+        $budgetOpsHarian = ($porsiBesar + $porsiKecil) * 3000;
+        $budgetOpsPeriode = $budgetOpsHarian * 12;
+
+        $totalBudget = $budgetBahanPeriode + $budgetOpsPeriode;
         
         $totalBelanja = $belanjaBahan + $operasional + $insentif;
-        $sisaDana = $danaMasuk - $totalBelanja; // Simplified calculation
+        $sisaDana = $totalBudget - $totalBelanja; 
 
         // Fetch detailed material usage
         $materialUsages = MaterialLog::with('material')
@@ -57,7 +67,13 @@ class ReportController extends Controller
             'yayasan' => 'PENDIDIKAN ALA DELPHI',
             'sppg_name' => $sppg->name ?? 'SPPG UNKNOWN',
             'sppg_id' => $sppg->code ?? 'N/A',
-            'dana_masuk' => $danaMasuk,
+            'dana_masuk' => $totalBudget, // Use calculated budget as total income
+            'budget_bahan_harian' => $budgetBahanHarian,
+            'budget_bahan_periode' => $budgetBahanPeriode,
+            'budget_ops_harian' => $budgetOpsHarian,
+            'budget_ops_periode' => $budgetOpsPeriode,
+            'porsi_besar' => $porsiBesar,
+            'porsi_kecil' => $porsiKecil,
             'belanja_bahan' => $belanjaBahan,
             'operasional' => $operasional,
             'insentif' => $insentif,
