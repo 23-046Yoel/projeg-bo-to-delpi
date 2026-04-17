@@ -1,3 +1,4 @@
+<x-app-layout>
     <x-slot name="header">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div>
