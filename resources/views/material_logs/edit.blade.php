@@ -73,7 +73,9 @@
                                 <div class="group">
                                     <x-input-label for="quantity" :value="__('Jumlah / Kuantitas')" />
                                     <div class="relative">
-                                        <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-gray-300 group-focus-within:text-gold transition-colors font-black text-xs">UNIT</div>
+                                        <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-gray-300 group-focus-within:text-gold transition-colors font-black text-xs">
+                                            <span id="unit-label">{{ $materialLog->material->unit ?? 'UNIT' }}</span>
+                                        </div>
                                         <x-text-input id="quantity" class="pl-16 w-full" type="number" step="0.01" name="quantity" :value="old('quantity', $materialLog->quantity)" required />
                                     </div>
                                     <x-input-error :messages="$errors->get('quantity')" class="mt-2" />
@@ -104,4 +106,28 @@
             </div>
         </div>
     </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const materialInput = document.getElementById('material_name');
+            const unitLabel = document.getElementById('unit-label');
+            const materials = @json($materials->pluck('unit', 'name'));
+            
+            function updateUnit() {
+                const name = materialInput.value;
+                const unit = materials[name] || 'UNIT';
+                unitLabel.textContent = unit;
+                if (unit !== 'UNIT') {
+                    unitLabel.classList.add('text-gold');
+                } else {
+                    unitLabel.classList.remove('text-gold');
+                }
+            }
+
+            materialInput.addEventListener('input', updateUnit);
+            materialInput.addEventListener('change', updateUnit);
+        });
+    </script>
+    @endpush
 </x-app-layout>

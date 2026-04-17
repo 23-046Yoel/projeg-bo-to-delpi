@@ -20,7 +20,16 @@ class MaterialLogController extends Controller
 
     public function create(Request $request)
     {
-        $materials = Material::where('sppg_id', auth()->user()->sppg_id)->get();
+        $user = auth()->user();
+        
+        // If user has no SPPG, show all materials (likely a master admin)
+        // Otherwise only show materials belonging to their SPPG
+        if ($user->sppg_id) {
+            $materials = Material::where('sppg_id', $user->sppg_id)->get();
+        } else {
+            $materials = Material::all();
+        }
+
         $prefilledMaterial = $request->query('material_name');
         return view('material_logs.create', compact('materials', 'prefilledMaterial'));
     }
