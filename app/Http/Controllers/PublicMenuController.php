@@ -17,7 +17,7 @@ class PublicMenuController extends Controller
         $startOfWeek = now()->startOfWeek()->toDateString();
         $endOfWeek = now()->endOfWeek()->addDays(14)->toDateString(); // 2 weeks
 
-        $query = Menu::with(['sppg', 'dishes'])
+        $query = Menu::with(['sppg', 'dishes.recipes.material'])
             ->whereBetween('date', [$startOfWeek, $endOfWeek])
             ->orderBy('date');
 
@@ -27,6 +27,11 @@ class PublicMenuController extends Controller
 
         $menus = $query->get()->groupBy('date');
 
-        return view('public.menu_calendar', compact('menus', 'sppgs', 'today'));
+        // Fetch total portions for each SPPG to calculate material totals
+        $sppgPortions = \App\Models\BeneficiaryGroup::selectRaw('sppg_id, SUM(total_beneficiaries) as total_portions')
+            ->groupBy('sppg_id')
+            ->pluck('total_portions', 'sppg_id');
+
+        return view('public.menu_calendar', compact('menus', 'sppgs', 'today', 'sppgPortions'));
     }
 }

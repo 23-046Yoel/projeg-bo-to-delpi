@@ -57,20 +57,46 @@
 
     <!-- News Ticker -->
     @php
-        $latest_news = \App\Models\News::latest()->take(5)->get();
-        $active_aspirations = \App\Models\Aspiration::where('is_active', true)->latest()->take(5)->get();
+        $latest_news = \App\Models\News::latest()->take(3)->get()->map(function($item) {
+            $item->ticker_text = "📢 Berita: " . $item->title . " baru saja diupload";
+            return $item;
+        });
+        
+        $latest_suppliers = \App\Models\Supplier::latest()->take(3)->get()->map(function($item) {
+            $item->ticker_text = "🤝 " . $item->name . " baru saja mendaftar jadi pemasok";
+            return $item;
+        });
+
+        $latest_complaints = \App\Models\Complaint::latest()->take(3)->get()->map(function($item) {
+            $item->ticker_text = "⚠️ Input pengaduan baru saja diterima dari " . ($item->name ?? 'Anonim');
+            return $item;
+        });
+
+        $latest_consultations = \App\Models\NutritionConsultation::latest()->take(3)->get()->map(function($item) {
+            $item->ticker_text = "🥗 " . $item->name . " baru saja mengisi jadwal konsul gizi";
+            return $item;
+        });
+
+        $latest_beneficiaries = \App\Models\BeneficiaryGroup::latest()->take(3)->get()->map(function($item) {
+            $item->ticker_text = "📦 Data baru untuk penerima manfaat baru saja diinput";
+            return $item;
+        });
+
+        $ticker_items = collect()
+            ->concat($latest_news)
+            ->concat($latest_suppliers)
+            ->concat($latest_complaints)
+            ->concat($latest_consultations)
+            ->concat($latest_beneficiaries)
+            ->sortByDesc('created_at')
+            ->take(10);
     @endphp
-    @if($latest_news->count() > 0 || $active_aspirations->count() > 0)
+    @if($ticker_items->count() > 0)
     <div class="ticker-wrap sticky top-0 z-50">
         <div class="ticker">
-            @foreach($latest_news as $news)
+            @foreach($ticker_items as $item)
                 <span class="mx-8 font-semibold text-sm uppercase tracking-widest text-[#D4AF37]">
-                    📢 {{ $news->title }}
-                </span>
-            @endforeach
-            @foreach($active_aspirations as $asp)
-                <span class="mx-8 font-semibold text-sm tracking-widest text-white/80">
-                    💬 <em>{{ $asp->sender_name }} ({{ $asp->location }}):</em> {{ Str::limit($asp->content, 80) }}
+                    {{ $item->ticker_text }}
                 </span>
             @endforeach
         </div>

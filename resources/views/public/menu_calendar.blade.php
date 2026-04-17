@@ -202,9 +202,31 @@
                                     @if($menu->dishes->count() > 0)
                                     <div class="menu-item" style="margin-top:8px;padding-top:8px;border-top:1px solid #f0f0f0;">
                                         <div>
-                                            <div class="item-label">🍽️ Hidangan</div>
-                                            <div class="item-value">{{ $menu->dishes->pluck('name')->implode(', ') }}</div>
+                                            <div class="item-label">🍽️ Hidangan & Bahan Baku</div>
+                                            <div class="item-value">
+                                                @foreach($menu->dishes as $dish)
+                                                    <div style="margin-bottom: 8px;">
+                                                        <strong style="color: #0f1e40;">{{ $dish->name }}</strong>
+                                                        <ul style="list-style: none; margin-left: 0; margin-top: 4px;">
+                                                            @foreach($dish->recipes as $recipe)
+                                                                @php
+                                                                    $totalQty = $recipe->quantity * ($sppgPortions[$menu->sppg_id] ?? 0);
+                                                                @endphp
+                                                                <li style="font-size: 11px; color: #64748b; display: flex; justify-content: space-between; padding: 2px 0;">
+                                                                    <span>• {{ $recipe->material->name ?? 'Bahan' }}</span>
+                                                                    <span style="font-weight: 700; color: #1a2540;">{{ number_format($totalQty, 2) }} {{ $recipe->unit }}</span>
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </div>
+                                                @endforeach
+                                            </div>
                                         </div>
+                                    </div>
+                                    <div style="margin-top: 12px; padding: 12px; background: #fffbeb; border-radius: 12px; border: 1px dashed #f0c040;">
+                                        <p style="font-size: 11px; font-weight: 700; color: #92400e; margin-bottom: 4px;">🤝 Peluang Pemasok</p>
+                                        <p style="font-size: 10px; color: #b45309; line-height: 1.4;">Berminat menyediakan bahan baku di atas? Bergabunglah menjadi pemasok resmi kami.</p>
+                                        <a href="/suppliers/register" style="display: inline-block; margin-top: 8px; font-size: 10px; font-weight: 800; color: #0f1e40; text-decoration: underline; text-transform: uppercase; letter-spacing: 1px;">Daftar Jadi Pemasok →</a>
                                     </div>
                                     @endif
                                 </div>
@@ -218,7 +240,7 @@
 
     <footer class="footer">
         <p>© {{ date('Y') }} Program Makan Bergizi Gratis (MBG) — Yayasan Alad Elphi & Badan Gizi Nasional</p>
-        <p style="margin-top:4px;">📍 <a href="/dapur" style="color:#f0c040;text-decoration:none;">Lihat Profil Dapur</a> &nbsp;|&nbsp; <a href="/complaints/create" style="color:#f0c040;text-decoration:none;">Sampaikan Pengaduan</a></p>
+        <p style="margin-top:4px;">📍 <a href="/dapur" style="color:#f0c040;text-decoration:none;">Lihat Profil Dapur</a> &nbsp;|&nbsp; <a href="/complaints/create" style="color:#f0c040;text-decoration:none;">Sampaikan Pengaduan</a> &nbsp;|&nbsp; <a href="/suppliers/register" style="color:#f0c040;text-decoration:none;">Daftar Pemasok</a></p>
     </footer>
 </body>
 </html>
