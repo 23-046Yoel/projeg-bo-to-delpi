@@ -173,7 +173,8 @@ class ReportController extends Controller
             'category' => $request->input('category', 'general')
         ]);
 
-        return back()->with('success', 'Berkas berhasil diunggah!');
+        }
+
     public function attendanceRecap(Request $request)
     {
         $month = $request->input('month', now()->month);
