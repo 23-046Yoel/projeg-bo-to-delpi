@@ -60,42 +60,33 @@
                         </div>
                     </div>
 
-                    <!-- Shift/Session -->
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-black text-gold-dark uppercase tracking-widest pl-1">Sesi Pelayanan</label>
-                        <div class="relative group">
-                            <select name="session" required 
-                                class="w-full bg-silk border-2 border-gold/5 focus:border-gold-premium focus:ring-0 rounded-2xl py-4 px-5 text-sm font-bold text-royal-navy transition-all duration-300 group-hover:border-gold/20 appearance-none">
-                                <option value="pagi">Pelayanan Pagi</option>
-                                <option value="siang">Pelayanan Siang</option>
-                                <option value="sore">Pelayanan Sore</option>
-                            </select>
-                            <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-gold-dark group-hover:text-gold transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Report Type -->
-                <div class="space-y-2">
+                <div class="space-y-4">
                     <label class="text-[10px] font-black text-gold-dark uppercase tracking-widest pl-1">Jenis Laporan</label>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <label class="relative flex items-center justify-center p-4 rounded-2xl border-2 border-gold/5 bg-silk hover:border-gold-premium/30 cursor-pointer transition-all has-[:checked]:border-gold-premium has-[:checked]:bg-gold-light/20 group">
-                            <input type="radio" name="report_type" value="distribusi" class="hidden" checked>
-                            <span class="text-xs font-bold text-royal-navy/60 group-hover:text-royal-navy transition-colors">Distribusi</span>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        <label class="relative flex items-center justify-center p-5 rounded-[1.5rem] border-2 border-gold/5 bg-silk hover:border-gold-premium/30 cursor-pointer transition-all has-[:checked]:border-gold-premium has-[:checked]:bg-gold-light/20 group overflow-hidden">
+                            <input type="radio" name="report_type" value="Harian Aslap" class="hidden" checked>
+                            <div class="text-center">
+                                <span class="block text-[11px] font-black text-royal-navy group-hover:text-gold-dark uppercase tracking-wider">Harian Aslap</span>
+                            </div>
                         </label>
-                        <label class="relative flex items-center justify-center p-4 rounded-2xl border-2 border-gold/5 bg-silk hover:border-gold-premium/30 cursor-pointer transition-all has-[:checked]:border-gold-premium has-[:checked]:bg-gold-light/20 group">
-                            <input type="radio" name="report_type" value="produksi" class="hidden">
-                            <span class="text-xs font-bold text-royal-navy/60 group-hover:text-royal-navy transition-colors">Produksi</span>
+                        <label class="relative flex items-center justify-center p-5 rounded-[1.5rem] border-2 border-gold/5 bg-silk hover:border-gold-premium/30 cursor-pointer transition-all has-[:checked]:border-gold-premium has-[:checked]:bg-gold-light/20 group overflow-hidden">
+                            <input type="radio" name="report_type" value="Harian Gizi" class="hidden">
+                            <div class="text-center">
+                                <span class="block text-[11px] font-black text-royal-navy group-hover:text-gold-dark uppercase tracking-wider">Harian Gizi</span>
+                            </div>
                         </label>
-                        <label class="relative flex items-center justify-center p-4 rounded-2xl border-2 border-gold/5 bg-silk hover:border-gold-premium/30 cursor-pointer transition-all has-[:checked]:border-gold-premium has-[:checked]:bg-gold-light/20 group">
-                            <input type="radio" name="report_type" value="kebersihan" class="hidden">
-                            <span class="text-xs font-bold text-royal-navy/60 group-hover:text-royal-navy transition-colors">Kebersihan</span>
+                        <label class="relative flex items-center justify-center p-5 rounded-[1.5rem] border-2 border-gold/5 bg-silk hover:border-gold-premium/30 cursor-pointer transition-all has-[:checked]:border-gold-premium has-[:checked]:bg-gold-light/20 group overflow-hidden">
+                            <input type="radio" name="report_type" value="Harian Keuangan" class="hidden">
+                            <div class="text-center">
+                                <span class="block text-[11px] font-black text-royal-navy group-hover:text-gold-dark uppercase tracking-wider">Harian Keuangan</span>
+                            </div>
                         </label>
-                        <label class="relative flex items-center justify-center p-4 rounded-2xl border-2 border-gold/5 bg-silk hover:border-gold-premium/30 cursor-pointer transition-all has-[:checked]:border-gold-premium has-[:checked]:bg-gold-light/20 group">
-                            <input type="radio" name="report_type" value="lainnya" class="hidden">
-                            <span class="text-xs font-bold text-royal-navy/60 group-hover:text-royal-navy transition-colors">Lainnya</span>
+                        <label class="relative flex items-center justify-center p-5 rounded-[1.5rem] border-2 border-gold/5 bg-silk hover:border-gold-premium/30 cursor-pointer transition-all has-[:checked]:border-gold-premium has-[:checked]:bg-gold-light/20 group overflow-hidden">
+                            <input type="radio" name="report_type" value="Informasi Penting" class="hidden">
+                            <div class="text-center">
+                                <span class="block text-[11px] font-black text-royal-navy group-hover:text-gold-dark uppercase tracking-wider">Informasi Penting</span>
+                            </div>
                         </label>
                     </div>
                 </div>

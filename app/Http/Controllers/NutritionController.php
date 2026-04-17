@@ -63,7 +63,6 @@ class NutritionController extends Controller
     {
         $validated = $request->validate([
             'report_date' => 'required|date',
-            'session'     => 'required|string',
             'report_type' => 'required|string',
             'attachment'  => 'required|file|max:10240',
             'notes'       => 'nullable|string',
@@ -78,7 +77,7 @@ class NutritionController extends Controller
             'user_id'         => auth()->id(),
             'sppg_id'         => auth()->user()->sppg_id ?? null,
             'report_date'     => $validated['report_date'],
-            'session'         => $validated['session'],
+            'session'         => '-', // Defaulting to "-" since shift is no longer used
             'report_type'     => $validated['report_type'],
             'attachment_path' => $attachmentPath,
             'notes'           => $validated['notes'],

@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\Payment;
 use App\Models\SavedReport;
 use App\Models\MaterialLog;
+use App\Models\User;
+use App\Models\VolunteerAttendance;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class ReportController extends Controller
 {
@@ -171,5 +174,37 @@ class ReportController extends Controller
         ]);
 
         return back()->with('success', 'Berkas berhasil diunggah!');
+    public function attendanceRecap(Request $request)
+    {
+        $month = $request->input('month', now()->month);
+        $year = $request->input('year', now()->year);
+        $sppgId = auth()->user()->sppg_id;
+
+        // Get all volunteers for this SPPG
+        $volunteers = User::where('sppg_id', $sppgId)
+            ->where('role', User::ROLE_VOLUNTEER)
+            ->get();
+
+        // Get attendance records for this month
+        $attendances = VolunteerAttendance::where('sppg_id', $sppgId)
+            ->whereMonth('created_at', $month)
+            ->whereYear('created_at', $year)
+            ->get()
+            ->groupBy(['user_id', function ($item) {
+                return $item->created_at->format('j'); // Group by day (1-31)
+            }]);
+
+        $daysInMonth = Carbon::create($year, $month)->daysInMonth;
+        
+        $data = [
+            'month_name' => Carbon::create($year, $month)->translatedFormat('F Y'),
+            'month' => $month,
+            'year' => $year,
+            'volunteers' => $volunteers,
+            'attendances' => $attendances,
+            'daysInMonth' => $daysInMonth
+        ];
+
+        return view('reports.attendance_recap', compact('data'));
     }
 }

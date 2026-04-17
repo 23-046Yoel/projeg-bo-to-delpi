@@ -80,6 +80,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('orders', \App\Http\Controllers\OrderController::class);
     Route::get('/financial', [\App\Http\Controllers\FinancialController::class, 'index'])->name('financial.index');
     Route::get('/reports/lpd2m', [\App\Http\Controllers\ReportController::class, 'lpd2m'])->name('reports.lpd2m');
+    Route::get('/reports/attendance-recap', [\App\Http\Controllers\ReportController::class, 'attendanceRecap'])->name('reports.attendance-recap');
     Route::get('/reports/sptj', [\App\Http\Controllers\ReportController::class, 'sptj'])->name('reports.sptj');
     Route::get('/reports/bapsd', [\App\Http\Controllers\ReportController::class, 'bapsd'])->name('reports.bapsd');
     Route::get('/reports/upload', [\App\Http\Controllers\ReportController::class, 'uploadIndex'])->name('reports.upload');
