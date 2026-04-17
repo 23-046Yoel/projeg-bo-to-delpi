@@ -1,6 +1,5 @@
-<x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div>
                 <h2 class="font-black text-2xl text-royal-navy leading-tight tracking-tight uppercase font-playfair">
                     {{ __('Laporan Stok Gudang') }}
@@ -8,79 +7,71 @@
                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1">Audit Saldo Bahan Baku: {{ \Carbon\Carbon::parse($startDate)->format('d/m/y') }} - {{ \Carbon\Carbon::parse($endDate)->format('d/m/y') }}</p>
             </div>
             
-            <form action="{{ route('inventory.index') }}" method="GET" class="flex items-center space-x-4 bg-silk p-2 rounded-2xl border border-gray-100">
-                <div class="flex items-center px-4 space-x-2">
-                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">From:</span>
-                    <input name="start_date" type="date" value="{{ $startDate }}" class="bg-transparent border-none focus:ring-0 text-xs font-bold text-royal-navy p-0 w-32">
-                </div>
-                <div class="flex items-center px-4 space-x-2 border-l border-gray-100">
-                    <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">To:</span>
-                    <input name="end_date" type="date" value="{{ $endDate }}" class="bg-transparent border-none focus:ring-0 text-xs font-bold text-royal-navy p-0 w-32">
-                </div>
-                <button type="submit" class="bg-royal-navy text-gold text-[10px] font-black uppercase tracking-widest px-6 py-2.5 rounded-xl hover:bg-royal-navy/90 transition-all shadow-lg shadow-royal-navy/10">
-                    Run Audit
-                </button>
-            </form>
+            <div class="flex flex-col md:flex-row items-stretch md:items-center gap-3">
+                <form action="{{ route('inventory.index') }}" method="GET" class="flex flex-wrap items-center gap-3 bg-silk p-2 rounded-2xl border border-gray-100 shadow-sm">
+                    <div class="flex items-center px-4 space-x-2 border-r border-gray-100">
+                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Dapur:</span>
+                        <select name="sppg_id" class="bg-transparent border-none focus:ring-0 text-xs font-bold text-royal-navy p-0 w-32" onchange="this.form.submit()">
+                            <option value="">Semua Dapur</option>
+                            @foreach($sppgs as $s)
+                                <option value="{{ $s->id }}" {{ $sppgId == $s->id ? 'selected' : '' }}>{{ $s->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="flex items-center px-4 space-x-2 border-r border-gray-100">
+                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Dari:</span>
+                        <input name="start_date" type="date" value="{{ $startDate }}" class="bg-transparent border-none focus:ring-0 text-xs font-bold text-royal-navy p-0 w-28">
+                    </div>
+                    <div class="flex items-center px-4 space-x-2">
+                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Ke:</span>
+                        <input name="end_date" type="date" value="{{ $endDate }}" class="bg-transparent border-none focus:ring-0 text-xs font-bold text-royal-navy p-0 w-28">
+                    </div>
+                    <button type="submit" class="bg-royal-navy text-gold text-[10px] font-black uppercase tracking-widest px-6 py-2.5 rounded-xl hover:bg-royal-navy/90 transition-all">
+                        Filter
+                    </button>
+                </form>
+            </div>
         </div>
     </x-slot>
 
-    <div class="py-12" x-data="{ openAdjustment: false, type: 'in' }">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white rounded-[3rem] shadow-2xl border border-gray-50 overflow-hidden">
-                <div class="p-10">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+    <div class="py-6 lg:py-12" x-data="{ openAdjustment: false, type: 'in' }">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-[2rem] lg:rounded-[3rem] shadow-2xl border border-gray-50 overflow-hidden">
+                <div class="p-6 lg:p-10">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8 mb-8 lg:mb-12">
                         @php
                             $total_masuk = collect($report)->sum('masuk');
                             $total_keluar = collect($report)->sum('keluar');
                             $items_count = count($report);
                         @endphp
-                        <div class="p-8 bg-silk rounded-[2rem] relative overflow-hidden group">
-                                <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Total Materials</div>
-                                <div class="text-3xl font-black text-royal-navy">{{ $items_count }} Items</div>
-                           <div class="absolute -right-4 -bottom-4 opacity-5 group-hover:scale-110 transition-transform">
-                                <svg class="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                           </div>
+                        <div class="p-6 lg:p-8 bg-silk rounded-3xl lg:rounded-[2rem] relative overflow-hidden group">
+                                <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 lg:mb-2">Total Materials</div>
+                                <div class="text-2xl lg:text-3xl font-black text-royal-navy">{{ $items_count }} Items</div>
                         </div>
 
-                        <div class="p-8 bg-emerald-50 rounded-[2rem] relative overflow-hidden group">
-                           <div class="relative z-10">
-                                <div class="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-2">Total Inbound</div>
-                                <div class="text-3xl font-black text-emerald-600">+{{ number_format($total_masuk, 1) }}</div>
-                           </div>
-                           <div class="absolute -right-4 -bottom-4 opacity-10">
-                                <svg class="w-24 h-24 text-emerald-600" fill="currentColor" viewBox="0 0 24 24"><path d="M7 11l5-5 5 5M7 13l5 5 5-5"/></svg>
-                           </div>
+                        <div class="p-6 lg:p-8 bg-emerald-50 rounded-3xl lg:rounded-[2rem] relative overflow-hidden group text-emerald-600">
+                                <div class="text-[10px] font-black uppercase tracking-widest mb-1 lg:mb-2 opacity-60">Total Inbound</div>
+                                <div class="text-2xl lg:text-3xl font-black">+{{ number_format($total_masuk, 1) }}</div>
                         </div>
 
-                        <div class="p-8 bg-rose-50 rounded-[2rem] relative overflow-hidden group">
-                           <div class="relative z-10">
-                                <div class="text-[10px] font-black text-rose-600 uppercase tracking-widest mb-2">Total Outbound</div>
-                                <div class="text-3xl font-black text-rose-600">-{{ number_format($total_keluar, 1) }}</div>
-                           </div>
-                           <div class="absolute -right-4 -bottom-4 opacity-10">
-                                <svg class="w-24 h-24 text-rose-600" fill="currentColor" viewBox="0 0 24 24"><path d="M7 11l5-5 5 5M7 13l5 5 5-5"/></svg>
-                           </div>
+                        <div class="p-6 lg:p-8 bg-rose-50 rounded-3xl lg:rounded-[2rem] relative overflow-hidden group text-rose-600">
+                                <div class="text-[10px] font-black uppercase tracking-widest mb-1 lg:mb-2 opacity-60">Total Outbound</div>
+                                <div class="text-2xl lg:text-3xl font-black">-{{ number_format($total_keluar, 1) }}</div>
                         </div>
 
-                        <div class="p-8 bg-royal-navy rounded-[2rem] relative overflow-hidden group shadow-xl">
-                            <!-- Royal Accent Decorative -->
-                            <div class="absolute top-0 right-0 w-32 h-32 bg-gold/10 -mr-16 -mt-16 rounded-full"></div>
-                            
-                            <div class="relative z-10">
-                                <div class="text-[10px] font-black text-gold uppercase tracking-widest mb-4">Aksi Cepat Audit</div>
-                                <div class="flex gap-2">
-                                    <button @click="openAdjustment = true; type = 'in'; $nextTick(() => { $('#select2-adj-input').select2({ placeholder: 'Cari bahan...' }); })" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-3.5 px-4 text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-emerald-500/20 active:scale-95">
-                                        + Tambah
-                                    </button>
-                                    <button @click="openAdjustment = true; type = 'out'; $nextTick(() => { $('#select2-adj-input').select2({ placeholder: 'Cari bahan...' }); })" class="flex-1 bg-rose-500 hover:bg-rose-600 text-white rounded-xl py-3.5 px-4 text-[10px] font-black uppercase tracking-widest transition-all shadow-lg shadow-rose-500/20 active:scale-95">
-                                        - Kurang
-                                    </button>
-                                </div>
+                        <div class="p-6 lg:p-8 bg-royal-navy rounded-3xl lg:rounded-[2rem] relative overflow-hidden group shadow-xl">
+                            <div class="flex gap-2">
+                                <button @click="openAdjustment = true; type = 'in'; $nextTick(() => { $('#select2-adj-input').select2({ placeholder: 'Cari bahan...' }); })" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl py-3 px-2 text-[10px] font-black uppercase tracking-widest transition-all shadow-lg active:scale-95">
+                                    + Tambah
+                                </button>
+                                <button @click="openAdjustment = true; type = 'out'; $nextTick(() => { $('#select2-adj-input').select2({ placeholder: 'Cari bahan...' }); })" class="flex-1 bg-rose-500 hover:bg-rose-600 text-white rounded-xl py-3 px-2 text-[10px] font-black uppercase tracking-widest transition-all shadow-lg active:scale-95">
+                                    - Kurang
+                                </button>
                             </div>
                         </div>
                     </div>
 
-                    {{-- NEW BIG INTEGRATED FORM SECTION --}}
+                    {{-- MOBILE FRIENDLY ADJUSTMENT FORM --}}
                     <div x-show="openAdjustment" 
                          x-transition:enter="transition ease-out duration-500"
                          x-transition:enter-start="opacity-0 -translate-y-8"
@@ -88,65 +79,82 @@
                          x-transition:leave="transition ease-in duration-300"
                          x-transition:leave-start="opacity-100 translate-y-0"
                          x-transition:leave-end="opacity-0 -translate-y-8"
-                         class="mb-12" x-cloak>
+                         class="mb-8 lg:mb-12" x-cloak>
                         
-                        <div class="bg-silk/50 border-2 border-dashed border-gold/20 rounded-[3rem] p-12 relative overflow-hidden">
-                            <!-- Background Pattern -->
-                            <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: url('data:image/svg+xml,%3Csvg width=\"20\" height=\"20\" viewBox=\"0 0 20 20\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"%23000\" fill-opacity=\"1\" fill-rule=\"evenodd\"%3E%3Ccircle cx=\"3\" cy=\"3\" r=\"3\"/%3E%3C/g%3E%3C/svg%3E');"></div>
-
+                        <div class="bg-silk/50 border-2 border-dashed border-gold/20 rounded-3xl lg:rounded-[3rem] p-6 lg:p-12 relative overflow-hidden">
                             <div class="relative z-10">
-                                <div class="flex items-center justify-between mb-10">
-                                    <div class="flex items-center space-x-6">
-                                        <div class="w-16 h-16 rounded-[2rem] flex items-center justify-center shadow-xl" :class="type === 'in' ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'">
-                                            <svg x-show="type === 'in'" class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-                                            <svg x-show="type === 'out'" class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"/></svg>
+                                <div class="flex items-center justify-between mb-8 lg:mb-10">
+                                    <div class="flex items-center space-x-4 lg:space-x-6">
+                                        <div class="w-12 h-12 lg:w-16 lg:h-16 rounded-2xl lg:rounded-[2rem] flex items-center justify-center shadow-xl" :class="type === 'in' ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'">
+                                            <svg x-show="type === 'in'" class="w-6 h-6 lg:w-8 lg:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                                            <svg x-show="type === 'out'" class="w-6 h-6 lg:w-8 lg:h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M20 12H4"/></svg>
                                         </div>
                                         <div>
-                                            <h3 class="text-3xl font-black text-royal-navy uppercase tracking-tighter" x-text="type === 'in' ? 'Informasi Penambahan Stok' : 'Informasi Pengurangan Stok'"></h3>
-                                            <p class="text-[11px] font-bold text-gray-400 uppercase tracking-[0.3em] mt-2">Lengkapi data audit bahan baku di bawah ini</p>
+                                            <h3 class="text-xl lg:text-3xl font-black text-royal-navy uppercase tracking-tighter" x-text="type === 'in' ? 'Penambahan Stok' : 'Pengurangan Stok'"></h3>
+                                            <p class="text-[9px] lg:text-[11px] font-bold text-gray-400 uppercase tracking-[0.3em] mt-1 lg:mt-2">Lengkapi data audit bahan baku</p>
                                         </div>
                                     </div>
-                                    <button @click="openAdjustment = false" class="px-6 py-3 bg-white text-gray-400 text-[10px] font-black uppercase tracking-widest rounded-xl hover:text-rose-500 transition-all border border-gray-100 shadow-sm">Batal / Tutup</button>
+                                    <button @click="openAdjustment = false" class="text-rose-500">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </button>
                                 </div>
 
-                                <form action="{{ route('inventory.adjust') }}" method="POST" class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                                <form action="{{ route('inventory.adjust') }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-1 lg:grid-cols-4 gap-6 lg:gap-8">
                                     @csrf
                                     <input type="hidden" name="type" :value="type">
                                     
                                     <div class="lg:col-span-2">
-                                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4 ml-4">1. Pilih Bahan Baku Utama</label>
-                                        <div class="relative">
-                                            <select name="material_id" required id="select2-adj-input" class="w-full">
-                                                <option value=""></option>
-                                                @foreach($materials as $m)
-                                                    <option value="{{ $m->id }}">{{ $m->name }} ({{ $m->unit }})</option>
+                                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">1. Pilih Dapur & Bahan Baku</label>
+                                        <div class="grid grid-cols-1 gap-4">
+                                            <select name="sppg_id" required class="w-full bg-white border-none rounded-2xl py-4 px-6 text-sm font-bold text-royal-navy shadow-sm focus:ring-2 focus:ring-gold transition-all">
+                                                <option value="">-- Pilih Dapur --</option>
+                                                @foreach($sppgs as $s)
+                                                    <option value="{{ $s->id }}" {{ (auth()->user()->sppg_id == $s->id || $sppgId == $s->id) ? 'selected' : '' }}>{{ $s->name }}</option>
                                                 @endforeach
                                             </select>
+                                            <div class="relative">
+                                                <select name="material_id" required id="select2-adj-input" class="w-full select2">
+                                                    <option value=""></option>
+                                                    @foreach($materials as $m)
+                                                        <option value="{{ $m->id }}">{{ $m->name }} ({{ $m->unit }})</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
 
                                     <div>
-                                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4 ml-4">2. Jumlah (Kuantitas)</label>
+                                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">2. Jumlah (Kuantitas)</label>
                                         <div class="relative group">
-                                            <x-text-input type="number" step="0.01" name="quantity" required class="w-full px-8 py-5 bg-white border-none rounded-[1.5rem] text-lg font-black text-royal-navy focus:ring-8 focus:ring-gold/10 transition-all shadow-sm group-hover:shadow-md" placeholder="0.00" />
-                                            <div class="absolute inset-y-0 right-0 pr-8 flex items-center pointer-events-none text-[10px] font-black text-gold-dark uppercase tracking-widest opacity-40">Unit</div>
+                                            <input type="number" step="0.01" name="quantity" required class="w-full px-6 py-4 bg-white border-none rounded-2xl text-lg font-black text-royal-navy focus:ring-2 focus:ring-gold transition-all shadow-sm" placeholder="0.00" />
+                                            <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none text-[10px] font-black text-gold-dark uppercase tracking-widest opacity-40">Unit</div>
                                         </div>
                                     </div>
 
-                                    <div class="flex items-end">
-                                        <button type="submit" class="w-full py-5 bg-royal-navy text-gold text-[11px] font-black uppercase tracking-[0.2em] rounded-[1.5rem] hover:shadow-2xl hover:shadow-royal-navy/30 hover:-translate-y-1 active:translate-y-0 transition-all">
-                                            Proses Perubahan Stok
-                                        </button>
+                                    <div>
+                                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">3. Foto Kamera</label>
+                                        <div class="relative group">
+                                            <input type="file" name="photo" accept="image/*" capture="environment" class="hidden" id="photo_input" onchange="document.getElementById('photo_name').innerText = this.files[0].name">
+                                            <button type="button" onclick="document.getElementById('photo_input').click()" class="w-full px-6 py-4 bg-white border-dashed border-2 border-gold/30 rounded-2xl text-xs font-bold text-gray-500 hover:border-gold transition-all flex items-center justify-center space-x-2">
+                                                <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                                <span id="photo_name">Ambil Foto / Upload</span>
+                                            </button>
+                                        </div>
                                     </div>
 
-                                    <div class="lg:col-span-4">
-                                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4 ml-4">3. Catatan / Alasan Perubahan (Opsional)</label>
-                                        <x-text-input type="text" name="note" class="w-full px-8 py-5 bg-white border-none rounded-[1.5rem] text-sm font-bold text-royal-navy focus:ring-8 focus:ring-gold/10 transition-all shadow-sm" placeholder="Contoh: Stok rusak saat pengiriman, bonus dari supplier baru, hasil opname fisik bulanan..." />
+                                    <div class="lg:col-span-3">
+                                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">4. Catatan / Alasan (Opsional)</label>
+                                        <input type="text" name="note" class="w-full px-6 py-4 bg-white border-none rounded-2xl text-sm font-bold text-royal-navy focus:ring-2 focus:ring-gold transition-all shadow-sm" placeholder="Contoh: Stok rusak, bonus supplier, opname..." />
+                                    </div>
+
+                                    <div class="flex items-end">
+                                        <button type="submit" class="w-full py-4 lg:py-5 bg-royal-navy text-gold text-[11px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-royal-navy/90 transition-all shadow-xl">
+                                            Proses Audit
+                                        </button>
                                     </div>
                                 </form>
                             </div>
                         </div>
-                    </div>
                     </div>
 
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
@@ -155,79 +163,59 @@
                             Daftar Saldo Bahan Baku
                         </h3>
                         
-                        <form action="{{ route('inventory.index') }}" method="GET" class="relative w-full md:w-80 group" id="inventorySearchForm">
-                            {{-- Preserve date filters --}}
+                        <form action="{{ route('inventory.index') }}" method="GET" class="relative w-full md:w-80 group">
                             <input type="hidden" name="start_date" value="{{ $startDate }}">
                             <input type="hidden" name="end_date" value="{{ $endDate }}">
-                            
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-300 group-focus-within:text-gold">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                            </div>
-                            <input type="text" name="search" id="inventorySearch" 
-                                value="{{ request('search') }}"
-                                autofocus
-                                onfocus="var val=this.value; this.value=''; this.value=val;"
-                                class="w-full pl-12 pr-4 py-3 bg-silk border-none rounded-xl text-xs font-bold text-royal-navy placeholder-gray-400 focus:ring-2 focus:ring-gold outline-none transition-all shadow-inner" 
-                                placeholder="Cari bahan (ketik & Enter)...">
+                            <input type="hidden" name="sppg_id" value="{{ $sppgId }}">
+                            <input type="text" name="search" value="{{ $search }}" class="w-full pl-12 pr-4 py-3 bg-silk border-none rounded-xl text-xs font-bold text-royal-navy placeholder-gray-400 focus:ring-2 focus:ring-gold shadow-inner" placeholder="Cari bahan (ketik & Enter)...">
                         </form>
                     </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full" id="inventoryTable">
-                        <thead>
-                            <tr class="border-b border-gray-50">
-                                <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Material Name</th>
-                                <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Initial Balance</th>
-                                <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Total In</th>
-                                <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Total Out</th>
-                                <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Current Balance</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-50">
-                            @foreach($report as $item)
-                                <tr class="hover:bg-silk/30 transition-colors group">
-                                    <td class="px-6 py-6 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div class="w-2.5 h-2.5 rounded-full bg-gold mr-3"></div>
-                                            <span class="text-sm font-bold text-royal-navy">{{ $item['name'] }}</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-6 whitespace-nowrap text-right font-bold text-gray-400 text-sm">
-                                        {{ number_format($item['saldo_awal'], 2) }} <span class="text-[10px] uppercase font-black ml-1 text-slate-300">{{ $item['unit'] }}</span>
-                                    </td>
-                                    <td class="px-6 py-6 whitespace-nowrap text-right font-black text-emerald-500 text-sm">
-                                        +{{ number_format($item['masuk'], 2) }} <span class="text-[10px] uppercase font-black ml-1 text-emerald-300">{{ $item['unit'] }}</span>
-                                    </td>
-                                    <td class="px-6 py-6 whitespace-nowrap text-right font-black text-rose-500 text-sm">
-                                        -{{ number_format($item['keluar'], 2) }} <span class="text-[10px] uppercase font-black ml-1 text-rose-300">{{ $item['unit'] }}</span>
-                                    </td>
-                                    <td class="px-6 py-6 whitespace-nowrap text-right">
-                                        <div class="inline-block px-4 py-2 rounded-xl {{ $item['saldo_akhir'] < 0 ? 'bg-rose-50 text-rose-600' : 'bg-royal-navy text-gold' }} text-lg font-black font-playfair">
-                                            {{ number_format($item['saldo_akhir'], 2) }} <span class="text-[10px] uppercase font-black ml-1 opacity-60">{{ $item['unit'] }}</span>
-                                        </div>
-                                    </td>
+                    <div class="overflow-x-auto -mx-6 lg:mx-0">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr class="border-b border-gray-50">
+                                    <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Material Name</th>
+                                    <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Initial Balance</th>
+                                    <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Total In</th>
+                                    <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Total Out</th>
+                                    <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Current Balance</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody class="divide-y divide-gray-50">
+                                @forelse($report as $item)
+                                    <tr class="hover:bg-silk/30 transition-colors group">
+                                        <td class="px-6 py-6 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="w-2.5 h-2.5 rounded-full bg-gold mr-3"></div>
+                                                <span class="text-sm font-bold text-royal-navy">{{ $item['name'] }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-6 whitespace-nowrap text-right font-bold text-gray-400 text-sm">
+                                            {{ number_format($item['saldo_awal'], 2) }} <span class="text-[10px] uppercase font-black ml-1 text-slate-300">{{ $item['unit'] }}</span>
+                                        </td>
+                                        <td class="px-6 py-6 whitespace-nowrap text-right font-black text-emerald-500 text-sm">
+                                            +{{ number_format($item['masuk'], 2) }} <span class="text-[10px] uppercase font-black ml-1 text-emerald-300">{{ $item['unit'] }}</span>
+                                        </td>
+                                        <td class="px-6 py-6 whitespace-nowrap text-right font-black text-rose-500 text-sm">
+                                            -{{ number_format($item['keluar'], 2) }} <span class="text-[10px] uppercase font-black ml-1 text-rose-300">{{ $item['unit'] }}</span>
+                                        </td>
+                                        <td class="px-6 py-6 whitespace-nowrap text-right">
+                                            <div class="inline-block px-4 py-2 rounded-xl {{ $item['saldo_akhir'] < 0 ? 'bg-rose-50 text-rose-600' : 'bg-royal-navy text-gold' }} text-lg font-black font-playfair">
+                                                {{ number_format($item['saldo_akhir'], 2) }} <span class="text-[10px] uppercase font-black ml-1 opacity-60">{{ $item['unit'] }}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="px-6 py-12 text-center text-gray-400 text-xs font-bold uppercase tracking-widest">Data tidak ditemukan untuk dapur ini</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <script>
-        $(document).ready(function() {
-            let invTimeout = null;
-            $("#inventorySearch").on("keyup", function(e) {
-                clearTimeout(invTimeout);
-                if (e.keyCode === 13) {
-                    $("#inventorySearchForm").submit();
-                } else {
-                    invTimeout = setTimeout(function() {
-                        $("#inventorySearchForm").submit();
-                    }, 800);
-                }
-            });
-        });
-    </script>
 </x-app-layout>

@@ -40,9 +40,9 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->role, [\App\Models\User::ROLE_ADMIN, \App\Models\User::ROLE_ASLAP]);
         });
 
-        // 4. Daftar PM Detail / Input PM: All dan Publik (Volunteer)
+        // 4. Daftar PM Detail / Input PM: All except Warehouse
         \Illuminate\Support\Facades\Gate::define('manage-beneficiaries', function ($user) {
-            return true; // "All" means any authenticated user
+            return $user->role !== \App\Models\User::ROLE_WAREHOUSE;
         });
 
         // 5. Bahan Baku: Pengawas Keuangan, Gudang, Pengawas Gizi
@@ -70,9 +70,9 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->role, [\App\Models\User::ROLE_ADMIN, \App\Models\User::ROLE_KA_SPPG, \App\Models\User::ROLE_PENGAWAS_KEUANGAN]);
         });
 
-        // 9. Laporan Umum (Absensi, Pengaduan): All
+        // 9. Laporan Umum (Absensi, Pengaduan): All except Warehouse
         \Illuminate\Support\Facades\Gate::define('view-general-reports', function ($user) {
-            return true; // "All"
+            return $user->role !== \App\Models\User::ROLE_WAREHOUSE;
         });
     }
 }
