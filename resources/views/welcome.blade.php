@@ -93,7 +93,7 @@
             display: inline-block;
             white-space: nowrap;
             padding-right: 100%;
-            animation: ticker-premium 40s linear infinite;
+            animation: ticker-premium 70s linear infinite;
         }
         .ticker-item {
             display: inline-flex;
@@ -111,6 +111,14 @@
             padding: 2px 10px;
             border-radius: 4px;
             background: rgba(255,255,255,0.05);
+        }
+        .ticker-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: circle;
+            background: currentColor;
+            margin-right: 8px;
+            display: inline-block;
         }
         .ticker-item strong {
             color: #fff;
@@ -137,7 +145,6 @@
             return [
                 'type' => 'news',
                 'label' => 'Berita',
-                'icon' => '📢',
                 'color' => '#3b82f6',
                 'content' => "<strong>" . $item->title . "</strong> baru saja diupload",
                 'created_at' => $item->created_at
@@ -148,7 +155,6 @@
             return [
                 'type' => 'supplier',
                 'label' => 'Pemasok',
-                'icon' => '🤝',
                 'color' => '#10b981',
                 'content' => "<strong>" . $item->name . "</strong> baru saja mendaftar jadi pemasok",
                 'created_at' => $item->created_at
@@ -159,7 +165,6 @@
             return [
                 'type' => 'complaint',
                 'label' => 'Pengaduan',
-                'icon' => '⚠️',
                 'color' => '#f59e0b',
                 'content' => "Input aduan diterima dari <strong>" . ($item->name ?? 'Anonim') . "</strong>",
                 'created_at' => $item->created_at
@@ -170,7 +175,6 @@
             return [
                 'type' => 'nutrition',
                 'label' => 'Konsul Gizi',
-                'icon' => '🥗',
                 'color' => '#8b5cf6',
                 'content' => "<strong>" . $item->name . "</strong> mengisi jadwal konsultasi",
                 'created_at' => $item->created_at
@@ -196,7 +200,7 @@
                 @foreach($ticker_items as $item)
                     <div class="ticker-item">
                         <span class="ticker-label" style="color: {{ $item['color'] }}; background: {{ $item['color'] }}15">
-                            {{ $item['icon'] }} {{ $item['label'] }}
+                            <span class="ticker-dot"></span> {{ $item['label'] }}
                         </span>
                         <span>{!! $item['content'] !!}</span>
                     </div>
@@ -205,7 +209,7 @@
                 @foreach($ticker_items as $item)
                     <div class="ticker-item">
                         <span class="ticker-label" style="color: {{ $item['color'] }}; background: {{ $item['color'] }}15">
-                            {{ $item['icon'] }} {{ $item['label'] }}
+                            <span class="ticker-dot"></span> {{ $item['label'] }}
                         </span>
                         <span>{!! $item['content'] !!}</span>
                     </div>
