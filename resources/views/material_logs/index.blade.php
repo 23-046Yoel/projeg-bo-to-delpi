@@ -20,6 +20,29 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-gray-100 overflow-hidden">
                 <div class="p-8">
+                    @if(auth()->user()->isAdmin())
+                    <div class="mb-8 p-6 bg-slate-50 rounded-[1.5rem] border border-slate-100">
+                        <form action="{{ route('material_logs.index') }}" method="GET" class="flex flex-col md:flex-row items-end gap-4">
+                            <div class="w-full md:w-64">
+                                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">Filter Dapur / SPPG</label>
+                                <select name="sppg_id" onchange="this.form.submit()" class="w-full bg-white border-none rounded-xl text-xs font-bold text-royal-navy shadow-sm focus:ring-2 focus:ring-gold/20 transition-all">
+                                    <option value="">Semua Dapur</option>
+                                    @foreach($sppgs as $sppg)
+                                        <option value="{{ $sppg->id }}" {{ request('sppg_id') == $sppg->id ? 'selected' : '' }}>{{ $sppg->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="flex-1"></div>
+                            @if(request('sppg_id'))
+                                <a href="{{ route('material_logs.index') }}" class="text-[10px] font-black text-rose-500 uppercase tracking-widest hover:text-rose-600 transition-colors flex items-center mb-3">
+                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    Clear Filter
+                                </a>
+                            @endif
+                        </form>
+                    </div>
+                    @endif
+
                     <div class="overflow-x-auto custom-scrollbar">
                         <table class="min-w-full">
                             <thead>
@@ -59,6 +82,7 @@
                                         <td class="px-6 py-6 whitespace-nowrap text-right">
                                             <div class="text-lg font-black font-playfair {{ $log->type == 'in' ? 'text-emerald-600' : 'text-rose-600' }}">
                                                 {{ $log->type == 'in' ? '+' : '-' }} {{ number_format($log->quantity, 2) }}
+                                                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter ml-1">{{ $log->material->unit ?? 'Unit' }}</span>
                                             </div>
                                         </td>
                                         <td class="px-6 py-6 whitespace-nowrap text-center">

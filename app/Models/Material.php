@@ -28,13 +28,13 @@ class Material extends Model
         ];
     }
 
-    public function logs()
+    public function logs()  
     {
         return $this->hasMany(MaterialLog::class);
     }
-
+  
     public function sppg()
     {
         return $this->belongsTo(Sppg::class);
-    }
-}
+       
+

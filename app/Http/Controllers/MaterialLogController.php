@@ -12,10 +12,24 @@ class MaterialLogController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $logs = MaterialLog::with('material')->latest()->paginate(15);
-        return view('material_logs.index', compact('logs'));
+        $query = MaterialLog::with(['material', 'sppg'])->latest();
+
+        // 1. Scoping for non-admins
+        if (auth()->check() && !auth()->user()->isAdmin() && auth()->user()->sppg_id) {
+            $query->where('sppg_id', auth()->user()->sppg_id);
+        }
+
+        // 2. Filter by Kitchen (SPPG) for Admins
+        if ($request->has('sppg_id') && $request->sppg_id != '') {
+            $query->where('sppg_id', $request->sppg_id);
+        }
+
+        $logs = $query->paginate(15)->withQueryString();
+        $sppgs = \App\Models\Sppg::all(); // For admin filter dropdown
+
+        return view('material_logs.index', compact('logs', 'sppgs'));
     }
 
     public function create(Request $request)

@@ -10,8 +10,8 @@ class BeneficiaryGroup extends Model
     use HasFactory;
 
     protected $guarded = [];
+    public function beneficiaries()             
 
-    public function beneficiaries()
     {
         return $this->hasMany(Beneficiary::class);
     }

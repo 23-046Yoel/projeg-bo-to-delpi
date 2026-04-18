@@ -31,17 +31,33 @@
                     </div>
                 </div>
 
-                <form action="{{ route('materials.index') }}" method="GET" class="relative w-full md:w-96 group" id="searchForm">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-300 group-focus-within:text-gold transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    </div>
-                    <input type="text" name="search" id="materialSearch" 
-                        value="{{ request('search') }}"
-                        autofocus
-                        onfocus="var val=this.value; this.value=''; this.value=val;"
-                        class="w-full pl-12 pr-4 py-4 bg-white border-2 border-gold/5 rounded-2xl text-xs font-bold text-royal-navy placeholder-gray-400 focus:border-gold focus:ring-4 focus:ring-gold/10 outline-none transition-all shadow-xl shadow-royal-navy/5" 
-                        placeholder="Cari bahan baku (ketik & Enter)...">
-                </form>
+                <div class="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+                    @if(auth()->user()->isAdmin())
+                    <form action="{{ route('materials.index') }}" method="GET" class="w-full md:w-64">
+                        <select name="sppg_id" onchange="this.form.submit()" class="w-full pl-4 pr-10 py-4 bg-white border-2 border-gold/5 rounded-2xl text-xs font-bold text-royal-navy focus:border-gold focus:ring-4 focus:ring-gold/10 outline-none transition-all shadow-xl shadow-royal-navy/5">
+                            <option value="">Semua Dapur</option>
+                            @foreach($sppgs as $sppg)
+                                <option value="{{ $sppg->id }}" {{ request('sppg_id') == $sppg->id ? 'selected' : '' }}>{{ $sppg->name }}</option>
+                            @endforeach
+                        </select>
+                    </form>
+                    @endif
+
+                    <form action="{{ route('materials.index') }}" method="GET" class="relative w-full md:w-96 group" id="searchForm">
+                        @if(request('sppg_id'))
+                            <input type="hidden" name="sppg_id" value="{{ request('sppg_id') }}">
+                        @endif
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-300 group-focus-within:text-gold transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        </div>
+                        <input type="text" name="search" id="materialSearch" 
+                            value="{{ request('search') }}"
+                            autofocus
+                            onfocus="var val=this.value; this.value=''; this.value=val;"
+                            class="w-full pl-12 pr-4 py-4 bg-white border-2 border-gold/5 rounded-2xl text-xs font-bold text-royal-navy placeholder-gray-400 focus:border-gold focus:ring-4 focus:ring-gold/10 outline-none transition-all shadow-xl shadow-royal-navy/5" 
+                            placeholder="Cari bahan baku (ketik & Enter)...">
+                    </form>
+                </div>
             </div>
 
             <div class="glass overflow-hidden shadow-2xl sm:rounded-[2rem] border border-gold/10 relative">

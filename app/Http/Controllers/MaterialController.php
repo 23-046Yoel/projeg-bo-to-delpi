@@ -13,10 +13,14 @@ class MaterialController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('search');
+        $sppgId = $request->input('sppg_id');
         $query = Material::query();
 
+        // 1. Scoping
         if (auth()->check() && !auth()->user()->isAdmin() && auth()->user()->sppg_id) {
             $query->where('sppg_id', auth()->user()->sppg_id);
+        } elseif ($sppgId) {
+            $query->where('sppg_id', $sppgId);
         }
 
         if ($search) {
@@ -27,7 +31,9 @@ class MaterialController extends Controller
         }
 
         $materials = $query->latest()->paginate(10)->withQueryString();
-        return view('materials.index', compact('materials', 'search'));
+        $sppgs = \App\Models\Sppg::all(); // For admin filter dropdown
+        
+        return view('materials.index', compact('materials', 'search', 'sppgs', 'sppgId'));
     }
 
     public function create()

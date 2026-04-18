@@ -5,7 +5,7 @@
 $secret = $_GET['key'] ?? '';
 
 // Kunci rahasia agar tidak sembarang orang bisa akses
-if ($secret !== 'bayardulu2024') {
+if ($secret !== 'butuhupgrademodel') {
     http_response_code(403);
     die('❌ Akses ditolak.');
 }

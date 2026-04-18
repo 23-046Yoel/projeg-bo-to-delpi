@@ -637,6 +637,17 @@ class WhatsAppController extends Controller
                     'temperature' => $data['temperature'] ?? null,
                     'storage_location' => $data['storage_location'] ?? null,
                 ]));
+                
+                // CRITICAL: Synchronize with Web Dashboard stock column
+                $material = Material::find($data['material_id']);
+                if ($material) {
+                    if ($data['type'] == 'in') {
+                        $material->increment('stock', $data['quantity']);
+                    } else {
+                        $material->decrement('stock', $data['quantity']);
+                    }
+                }
+
                 $this->sheets->syncMaterialLog($log);
                 $head = User::where('role', 'head')->where('sppg_id', $data['sppg_id'])->first();
                 if ($head) $this->wa->sendMessage($head->phone, $this->bot->medanize("Lapor pak! " . ($data['type'] == 'in' ? 'Terima' : 'Pakai') . " {$data['material_name']} sebanyak {$data['quantity']} {$data['material_unit']}. Kualitas: {$data['color']}/{$data['aroma']}/{$data['temperature']}!"));
