@@ -36,5 +36,5 @@ class Material extends Model
     public function sppg()
     {
         return $this->belongsTo(Sppg::class);
-       
-
+    }
+}

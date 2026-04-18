@@ -483,11 +483,27 @@ class WhatsAppController extends Controller
     {
         $user = User::where('phone', $phone)->first();
         $parts = explode(',', $message);
-        // Sanitize quantity string to float
+        
+        if (count($parts) < 2) {
+            return $this->wa->sendMessage($phone, $this->bot->medanize("Formatnya salah lae! Sebutkan nama barang dan jumlahnya ya. Contoh: 'Ayam, 10'"));
+        }
+
+        $materialName = trim($parts[0]);
         $qtyString = trim($parts[1]);
         $qty = (float) preg_replace('/[^0-9.]/', '', $qtyString);
 
         if ($qty <= 0) return $this->wa->sendMessage($phone, $this->bot->medanize("Jumlahnya mana bah? Kasih angka yang bener lah!"));
+
+        // Find the material
+        $sppgId = $user->sppg_id ?? null;
+        $mat = Material::where('name', 'like', "%$materialName%")
+            ->where(function($q) use ($sppgId) {
+                $q->whereNull('sppg_id')->orWhere('sppg_id', $sppgId);
+            })->first();
+
+        if (!$mat) {
+            return $this->wa->sendMessage($phone, $this->bot->medanize("Bahan '$materialName' gak ketemu di daftar kita bah! Coba cek ejaannya."));
+        }
 
         $data = [
             'material_id' => $mat->id,
@@ -495,7 +511,7 @@ class WhatsAppController extends Controller
             'material_unit' => $mat->unit ?? 'Unit',
             'type' => $type,
             'quantity' => $qty,
-            'sppg_id' => $user->sppg_id ?? null
+            'sppg_id' => $sppgId
         ];
 
         cache()->put("conf_data_$phone", $data, 600);
@@ -506,7 +522,7 @@ class WhatsAppController extends Controller
         }
 
         cache()->put("bot_state_$phone", "confirm_material_$type", 600);
-        $action = 'pakai';
+        $action = $type == 'in' ? 'terima' : 'pakai';
         return $this->wa->sendMessage($phone, $this->bot->medanize("Betul kau mau $action {$data['material_name']} sebanyak {$data['quantity']} {$data['material_unit']}? (Y/N)"));
     }
 
