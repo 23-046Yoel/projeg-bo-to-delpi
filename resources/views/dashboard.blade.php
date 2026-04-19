@@ -104,10 +104,12 @@
                             </thead>
                             <tbody class="divide-y divide-gray-50">
                                 @forelse($latest_suppliers as $supplier)
-                                <tr onclick="window.location='{{ route('suppliers.show', $supplier) }}'" class="hover:bg-gray-50/30 transition-colors cursor-pointer group">
+                                <tr class="hover:bg-gray-50/30 transition-colors group">
                                     <td class="px-8 py-5">
-                                        <div class="font-bold text-royal-navy text-sm group-hover:text-gold transition-colors">{{ $supplier->name }}</div>
-                                        <div class="text-[10px] text-gray-400 font-medium">{{ $supplier->village }}</div>
+                                        <a href="{{ route('suppliers.show', $supplier) }}" class="block group-hover:opacity-80 transition-opacity">
+                                            <div class="font-bold text-royal-navy text-sm group-hover:text-gold transition-colors">{{ $supplier->name }}</div>
+                                            <div class="text-[10px] text-gray-400 font-medium">{{ $supplier->village }}</div>
+                                        </a>
                                     </td>
                                     <td class="px-8 py-5">
                                         <span class="px-3 py-1 bg-royal-navy/5 text-royal-navy text-[10px] font-extrabold rounded-full">{{ $supplier->sppg->name ?? 'N/A' }}</span>

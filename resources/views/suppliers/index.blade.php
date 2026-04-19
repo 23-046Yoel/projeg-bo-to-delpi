@@ -35,15 +35,15 @@
                                 @foreach ($suppliers as $supplier)
                                     <tr onclick="window.location='{{ route('suppliers.show', $supplier) }}'" class="hover:bg-silk/50 transition-colors group cursor-pointer">
                                         <td class="px-6 py-6 whitespace-nowrap">
-                                            <div class="flex items-center">
+                                            <a href="{{ route('suppliers.show', $supplier) }}" class="flex items-center group-hover:opacity-80 transition-opacity">
                                                 <div class="w-12 h-12 rounded-2xl bg-royal-navy shadow-lg shadow-royal-navy/20 flex items-center justify-center text-gold mr-4 group-hover:rotate-6 transition-transform">
                                                     <span class="font-black text-lg">{{ substr($supplier->name, 0, 1) }}</span>
                                                 </div>
                                                 <div>
-                                                    <div class="text-sm font-black text-royal-navy tracking-tight">{{ $supplier->name }}</div>
+                                                    <div class="text-sm font-black text-royal-navy tracking-tight group-hover:text-gold transition-colors">{{ $supplier->name }}</div>
                                                     <div class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">ID: #SUP-{{ str_pad($supplier->id, 3, '0', STR_PAD_LEFT) }}</div>
                                                 </div>
-                                            </div>
+                                            </a>
                                         </td>
                                         <td class="px-6 py-6 whitespace-nowrap">
                                             <div class="flex items-center text-sm font-bold text-gray-600">
