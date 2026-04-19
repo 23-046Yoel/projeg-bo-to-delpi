@@ -622,15 +622,18 @@ class WhatsAppController extends Controller
 
         $data = cache()->get("conf_data_$phone");
         $user = User::where('phone', $phone)->first();
+        $replyMsg = "[SISTEM] Data telah berhasil diproses dan dicatat.";
 
         switch ($type) {
             case 'supplier':
                 $supplier = Supplier::create($data);
                 $this->sheets->syncSupplier($supplier);
+                $replyMsg = "[SISTEM] Pendaftaran pemasok atas nama {$data['name']} telah berhasil dicatat.";
                 break;
             case 'beneficiary':
                 $ben = Beneficiary::create($data);
                 $this->sheets->syncBeneficiary($ben);
+                $replyMsg = "[SISTEM] Pendaftaran penerima manfaat atas nama {$data['name']} telah berhasil dicatat.";
                 break;
             case 'payment':
                 $payment = Payment::create(array_merge($data, [
@@ -643,6 +646,7 @@ class WhatsAppController extends Controller
                 
                 // Always notify master number
                 $this->wa->sendMessage($this->wa->getMasterNumber(), $this->bot->medanize("Lapor Bos! Ada pengajuan dana baru Rp " . number_format($data['amount']) . " untuk {$data['notes']} oleh " . ($user->name ?? 'User')));
+                $replyMsg = "[SISTEM] Pengajuan dana sebesar Rp " . number_format($data['amount']) . " telah berhasil dicatat.";
                 break;
             case 'material_in':
             case 'material_out':
@@ -670,10 +674,14 @@ class WhatsAppController extends Controller
                 
                 // Always notify master number
                 $this->wa->sendMessage($this->wa->getMasterNumber(), $this->bot->medanize("Lapor Bos! " . ($data['type'] == 'in' ? 'Terima' : 'Pakai') . " {$data['material_name']} sebanyak {$data['quantity']} {$data['material_unit']} di " . ($user->sppg->name ?? 'SPPG')));
+                
+                $actionStr = $data['type'] == 'in' ? 'Barang masuk' : 'Pemakaian barang';
+                $replyMsg = "[SISTEM] $actionStr berupa {$data['material_name']} sebanyak {$data['quantity']} {$data['material_unit']} telah berhasil dicatat.";
                 break;
             case 'mbg_dist':
                 $dist = MbgDistribution::create(array_merge($data, ['distributed_at' => now()]));
                 $this->sheets->syncMbgDistribution($dist);
+                $replyMsg = "[SISTEM] Pengiriman {$data['quantity']} porsi MBG telah berhasil dicatat.";
                 break;
             case 'menu':
                 $menu = \App\Models\Menu::create([
@@ -701,18 +709,21 @@ class WhatsAppController extends Controller
                 }
                 
                 $this->sheets->syncMenu($menu);
+                $replyMsg = "[SISTEM] Menu baru '{$data['menu']}' telah berhasil dicatat.";
                 break;
             case 'maker':
                 $payment = Payment::find($data['id']);
                 $payment->update(['status' => 'maker']); // change 'made' to 'maker' per spec
                 $head = User::where('role', 'head')->where('sppg_id', $payment->sppg_id)->first();
                 if ($head) $this->wa->sendMessage($head->phone, $this->bot->medanize("Lapor pak! Pengajuan dana ID {$data['id']} sudah di-MAKER oleh Yayasan. Tolong APPROVE!"));
+                $replyMsg = "[SISTEM] Status MAKER untuk pengajuan dana telah berhasil dicatat.";
                 break;
             case 'approve':
                 $payment = Payment::find($data['id']);
                 $payment->update(['status' => 'approved']);
                 $this->sheets->syncPayment($payment);
                 $this->notifyPaymentSuccess($payment);
+                $replyMsg = "[SISTEM] Status APPROVE untuk pengajuan dana telah berhasil dicatat.";
                 break;
         }
 
@@ -721,7 +732,7 @@ class WhatsAppController extends Controller
         cache()->forget("reg_ben_$phone");
         cache()->forget("reg_data_$phone");
         
-        return $this->wa->sendMessage($phone, $this->bot->medanize("Mantap! Sudah kuproses semua ya lae. Beres pun!"));
+        return $this->wa->sendMessage($phone, $replyMsg);
     }
 
     private function notifyPaymentSuccess($payment)

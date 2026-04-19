@@ -24,7 +24,7 @@ foreach ($menus as $menu) {
             'pelengkap' => $menu->pelengkap
         ];
         
-        $hasData = false;       
+        $hasData = false;         
         foreach ($items as $type => $name) {
             if ($name && $name != '-' && trim($name) != '') {
                 $dish = Dish::firstOrCreate(['name' => trim($name)]);

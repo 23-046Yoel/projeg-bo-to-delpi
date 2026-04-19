@@ -33,7 +33,7 @@
                             </thead>
                             <tbody class="divide-y divide-gray-50">
                                 @foreach ($suppliers as $supplier)
-                                    <tr class="hover:bg-silk/50 transition-colors group">
+                                    <tr onclick="window.location='{{ route('suppliers.show', $supplier) }}'" class="hover:bg-silk/50 transition-colors group cursor-pointer">
                                         <td class="px-6 py-6 whitespace-nowrap">
                                             <div class="flex items-center">
                                                 <div class="w-12 h-12 rounded-2xl bg-royal-navy shadow-lg shadow-royal-navy/20 flex items-center justify-center text-gold mr-4 group-hover:rotate-6 transition-transform">

@@ -23,7 +23,7 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
                 <!-- Suppliers -->
-                <div class="bg-white p-6 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-gray-100 hover:border-gold/30 transition-all duration-500 group relative overflow-hidden">
+                <a href="{{ route('suppliers.index') }}" class="block bg-white p-6 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-gray-100 hover:border-gold/30 transition-all duration-500 group relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-gold/5 -mr-12 sm:-mr-16 -mt-12 sm:-mt-16 rounded-full group-hover:bg-gold/10 transition-colors"></div>
                     <div class="relative">
                         <div class="text-gray-400 font-black uppercase tracking-[0.2em] text-[10px] mb-3 sm:mb-4">Total Suppliers</div>
@@ -34,10 +34,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
 
                 <!-- Beneficiaries -->
-                <div class="bg-white p-6 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-gray-100 hover:border-gold/30 transition-all duration-500 group relative overflow-hidden">
+                <a href="{{ route('beneficiary-groups.index') }}" class="block bg-white p-6 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-gray-100 hover:border-gold/30 transition-all duration-500 group relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-gold/5 -mr-12 sm:-mr-16 -mt-12 sm:-mt-16 rounded-full group-hover:bg-gold/10 transition-colors"></div>
                     <div class="relative">
                         <div class="text-gray-400 font-black uppercase tracking-[0.2em] text-[10px] mb-3 sm:mb-4">Penerima Manfaat</div>
@@ -48,10 +48,10 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
 
                 <!-- Materials -->
-                <div class="bg-white p-6 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-gray-100 hover:border-gold/30 transition-all duration-500 group relative overflow-hidden">
+                <a href="{{ route('materials.index') }}" class="block bg-white p-6 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-gray-100 hover:border-gold/30 transition-all duration-500 group relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-gold/5 -mr-12 sm:-mr-16 -mt-12 sm:-mt-16 rounded-full group-hover:bg-gold/10 transition-colors"></div>
                     <div class="relative">
                         <div class="text-gray-400 font-black uppercase tracking-[0.2em] text-[10px] mb-3 sm:mb-4">Item Bahan Baku</div>
@@ -62,7 +62,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
 
                 <!-- Payments -->
                 <div class="bg-royal-navy p-6 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] shadow-[0_20px_50px_rgba(15,23,42,0.1)] border border-royal-navy transition-all duration-500 group relative overflow-hidden">
@@ -104,9 +104,9 @@
                             </thead>
                             <tbody class="divide-y divide-gray-50">
                                 @forelse($latest_suppliers as $supplier)
-                                <tr class="hover:bg-gray-50/30 transition-colors">
+                                <tr onclick="window.location='{{ route('suppliers.show', $supplier) }}'" class="hover:bg-gray-50/30 transition-colors cursor-pointer group">
                                     <td class="px-8 py-5">
-                                        <div class="font-bold text-royal-navy text-sm">{{ $supplier->name }}</div>
+                                        <div class="font-bold text-royal-navy text-sm group-hover:text-gold transition-colors">{{ $supplier->name }}</div>
                                         <div class="text-[10px] text-gray-400 font-medium">{{ $supplier->village }}</div>
                                     </td>
                                     <td class="px-8 py-5">
