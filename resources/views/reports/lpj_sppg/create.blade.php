@@ -1,271 +1,275 @@
 <x-app-layout>
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-8">
-                <div class="mb-8 border-b border-gold/20 pb-6">
-                    <h2 class="text-3xl font-black text-royal-navy uppercase tracking-tighter">Input BERKAS LPJ SPPG Baru</h2>
-                    <p class="text-gold-dark font-bold uppercase tracking-widest text-xs mt-2">Laporan Pertanggungjawaban Satuan Pelayanan Pemenuhan Gizi</p>
+    <style>
+        .paper-container {
+            background-color: #f3f4f6;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        .paper {
+            background: white;
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 2cm;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            font-family: 'Times New Roman', serif;
+            color: black;
+            font-size: 11pt;
+            line-height: 1.5;
+        }
+        .header-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 14pt;
+            text-transform: uppercase;
+            margin-bottom: 2pt;
+        }
+        .header-sub {
+            text-align: center;
+            font-weight: bold;
+            font-size: 12pt;
+            text-transform: uppercase;
+            margin-bottom: 10pt;
+        }
+        .paper-input {
+            border: none;
+            border-bottom: 1px solid #000;
+            padding: 0 5px;
+            font-family: 'Times New Roman', serif;
+            font-size: 11pt;
+            font-weight: bold;
+            text-align: center;
+            background: transparent;
+        }
+        .paper-input:focus {
+            outline: none;
+            border-bottom: 2px solid #d4af37;
+            background: #fff9e6;
+        }
+        table.paper-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15pt 0;
+        }
+        table.paper-table th, table.paper-table td {
+            border: 1.5px solid black;
+            padding: 5pt;
+        }
+        table.paper-table th {
+            text-align: center;
+            font-weight: bold;
+        }
+        .section-title {
+            font-weight: bold;
+            text-decoration: none;
+            margin-top: 15pt;
+            margin-bottom: 5pt;
+        }
+        .doc-area {
+            border: 2px dashed #999;
+            height: 200pt;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #94a3b8;
+            margin: 10pt 0;
+        }
+        .sticky-save {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+        }
+    </style>
+
+    <div class="paper-container">
+        <form action="{{ route('reports.lpj-sppg.store') }}" method="POST">
+            @csrf
+            
+            <div class="paper">
+                <!-- PAGE 1: MAIN REPORT -->
+                <div class="header-title">LAPORAN PERTANGGUNGJAWABAN (LPJ) 2 MINGGUAN</div>
+                <div class="header-sub">SATUAN PELAYANAN PEMENUHAN GIZI (SPPG) BALIMBINGAN 2</div>
+                
+                <div style="text-align: center; font-weight: bold; margin-top: 10pt;">
+                    Periode: <input type="date" name="period_start" class="paper-input" style="width: 120pt;" required> 
+                    s.d. <input type="date" name="period_end" class="paper-input" style="width: 120pt;" required> 2026
                 </div>
 
-                <form action="{{ route('reports.lpj-sppg.store') }}" method="POST" class="space-y-12">
-                    @csrf
-                    
-                    <!-- Section 1: Informasi Dasar -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div>
-                            <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-2">Periode Mulai</label>
-                            <input type="date" name="period_start" value="{{ $data['period_start'] }}" class="w-full border-gray-200 rounded-xl focus:ring-gold focus:border-gold font-bold">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-2">Periode Selesai</label>
-                            <input type="date" name="period_end" value="{{ $data['period_end'] }}" class="w-full border-gray-200 rounded-xl focus:ring-gold focus:border-gold font-bold">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-2">Tanggal Laporan</label>
-                            <input type="date" name="report_date" value="{{ $data['report_date'] }}" class="w-full border-gray-200 rounded-xl focus:ring-gold focus:border-gold font-bold">
-                        </div>
-                    </div>
+                <hr style="border: none; border-top: 2.5px solid black; margin-top: 10pt;">
 
-                    <!-- Section 2: Realisasi Penerima Manfaat -->
-                    <div class="bg-silk/30 p-6 rounded-3xl border border-gold/10">
-                        <h3 class="text-sm font-black text-royal-navy uppercase tracking-[0.2em] mb-6 flex items-center">
-                            <span class="w-8 h-8 rounded-lg bg-gold/20 flex items-center justify-center text-gold-dark mr-3 italic">I</span>
-                            Data Realisasi Penerima Manfaat
-                        </h3>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div class="space-y-4">
-                                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Peserta Didik (PAUD/SD/SMP/SMA)</p>
-                                <div class="flex gap-4">
-                                    <input type="number" name="target_peserta" placeholder="Target" class="w-1/2 border-gray-200 rounded-xl focus:ring-gold focus:border-gold font-bold">
-                                    <input type="number" name="realisasi_peserta" placeholder="Realisasi" class="w-1/2 border-gray-200 rounded-xl focus:ring-gold focus:border-gold font-bold">
-                                </div>
-                            </div>
-                            <div class="space-y-4">
-                                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Pendidik & Tenaga Kependidikan</p>
-                                <div class="flex gap-4">
-                                    <input type="number" name="target_pendidik" placeholder="Target" class="w-1/2 border-gray-200 rounded-xl focus:ring-gold focus:border-gold font-bold">
-                                    <input type="number" name="realisasi_pendidik" placeholder="Realisasi" class="w-1/2 border-gray-200 rounded-xl focus:ring-gold focus:border-gold font-bold">
-                                </div>
-                            </div>
-                            <div class="space-y-4">
-                                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Kelompok 3B (Bumil, Busui, Balita)</p>
-                                <div class="flex gap-4">
-                                    <input type="number" name="target_3b" placeholder="Target" class="w-1/2 border-gray-200 rounded-xl focus:ring-gold focus:border-gold font-bold">
-                                    <input type="number" name="realisasi_3b" placeholder="Realisasi" class="w-1/2 border-gray-200 rounded-xl focus:ring-gold focus:border-gold font-bold">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="section-title">I. LAPORAN PELAKSANAAN KEGIATAN</div>
+                <div style="font-weight: bold; margin-bottom: 5pt;">1.1 Data Realisasi Penerima Manfaat</div>
 
-                    <!-- Section 3: Laporan Penggunaan Dana -->
-                    <div class="bg-silk/30 p-6 rounded-3xl border border-gold/10">
-                        <h3 class="text-sm font-black text-royal-navy uppercase tracking-[0.2em] mb-6 flex items-center">
-                            <span class="w-8 h-8 rounded-lg bg-gold/20 flex items-center justify-center text-gold-dark mr-3 italic">II</span>
-                            Laporan Penggunaan Dana
-                        </h3>
-                        <div class="space-y-6">
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
-                                <div class="md:col-span-2">
-                                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Belanja Bahan Baku (At Cost)</p>
-                                </div>
-                                <input type="number" name="anggaran_bahan" placeholder="Anggaran" class="w-full border-gray-200 rounded-xl focus:ring-gold focus:border-gold font-bold">
-                                <input type="number" name="realisasi_bahan" placeholder="Realisasi" class="w-full border-gray-200 rounded-xl focus:ring-gold focus:border-gold font-bold">
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
-                                <div class="md:col-span-2">
-                                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Biaya Operasional (Relawan, Gas, LPJ, dll)</p>
-                                </div>
-                                <input type="number" name="anggaran_ops" placeholder="Anggaran" class="w-full border-gray-200 rounded-xl focus:ring-gold focus:border-gold font-bold">
-                                <input type="number" name="realisasi_ops" placeholder="Realisasi" class="w-full border-gray-200 rounded-xl focus:ring-gold focus:border-gold font-bold">
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
-                                <div class="md:col-span-2">
-                                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Insentif Fasilitas (Fixed Cost)</p>
-                                </div>
-                                <input type="number" name="anggaran_insentif" placeholder="Anggaran" class="w-full border-gray-200 rounded-xl focus:ring-gold focus:border-gold font-bold">
-                                <input type="number" name="realisasi_insentif" placeholder="Realisasi" class="w-full border-gray-200 rounded-xl focus:ring-gold focus:border-gold font-bold">
-                            </div>
-                        </div>
-                    </div>
+                <table class="paper-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40%;">Kategori Penerima</th>
+                            <th style="width: 15%;">Target (Jiwa)</th>
+                            <th style="width: 15%;">Realisasi (Jiwa)</th>
+                            <th style="width: 30%;">Keterangan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Peserta Didik (PAUD/SD/SMP/SMA)</td>
+                            <td><input type="number" name="target_peserta" class="w-full border-none p-0 text-center font-bold"></td>
+                            <td><input type="number" name="realisasi_peserta" class="w-full border-none p-0 text-center font-bold"></td>
+                            <td class="text-xs">Sesuai Presensi Sekolah</td>
+                        </tr>
+                        <tr>
+                            <td>Pendidik & Tenaga Kependidikan</td>
+                            <td><input type="number" name="target_pendidik" class="w-full border-none p-0 text-center font-bold"></td>
+                            <td><input type="number" name="realisasi_pendidik" class="w-full border-none p-0 text-center font-bold"></td>
+                            <td class="text-xs">Pendamping Makan</td>
+                        </tr>
+                        <tr>
+                            <td>Kelompok 3B (Bumil, Busui, Balita)</td>
+                            <td><input type="number" name="target_3b" class="w-full border-none p-0 text-center font-bold"></td>
+                            <td><input type="number" name="realisasi_3b" class="w-full border-none p-0 text-center font-bold"></td>
+                            <td class="text-xs">Data Puskesmas/Desa</td>
+                        </tr>
+                        <tr class="font-bold">
+                            <td class="text-center">TOTAL</td>
+                            <td><input type="number" disabled class="w-full border-none p-0 text-center font-bold bg-gray-50" placeholder="0"></td>
+                            <td><input type="number" disabled class="w-full border-none p-0 text-center font-bold bg-gray-50" placeholder="0"></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
 
-                    <!-- Section 4: Lampiran III A - Rekap Bahan Pangan -->
-                    <div class="bg-silk/30 p-6 rounded-3xl border border-gold/10">
-                        <h3 class="text-sm font-black text-royal-navy uppercase tracking-[0.2em] mb-6 flex items-center justify-between">
-                            <span class="flex items-center">
-                                <span class="w-8 h-8 rounded-lg bg-gold/20 flex items-center justify-center text-gold-dark mr-3 italic">III.A</span>
-                                Rekapitulasi Bahan Pangan (Harian)
-                            </span>
-                            <button type="button" @click="addBahanRow()" class="px-4 py-2 bg-gold-dark text-white rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-royal-navy transition-all">+ Tambah Item Bahan</button>
-                        </h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-xs font-bold">
-                                <thead>
-                                    <tr class="text-[9px] uppercase tracking-widest text-gray-400">
-                                        <th class="pb-3 text-left">Tgl</th>
-                                        <th class="pb-3 text-left">Jenis Bahan</th>
-                                        <th class="pb-3 text-left">Vol</th>
-                                        <th class="pb-3 text-left">Sat</th>
-                                        <th class="pb-3 text-left">Harga</th>
-                                        <th class="pb-3 text-left">Total</th>
-                                        <th class="pb-3"></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="bahan_rows">
-                                    <tr class="bahan-row">
-                                        <td><input type="text" name="buku_bantu_bahan[0][tgl]" class="w-full border-gray-100 rounded-lg text-xs" placeholder="10/04"></td>
-                                        <td><input type="text" name="buku_bantu_bahan[0][jenis]" class="w-full border-gray-100 rounded-lg text-xs" placeholder="Beras"></td>
-                                        <td><input type="text" name="buku_bantu_bahan[0][vol]" class="w-full border-gray-100 rounded-lg text-xs" placeholder="100"></td>
-                                        <td><input type="text" name="buku_bantu_bahan[0][satuan]" class="w-full border-gray-100 rounded-lg text-xs" placeholder="Kg"></td>
-                                        <td><input type="number" name="buku_bantu_bahan[0][harga]" class="w-full border-gray-100 rounded-lg text-xs"></td>
-                                        <td><input type="number" name="buku_bantu_bahan[0][total]" class="w-full border-gray-100 rounded-lg text-xs"></td>
-                                        <td class="text-center"><button type="button" onclick="this.closest('tr').remove()" class="text-red-400">×</button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                <div class="section-title">II. LAPORAN PENGGUNAAN DANA</div>
+                <table class="paper-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 45%;">Uraian Komponen Biaya</th>
+                            <th style="width: 18%;">Anggaran (Rp)</th>
+                            <th style="width: 18%;">Realisasi (Rp)</th>
+                            <th style="width: 19%;">Saldo (Rp)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Belanja Bahan Baku (At Cost)</td>
+                            <td><input type="number" name="anggaran_bahan" class="w-full border-none p-0 text-right font-bold"></td>
+                            <td><input type="number" name="realisasi_bahan" class="w-full border-none p-0 text-right font-bold"></td>
+                            <td><input type="number" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
+                        </tr>
+                        <tr>
+                            <td>Biaya Operasional (Relawan, Gas, dll)</td>
+                            <td><input type="number" name="anggaran_ops" class="w-full border-none p-0 text-right font-bold"></td>
+                            <td><input type="number" name="realisasi_ops" class="w-full border-none p-0 text-right font-bold"></td>
+                            <td><input type="number" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
+                        </tr>
+                        <tr>
+                            <td>Insentif Fasilitas (Fixed Cost)</td>
+                            <td><input type="number" name="anggaran_insentif" class="w-full border-none p-0 text-right font-bold"></td>
+                            <td><input type="number" name="realisasi_insentif" class="w-full border-none p-0 text-right font-bold"></td>
+                            <td><input type="number" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
+                        </tr>
+                        <tr class="font-bold">
+                            <td>TOTAL PENGELUARAN</td>
+                            <td><input type="number" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
+                            <td><input type="number" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
+                            <td><input type="number" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
+                        </tr>
+                    </tbody>
+                </table>
 
-                    <!-- Section 5: Lampiran III B - Rekap Ops -->
-                    <div class="bg-silk/30 p-6 rounded-3xl border border-gold/10">
-                        <h3 class="text-sm font-black text-royal-navy uppercase tracking-[0.2em] mb-6 flex items-center justify-between">
-                            <span class="flex items-center">
-                                <span class="w-8 h-8 rounded-lg bg-gold/20 flex items-center justify-center text-gold-dark mr-3 italic">III.B</span>
-                                Rekapitulasi Operasional & Insentif
-                            </span>
-                            <button type="button" @click="addOpsRow()" class="px-4 py-2 bg-gold-dark text-white rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-royal-navy transition-all">+ Tambah Item Ops</button>
-                        </h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-xs font-bold">
-                                <thead>
-                                    <tr class="text-[9px] uppercase tracking-widest text-gray-400">
-                                        <th class="pb-3 text-left">Tgl</th>
-                                        <th class="pb-3 text-left">Uraian</th>
-                                        <th class="pb-3 text-left">Penerima / Toko</th>
-                                        <th class="pb-3 text-left">Nominal (Rp)</th>
-                                        <th class="pb-3"></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="ops_rows">
-                                    <tr class="ops-row">
-                                        <td><input type="text" name="buku_bantu_ops[0][tgl]" class="w-full border-gray-100 rounded-lg text-xs" placeholder="10/04"></td>
-                                        <td><input type="text" name="buku_bantu_ops[0][uraian]" class="w-full border-gray-100 rounded-lg text-xs" placeholder="Gas Elpiji"></td>
-                                        <td><input type="text" name="buku_bantu_ops[0][penerima]" class="w-full border-gray-100 rounded-lg text-xs" placeholder="Toko Berkah"></td>
-                                        <td><input type="number" name="buku_bantu_ops[0][nominal]" class="w-full border-gray-100 rounded-lg text-xs"></td>
-                                        <td class="text-center"><button type="button" onclick="this.closest('tr').remove()" class="text-red-400">×</button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+                <div style="margin-top: 30pt; display: flex; justify-content: space-between;">
+                    <div style="text-align: center; width: 45%;">
+                        Mengetahui,<br><b>Ketua Yayasan</b>
+                        <div style="height: 50pt;"></div>
+                        ( <input type="text" name="ketua_yayasan" value="SILVERIUS BANGUN" class="paper-input" style="width: 140pt;"> )
                     </div>
+                    <div style="text-align: center; width: 45%;">
+                        Balimbingan, <input type="date" name="report_date" class="paper-input" style="width: 100pt;" value="{{ date('Y-m-d') }}"> 2026<br>
+                        <b>Kepala SPPG Balimbingan 2</b>
+                        <div style="height: 50pt;"></div>
+                        ( <input type="text" name="head_sppg_nama" value="{{ auth()->user()->name }}" class="paper-input" style="width: 140pt;"> )
+                    </div>
+                </div>
 
-                    <!-- Section 6: Lampiran IV - Organoleptik -->
-                    <div class="bg-silk/30 p-6 rounded-3xl border border-gold/10">
-                        <h3 class="text-sm font-black text-royal-navy uppercase tracking-[0.2em] mb-6 flex items-center justify-between">
-                            <span class="flex items-center">
-                                <span class="w-8 h-8 rounded-lg bg-gold/20 flex items-center justify-center text-gold-dark mr-3 italic">IV</span>
-                                Uji Organoleptik
-                            </span>
-                            <button type="button" @click="addOrganoleptikRow()" class="px-4 py-2 bg-gold-dark text-white rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-royal-navy transition-all">+ Tambah Sekolah</button>
-                        </h3>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-xs font-bold">
-                                <thead>
-                                    <tr class="text-[9px] uppercase tracking-widest text-gray-400">
-                                        <th class="pb-3 text-left">Sekolah / Sasaran</th>
-                                        <th class="pb-3 text-left">Rasa</th>
-                                        <th class="pb-3 text-left">Aroma</th>
-                                        <th class="pb-3 text-left">Tekstur</th>
-                                        <th class="pb-3 text-left">Status</th>
-                                        <th class="pb-3"></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="organoleptik_rows">
-                                    <tr class="organo-row">
-                                        <td><input type="text" name="organoleptik_data[0][sekolah]" class="w-full border-gray-100 rounded-lg text-xs" placeholder="SDN 01"></td>
-                                        <td><input type="text" name="organoleptik_data[0][rasa]" class="w-full border-gray-100 rounded-lg text-xs" placeholder="Layak"></td>
-                                        <td><input type="text" name="organoleptik_data[0][aroma]" class="w-full border-gray-100 rounded-lg text-xs" placeholder="Segar"></td>
-                                        <td><input type="text" name="organoleptik_data[0][tekstur]" class="w-full border-gray-100 rounded-lg text-xs" placeholder="Baik"></td>
-                                        <td><input type="text" name="organoleptik_data[0][status]" class="w-full border-gray-100 rounded-lg text-xs" placeholder="Diterima"></td>
-                                        <td class="text-center"><button type="button" onclick="this.closest('tr').remove()" class="text-red-400">×</button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                <div style="page-break-after: always; height: 50pt;"></div>
 
-                    <!-- Section 7: Penandatangan -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pb-12">
-                        <div>
-                            <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-2">Ketua Yayasan</label>
-                            <input type="text" name="ketua_yayasan" value="{{ $data['ketua_yayasan'] }}" class="w-full border-gray-200 rounded-xl focus:ring-gold focus:border-gold font-bold">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-2">Nama PPK</label>
-                            <input type="text" name="ppk_nama" value="{{ $data['ppk_nama'] }}" class="w-full border-gray-200 rounded-xl focus:ring-gold focus:border-gold font-bold">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-black text-gray-500 uppercase tracking-widest mb-2">Kepala SPPG</label>
-                            <input type="text" name="head_sppg_nama" value="{{ $data['head_sppg_nama'] }}" class="w-full border-gray-200 rounded-xl focus:ring-gold focus:border-gold font-bold">
-                        </div>
-                    </div>
+                <!-- PAGE 2: LAMPIRAN II -->
+                <div class="header-sub">LAMPIRAN II: SURAT PERNYATAAN TANGGUNG JAWAB MUTLAK (SPTJM)</div>
+                <hr style="border-top: 2px solid black;">
+                <p style="margin-top: 20pt;">Saya yang bertandatangan di bawah ini, Kepala SPPG Balimbingan 2, menyatakan dengan sesungguhnya bahwa:</p>
+                <ol style="margin-left: 20pt; line-height: 1.8;">
+                    <li>Bertanggung jawab penuh atas kebenaran formil dan materiil atas penggunaan dana Bantuan Pemerintah MBG periode ini.</li>
+                    <li>Telah menggunakan dana sesuai peruntukan yang diatur dalam Juknis.</li>
+                    <li>Bersedia menyimpan seluruh bukti asli transaksi untuk keperluan audit di kemudian hari.</li>
+                </ol>
 
-                    <div class="flex justify-end pt-8">
-                        <button type="submit" class="px-10 py-4 bg-royal-navy text-white font-black rounded-2xl hover:bg-gold transition-all shadow-xl hover:shadow-gold/20 uppercase tracking-widest">
-                            Simpan Laporan
-                        </button>
-                    </div>
-                </form>
+                <div style="float: right; width: 180pt; text-align: center; margin-top: 40pt;">
+                    Balimbingan, .......................... 2026
+                    <div style="border: 1px solid black; padding: 15pt 5pt; width: 60pt; margin: 10pt auto; font-size: 8pt;">METERAI<br>10.000</div>
+                    ( <input type="text" class="paper-input" style="width: 130pt;" placeholder="Nama Kepala SPPG"> )<br>
+                    Kepala SPPG Balimbingan 2
+                </div>
+                <div style="clear: both;"></div>
+
+                <div style="page-break-after: always; height: 50pt;"></div>
+
+                <!-- PAGE 3: LAMPIRAN IV -->
+                <div class="header-sub">LAMPIRAN IV: UJI ORGANOLEPTIK & DOKUMENTASI</div>
+                <hr style="border-top: 2px solid black;">
+                
+                <div style="font-weight: bold; margin-top: 15pt;">Formulir Ringkasan Uji Organoleptik</div>
+                <table class="paper-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 40%;">Sekolah / Sasaran</th>
+                            <th style="width: 15%;">Rasa</th>
+                            <th style="width: 15%;">Aroma</th>
+                            <th style="width: 15%;">Tekstur</th>
+                            <th style="width: 15%;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="organo-tbody">
+                        <tr>
+                            <td><input type="text" name="organoleptik_data[0][sekolah]" class="w-full border-none p-0" placeholder="SDN ............."></td>
+                            <td><input type="text" name="organoleptik_data[0][rasa]" class="w-full border-none p-0 text-center" value="Layak"></td>
+                            <td><input type="text" name="organoleptik_data[0][aroma]" class="w-full border-none p-0 text-center" value="Segar"></td>
+                            <td><input type="text" name="organoleptik_data[0][tekstur]" class="w-full border-none p-0 text-center" value="Baik"></td>
+                            <td><input type="text" name="organoleptik_data[0][status]" class="w-full border-none p-0 text-center" value="Diterima"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" onclick="addOrgano()" class="text-xs text-blue-600 font-bold no-print">+ Tambah Baris Sekolah</button>
+
+                <div style="font-weight: bold; margin-top: 30pt;">Dokumentasi Kegiatan (Tempel Foto Open Camera Di Sini)</div>
+                <div class="doc-area font-bold uppercase">
+                    [ AREA PENEMPELAN FOTO KEGIATAN ]<br>
+                    (Masak, Packing, Distribusi, dan Foto Bersama Siswa)
+                </div>
             </div>
-        </div>
+
+            <div class="sticky-save">
+                <button type="submit" class="bg-royal-navy hover:bg-gold text-white font-black px-8 py-4 rounded-full shadow-2xl transition-all uppercase tracking-widest flex items-center gap-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                    Simpan Laporan
+                </button>
+            </div>
+        </form>
     </div>
 
     <script>
-        let bahanIndex = 1;
-        function addBahanRow() {
+        let organoIdx = 1;
+        function addOrgano() {
             const html = `
-                <tr class="bahan-row">
-                    <td><input type="text" name="buku_bantu_bahan[${bahanIndex}][tgl]" class="w-full border-gray-100 rounded-lg text-xs"></td>
-                    <td><input type="text" name="buku_bantu_bahan[${bahanIndex}][jenis]" class="w-full border-gray-100 rounded-lg text-xs"></td>
-                    <td><input type="text" name="buku_bantu_bahan[${bahanIndex}][vol]" class="w-full border-gray-100 rounded-lg text-xs"></td>
-                    <td><input type="text" name="buku_bantu_bahan[${bahanIndex}][satuan]" class="w-full border-gray-100 rounded-lg text-xs"></td>
-                    <td><input type="number" name="buku_bantu_bahan[${bahanIndex}][harga]" class="w-full border-gray-100 rounded-lg text-xs"></td>
-                    <td><input type="number" name="buku_bantu_bahan[${bahanIndex}][total]" class="w-full border-gray-100 rounded-lg text-xs"></td>
-                    <td class="text-center"><button type="button" onclick="this.closest('tr').remove()" class="text-red-400">×</button></td>
+                <tr>
+                    <td><input type="text" name="organoleptik_data[${organoIdx}][sekolah]" class="w-full border-none p-0" placeholder="SMP ............."></td>
+                    <td><input type="text" name="organoleptik_data[${organoIdx}][rasa]" class="w-full border-none p-0 text-center" value="Layak"></td>
+                    <td><input type="text" name="organoleptik_data[${organoIdx}][aroma]" class="w-full border-none p-0 text-center" value="Segar"></td>
+                    <td><input type="text" name="organoleptik_data[${organoIdx}][tekstur]" class="w-full border-none p-0 text-center" value="Baik"></td>
+                    <td><input type="text" name="organoleptik_data[${organoIdx}][status]" class="w-full border-none p-0 text-center" value="Diterima"></td>
                 </tr>
             `;
-            document.getElementById('bahan_rows').insertAdjacentHTML('beforeend', html);
-            bahanIndex++;
-        }
-
-        let opsIndex = 1;
-        function addOpsRow() {
-            const html = `
-                <tr class="ops-row">
-                    <td><input type="text" name="buku_bantu_ops[${opsIndex}][tgl]" class="w-full border-gray-100 rounded-lg text-xs"></td>
-                    <td><input type="text" name="buku_bantu_ops[${opsIndex}][uraian]" class="w-full border-gray-100 rounded-lg text-xs"></td>
-                    <td><input type="text" name="buku_bantu_ops[${opsIndex}][penerima]" class="w-full border-gray-100 rounded-lg text-xs"></td>
-                    <td><input type="number" name="buku_bantu_ops[${opsIndex}][nominal]" class="w-full border-gray-100 rounded-lg text-xs"></td>
-                    <td class="text-center"><button type="button" onclick="this.closest('tr').remove()" class="text-red-400">×</button></td>
-                </tr>
-            `;
-            document.getElementById('ops_rows').insertAdjacentHTML('beforeend', html);
-            opsIndex++;
-        }
-
-        let organoIndex = 1;
-        function addOrganoleptikRow() {
-            const html = `
-                <tr class="organo-row">
-                    <td><input type="text" name="organoleptik_data[${organoIndex}][sekolah]" class="w-full border-gray-100 rounded-lg text-xs"></td>
-                    <td><input type="text" name="organoleptik_data[${organoIndex}][rasa]" class="w-full border-gray-100 rounded-lg text-xs"></td>
-                    <td><input type="text" name="organoleptik_data[${organoIndex}][aroma]" class="w-full border-gray-100 rounded-lg text-xs"></td>
-                    <td><input type="text" name="organoleptik_data[${organoIndex}][tekstur]" class="w-full border-gray-100 rounded-lg text-xs"></td>
-                    <td><input type="text" name="organoleptik_data[${organoIndex}][status]" class="w-full border-gray-100 rounded-lg text-xs"></td>
-                    <td class="text-center"><button type="button" onclick="this.closest('tr').remove()" class="text-red-400">×</button></td>
-                </tr>
-            `;
-            document.getElementById('organoleptik_rows').insertAdjacentHTML('beforeend', html);
-            organoIndex++;
+            document.getElementById('organo-tbody').insertAdjacentHTML('beforeend', html);
+            organoIdx++;
         }
     </script>
 </x-app-layout>
