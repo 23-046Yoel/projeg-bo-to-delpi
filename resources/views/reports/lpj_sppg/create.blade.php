@@ -114,26 +114,26 @@
                     <tbody>
                         <tr>
                             <td>Peserta Didik (PAUD/SD/SMP/SMA)</td>
-                            <td><input type="number" name="target_peserta" class="w-full border-none p-0 text-center font-bold"></td>
-                            <td><input type="number" name="realisasi_peserta" class="w-full border-none p-0 text-center font-bold"></td>
+                            <td><input type="number" name="target_peserta" value="{{ $data['target_peserta'] }}" oninput="calcBeneficiaries()" class="w-full border-none p-0 text-center font-bold"></td>
+                            <td><input type="number" name="realisasi_peserta" oninput="calcBeneficiaries()" class="w-full border-none p-0 text-center font-bold"></td>
                             <td class="text-xs">Sesuai Presensi Sekolah</td>
                         </tr>
                         <tr>
                             <td>Pendidik & Tenaga Kependidikan</td>
-                            <td><input type="number" name="target_pendidik" class="w-full border-none p-0 text-center font-bold"></td>
-                            <td><input type="number" name="realisasi_pendidik" class="w-full border-none p-0 text-center font-bold"></td>
+                            <td><input type="number" name="target_pendidik" value="{{ $data['target_pendidik'] }}" oninput="calcBeneficiaries()" class="w-full border-none p-0 text-center font-bold"></td>
+                            <td><input type="number" name="realisasi_pendidik" oninput="calcBeneficiaries()" class="w-full border-none p-0 text-center font-bold"></td>
                             <td class="text-xs">Pendamping Makan</td>
                         </tr>
                         <tr>
                             <td>Kelompok 3B (Bumil, Busui, Balita)</td>
-                            <td><input type="number" name="target_3b" class="w-full border-none p-0 text-center font-bold"></td>
-                            <td><input type="number" name="realisasi_3b" class="w-full border-none p-0 text-center font-bold"></td>
+                            <td><input type="number" name="target_3b" value="{{ $data['target_3b'] }}" oninput="calcBeneficiaries()" class="w-full border-none p-0 text-center font-bold"></td>
+                            <td><input type="number" name="realisasi_3b" oninput="calcBeneficiaries()" class="w-full border-none p-0 text-center font-bold"></td>
                             <td class="text-xs">Data Puskesmas/Desa</td>
                         </tr>
                         <tr class="font-bold">
                             <td class="text-center">TOTAL</td>
-                            <td><input type="number" disabled class="w-full border-none p-0 text-center font-bold bg-gray-50" placeholder="0"></td>
-                            <td><input type="number" disabled class="w-full border-none p-0 text-center font-bold bg-gray-50" placeholder="0"></td>
+                            <td><input type="number" id="total_target" disabled class="w-full border-none p-0 text-center font-bold bg-gray-50" value="{{ $data['target_peserta'] + $data['target_pendidik'] + $data['target_3b'] }}"></td>
+                            <td><input type="number" id="total_realisasi" disabled class="w-full border-none p-0 text-center font-bold bg-gray-50" placeholder="0"></td>
                             <td></td>
                         </tr>
                     </tbody>
@@ -152,27 +152,27 @@
                     <tbody>
                         <tr>
                             <td>Belanja Bahan Baku (At Cost)</td>
-                            <td><input type="number" name="anggaran_bahan" class="w-full border-none p-0 text-right font-bold"></td>
-                            <td><input type="number" name="realisasi_bahan" class="w-full border-none p-0 text-right font-bold"></td>
-                            <td><input type="number" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
+                            <td><input type="number" name="anggaran_bahan" oninput="calcFinance()" class="w-full border-none p-0 text-right font-bold"></td>
+                            <td><input type="number" name="realisasi_bahan" oninput="calcFinance()" class="w-full border-none p-0 text-right font-bold"></td>
+                            <td><input type="number" id="saldo_bahan" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
                         </tr>
                         <tr>
                             <td>Biaya Operasional (Relawan, Gas, dll)</td>
-                            <td><input type="number" name="anggaran_ops" class="w-full border-none p-0 text-right font-bold"></td>
-                            <td><input type="number" name="realisasi_ops" class="w-full border-none p-0 text-right font-bold"></td>
-                            <td><input type="number" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
+                            <td><input type="number" name="anggaran_ops" oninput="calcFinance()" class="w-full border-none p-0 text-right font-bold"></td>
+                            <td><input type="number" name="realisasi_ops" oninput="calcFinance()" class="w-full border-none p-0 text-right font-bold"></td>
+                            <td><input type="number" id="saldo_ops" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
                         </tr>
                         <tr>
                             <td>Insentif Fasilitas (Fixed Cost)</td>
-                            <td><input type="number" name="anggaran_insentif" class="w-full border-none p-0 text-right font-bold"></td>
-                            <td><input type="number" name="realisasi_insentif" class="w-full border-none p-0 text-right font-bold"></td>
-                            <td><input type="number" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
+                            <td><input type="number" name="anggaran_insentif" oninput="calcFinance()" class="w-full border-none p-0 text-right font-bold"></td>
+                            <td><input type="number" name="realisasi_insentif" oninput="calcFinance()" class="w-full border-none p-0 text-right font-bold"></td>
+                            <td><input type="number" id="saldo_insentif" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
                         </tr>
                         <tr class="font-bold">
                             <td>TOTAL PENGELUARAN</td>
-                            <td><input type="number" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
-                            <td><input type="number" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
-                            <td><input type="number" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
+                            <td><input type="number" id="total_anggaran" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
+                            <td><input type="number" id="total_realisasi_dana" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
+                            <td><input type="number" id="total_saldo" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
                         </tr>
                     </tbody>
                 </table>
@@ -181,13 +181,13 @@
                     <div style="text-align: center; width: 45%;">
                         Mengetahui,<br><b>Ketua Yayasan</b>
                         <div style="height: 50pt;"></div>
-                        ( <input type="text" name="ketua_yayasan" value="SILVERIUS BANGUN" class="paper-input" style="width: 140pt;"> )
+                        ( <input type="text" name="ketua_yayasan" value="{{ $data['ketua_yayasan'] }}" class="paper-input" style="width: 140pt;"> )
                     </div>
                     <div style="text-align: center; width: 45%;">
-                        Balimbingan, <input type="date" name="report_date" class="paper-input" style="width: 100pt;" value="{{ date('Y-m-d') }}"> 2026<br>
+                        Balimbingan, <input type="date" name="report_date" class="paper-input" style="width: 100pt;" value="{{ $data['report_date'] }}"> 2026<br>
                         <b>Kepala SPPG Balimbingan 2</b>
                         <div style="height: 50pt;"></div>
-                        ( <input type="text" name="head_sppg_nama" value="{{ auth()->user()->name }}" class="paper-input" style="width: 140pt;"> )
+                        ( <input type="text" name="head_sppg_nama" value="{{ $data['head_sppg_nama'] }}" class="paper-input" style="width: 140pt;"> )
                     </div>
                 </div>
 
@@ -206,7 +206,7 @@
                 <div style="float: right; width: 180pt; text-align: center; margin-top: 40pt;">
                     Balimbingan, .......................... 2026
                     <div style="border: 1px solid black; padding: 15pt 5pt; width: 60pt; margin: 10pt auto; font-size: 8pt;">METERAI<br>10.000</div>
-                    ( <input type="text" class="paper-input" style="width: 130pt;" placeholder="Nama Kepala SPPG"> )<br>
+                    ( <input type="text" class="paper-input" style="width: 130pt;" value="{{ $data['head_sppg_nama'] }}"> )<br>
                     Kepala SPPG Balimbingan 2
                 </div>
                 <div style="clear: both;"></div>
@@ -257,6 +257,37 @@
     </div>
 
     <script>
+        function calcBeneficiaries() {
+            const target_peserta = parseInt(document.getElementsByName('target_peserta')[0].value) || 0;
+            const target_pendidik = parseInt(document.getElementsByName('target_pendidik')[0].value) || 0;
+            const target_3b = parseInt(document.getElementsByName('target_3b')[0].value) || 0;
+            
+            const real_peserta = parseInt(document.getElementsByName('realisasi_peserta')[0].value) || 0;
+            const real_pendidik = parseInt(document.getElementsByName('realisasi_pendidik')[0].value) || 0;
+            const real_3b = parseInt(document.getElementsByName('realisasi_3b')[0].value) || 0;
+            
+            document.getElementById('total_target').value = target_peserta + target_pendidik + target_3b;
+            document.getElementById('total_realisasi').value = real_peserta + real_pendidik + real_3b;
+        }
+
+        function calcFinance() {
+            const ang_bahan = parseFloat(document.getElementsByName('anggaran_bahan')[0].value) || 0;
+            const real_bahan = parseFloat(document.getElementsByName('realisasi_bahan')[0].value) || 0;
+            document.getElementById('saldo_bahan').value = ang_bahan - real_bahan;
+
+            const ang_ops = parseFloat(document.getElementsByName('anggaran_ops')[0].value) || 0;
+            const real_ops = parseFloat(document.getElementsByName('realisasi_ops')[0].value) || 0;
+            document.getElementById('saldo_ops').value = ang_ops - real_ops;
+
+            const ang_ins = parseFloat(document.getElementsByName('anggaran_insentif')[0].value) || 0;
+            const real_ins = parseFloat(document.getElementsByName('realisasi_insentif')[0].value) || 0;
+            document.getElementById('saldo_insentif').value = ang_ins - real_ins;
+
+            document.getElementById('total_anggaran').value = ang_bahan + ang_ops + ang_ins;
+            document.getElementById('total_realisasi_dana').value = real_bahan + real_ops + real_ins;
+            document.getElementById('total_saldo').value = (ang_bahan + ang_ops + ang_ins) - (real_bahan + real_ops + real_ins);
+        }
+
         let organoIdx = 1;
         function addOrgano() {
             const html = `
@@ -272,4 +303,6 @@
             organoIdx++;
         }
     </script>
+</x-app-layout>
+
 </x-app-layout>

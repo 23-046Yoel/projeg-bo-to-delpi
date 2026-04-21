@@ -239,18 +239,23 @@ class ReportController extends Controller
     public function lpjSppgCreate()
     {
         $user = auth()->user();
-        $sppg = $user->sppg;
+        $sppgId = $user->sppg_id;
         
-        // Default values
+        // Ambil data kelompok sasaran untuk pre-fill target
+        $groups = \App\Models\BeneficiaryGroup::where('sppg_id', $sppgId)->get();
+        
         $data = [
-            'period_start' => now()->startOfMonth()->toDateString(),
+            'period_start' => now()->subDays(14)->toDateString(),
             'period_end' => now()->toDateString(),
             'ketua_yayasan' => 'SILVERIUS BANGUN',
-            'ppk_nama' => 'PPK BADAN GIZI NASIONAL',
+            'ppk_nama' => 'J. HASIHOLAN GULTOM',
             'head_sppg_nama' => $user->name,
             'report_date' => now()->toDateString(),
+            'target_peserta' => $groups->whereIn('category', ['peserta_didik', 'sd', 'smp', 'paud', 'sma'])->sum('total_beneficiaries'),
+            'target_pendidik' => $groups->where('category', 'pendidik')->sum('total_beneficiaries'),
+            'target_3b' => $groups->where('category', '3b')->sum('total_beneficiaries'),
         ];
-
+        
         return view('reports.lpj_sppg.create', compact('data'));
     }
 
