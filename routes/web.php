@@ -83,6 +83,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/attendance-recap', [\App\Http\Controllers\ReportController::class, 'attendanceRecap'])->name('reports.attendance-recap');
     Route::get('/reports/sptj', [\App\Http\Controllers\ReportController::class, 'sptj'])->name('reports.sptj');
     Route::get('/reports/bapsd', [\App\Http\Controllers\ReportController::class, 'bapsd'])->name('reports.bapsd');
+    Route::get('/reports/lpj-sppg', [\App\Http\Controllers\ReportController::class, 'lpjSppgIndex'])->name('reports.lpj-sppg.index');
+    Route::get('/reports/lpj-sppg/create', [\App\Http\Controllers\ReportController::class, 'lpjSppgCreate'])->name('reports.lpj-sppg.create');
+    Route::post('/reports/lpj-sppg', [\App\Http\Controllers\ReportController::class, 'lpjSppgStore'])->name('reports.lpj-sppg.store');
+    Route::get('/reports/lpj-sppg/{lpj}/edit', [\App\Http\Controllers\ReportController::class, 'lpjSppgEdit'])->name('reports.lpj-sppg.edit');
+    Route::put('/reports/lpj-sppg/{lpj}', [\App\Http\Controllers\ReportController::class, 'lpjSppgUpdate'])->name('reports.lpj-sppg.update');
+    Route::get('/reports/lpj-sppg/{lpj}', [\App\Http\Controllers\ReportController::class, 'lpjSppgShow'])->name('reports.lpj-sppg.show');
+    Route::delete('/reports/lpj-sppg/{lpj}', [\App\Http\Controllers\ReportController::class, 'lpjSppgDestroy'])->name('reports.lpj-sppg.destroy');
     Route::get('/reports/upload', [\App\Http\Controllers\ReportController::class, 'uploadIndex'])->name('reports.upload');
     Route::post('/reports/save', [\App\Http\Controllers\ReportController::class, 'saveReport'])->name('reports.save');
     Route::post('/reports/upload', [\App\Http\Controllers\ReportController::class, 'uploadStore'])->name('reports.upload.store');

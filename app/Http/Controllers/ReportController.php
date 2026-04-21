@@ -195,6 +195,7 @@ class ReportController extends Controller
 
         }
 
+
     public function attendanceRecap(Request $request)
     {
         $month = $request->input('month', now()->month);
@@ -227,5 +228,107 @@ class ReportController extends Controller
         ];
 
         return view('reports.attendance_recap', compact('data'));
+    }
+
+    public function lpjSppgIndex()
+    {
+        $lpjs = \App\Models\LpjSppg::latest()->get();
+        return view('reports.lpj_sppg.index', compact('lpjs'));
+    }
+
+    public function lpjSppgCreate()
+    {
+        $user = auth()->user();
+        $sppg = $user->sppg;
+        
+        // Default values
+        $data = [
+            'period_start' => now()->startOfMonth()->toDateString(),
+            'period_end' => now()->toDateString(),
+            'ketua_yayasan' => 'SILVERIUS BANGUN',
+            'ppk_nama' => 'PPK BADAN GIZI NASIONAL',
+            'head_sppg_nama' => $user->name,
+            'report_date' => now()->toDateString(),
+        ];
+
+        return view('reports.lpj_sppg.create', compact('data'));
+    }
+
+    public function lpjSppgStore(Request $request)
+    {
+        $validated = $request->validate([
+            'period_start' => 'required|date',
+            'period_end' => 'required|date',
+            'target_peserta' => 'integer',
+            'realisasi_peserta' => 'integer',
+            'target_pendidik' => 'integer',
+            'realisasi_pendidik' => 'integer',
+            'target_3b' => 'integer',
+            'realisasi_3b' => 'integer',
+            'anggaran_bahan' => 'numeric',
+            'realisasi_bahan' => 'numeric',
+            'anggaran_ops' => 'numeric',
+            'realisasi_ops' => 'numeric',
+            'anggaran_insentif' => 'numeric',
+            'realisasi_insentif' => 'numeric',
+            'ketua_yayasan' => 'string|nullable',
+            'ppk_nama' => 'string|nullable',
+            'head_sppg_nama' => 'string|nullable',
+            'report_date' => 'required|date',
+            'organoleptik_data' => 'array|nullable',
+            'buku_bantu_bahan' => 'array|nullable',
+            'buku_bantu_ops' => 'array|nullable',
+        ]);
+
+        \App\Models\LpjSppg::create($validated);
+
+        return redirect()->route('reports.lpj-sppg.index')->with('success', 'LPJ SPPG berhasil dibuat!');
+    }
+
+    public function lpjSppgEdit(\App\Models\LpjSppg $lpj)
+    {
+        return view('reports.lpj_sppg.edit', compact('lpj'));
+    }
+
+    public function lpjSppgUpdate(Request $request, \App\Models\LpjSppg $lpj)
+    {
+        $validated = $request->validate([
+            'period_start' => 'required|date',
+            'period_end' => 'required|date',
+            'target_peserta' => 'integer',
+            'realisasi_peserta' => 'integer',
+            'target_pendidik' => 'integer',
+            'realisasi_pendidik' => 'integer',
+            'target_3b' => 'integer',
+            'realisasi_3b' => 'integer',
+            'anggaran_bahan' => 'numeric',
+            'realisasi_bahan' => 'numeric',
+            'anggaran_ops' => 'numeric',
+            'realisasi_ops' => 'numeric',
+            'anggaran_insentif' => 'numeric',
+            'realisasi_insentif' => 'numeric',
+            'ketua_yayasan' => 'string|nullable',
+            'ppk_nama' => 'string|nullable',
+            'head_sppg_nama' => 'string|nullable',
+            'report_date' => 'required|date',
+            'organoleptik_data' => 'nullable',
+            'buku_bantu_bahan' => 'nullable',
+            'buku_bantu_ops' => 'nullable',
+        ]);
+
+        $lpj->update($validated);
+
+        return redirect()->route('reports.lpj-sppg.index')->with('success', 'LPJ SPPG berhasil diperbarui!');
+    }
+
+    public function lpjSppgShow(\App\Models\LpjSppg $lpj)
+    {
+        return view('reports.lpj_sppg.print', compact('lpj'));
+    }
+
+    public function lpjSppgDestroy(\App\Models\LpjSppg $lpj)
+    {
+        $lpj->delete();
+        return redirect()->route('reports.lpj-sppg.index')->with('success', 'LPJ SPPG berhasil dihapus!');
     }
 }

@@ -41,3 +41,4 @@ foreach ($menus as $menu) {
 }
 
 echo "SUCCESS: $fixedCount menus have been linked to dishes!\n";
+    
