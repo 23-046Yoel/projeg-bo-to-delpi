@@ -93,8 +93,9 @@
                 <div class="header-sub">SATUAN PELAYANAN PEMENUHAN GIZI (SPPG) BALIMBINGAN 2</div>
                 
                 <div style="text-align: center; font-weight: bold; margin-top: 10pt;">
-                    Periode: <input type="date" name="period_start" class="paper-input" style="width: 120pt;" required> 
-                    s.d. <input type="date" name="period_end" class="paper-input" style="width: 120pt;" required> 2026
+                    Periode: <input type="date" name="period_start" value="{{ $data['period_start'] }}" class="paper-input" style="width: 120pt;" required> 
+                    s.d. <input type="date" name="period_end" value="{{ $data['period_end'] }}" class="paper-input" style="width: 120pt;" required> 
+                    <button type="button" onclick="refreshData()" class="ml-2 text-xs bg-blue-500 text-white px-2 py-1 rounded no-print">🔄 Refresh Data</button>
                 </div>
 
                 <hr style="border: none; border-top: 2.5px solid black; margin-top: 10pt;">
@@ -115,7 +116,7 @@
                         <tr>
                             <td>Peserta Didik (PAUD/SD/SMP/SMA)</td>
                             <td><input type="number" name="target_peserta" value="{{ $data['target_peserta'] }}" oninput="calcBeneficiaries()" class="w-full border-none p-0 text-center font-bold"></td>
-                            <td><input type="number" name="realisasi_peserta" oninput="calcBeneficiaries()" class="w-full border-none p-0 text-center font-bold"></td>
+                            <td><input type="number" name="realisasi_peserta" value="{{ $data['realisasi_peserta'] }}" oninput="calcBeneficiaries()" class="w-full border-none p-0 text-center font-bold"></td>
                             <td class="text-xs">Sesuai Presensi Sekolah</td>
                         </tr>
                         <tr>
@@ -153,19 +154,19 @@
                         <tr>
                             <td>Belanja Bahan Baku (At Cost)</td>
                             <td><input type="number" name="anggaran_bahan" oninput="calcFinance()" class="w-full border-none p-0 text-right font-bold"></td>
-                            <td><input type="number" name="realisasi_bahan" oninput="calcFinance()" class="w-full border-none p-0 text-right font-bold"></td>
+                            <td><input type="number" name="realisasi_bahan" value="{{ $data['realisasi_bahan'] }}" oninput="calcFinance()" class="w-full border-none p-0 text-right font-bold"></td>
                             <td><input type="number" id="saldo_bahan" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
                         </tr>
                         <tr>
                             <td>Biaya Operasional (Relawan, Gas, dll)</td>
                             <td><input type="number" name="anggaran_ops" oninput="calcFinance()" class="w-full border-none p-0 text-right font-bold"></td>
-                            <td><input type="number" name="realisasi_ops" oninput="calcFinance()" class="w-full border-none p-0 text-right font-bold"></td>
+                            <td><input type="number" name="realisasi_ops" value="{{ $data['realisasi_ops'] }}" oninput="calcFinance()" class="w-full border-none p-0 text-right font-bold"></td>
                             <td><input type="number" id="saldo_ops" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
                         </tr>
                         <tr>
                             <td>Insentif Fasilitas (Fixed Cost)</td>
                             <td><input type="number" name="anggaran_insentif" oninput="calcFinance()" class="w-full border-none p-0 text-right font-bold"></td>
-                            <td><input type="number" name="realisasi_insentif" oninput="calcFinance()" class="w-full border-none p-0 text-right font-bold"></td>
+                            <td><input type="number" name="realisasi_insentif" value="{{ $data['realisasi_insentif'] }}" oninput="calcFinance()" class="w-full border-none p-0 text-right font-bold"></td>
                             <td><input type="number" id="saldo_insentif" disabled class="w-full border-none p-0 text-right font-bold bg-gray-50"></td>
                         </tr>
                         <tr class="font-bold">
@@ -302,5 +303,16 @@
             document.getElementById('organo-tbody').insertAdjacentHTML('beforeend', html);
             organoIdx++;
         }
+        function refreshData() {
+            const start = document.getElementsByName('period_start')[0].value;
+            const end = document.getElementsByName('period_end')[0].value;
+            window.location.href = `{{ route('reports.lpj-sppg.create') }}?period_start=${start}&period_end=${end}`;
+        }
+
+        // Initial calculation
+        window.onload = function() {
+            calcBeneficiaries();
+            calcFinance();
+        };
     </script>
 </x-app-layout>

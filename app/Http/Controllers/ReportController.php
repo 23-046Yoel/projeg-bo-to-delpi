@@ -236,17 +236,44 @@ class ReportController extends Controller
         return view('reports.lpj_sppg.index', compact('lpjs'));
     }
 
-    public function lpjSppgCreate()
+    public function lpjSppgCreate(Request $request)
     {
         $user = auth()->user();
         $sppgId = $user->sppg_id;
         
+        $startDate = $request->input('period_start', now()->subDays(14)->toDateString());
+        $endDate = $request->input('period_end', now()->toDateString());
+
         // Ambil data kelompok sasaran untuk pre-fill target
         $groups = \App\Models\BeneficiaryGroup::where('sppg_id', $sppgId)->get();
         
+        // Real realization calculations from Payments
+        $realBahan = \App\Models\Payment::where('sppg_id', $sppgId)
+            ->where('status', 'paid')
+            ->whereBetween('date', [$startDate, $endDate])
+            ->where('transaction_type', 'Biaya Bahan Baku')
+            ->sum('amount_out');
+
+        $realOps = \App\Models\Payment::where('sppg_id', $sppgId)
+            ->where('status', 'paid')
+            ->whereBetween('date', [$startDate, $endDate])
+            ->where('transaction_type', 'Biaya Operasional')
+            ->sum('amount_out');
+
+        $realIns = \App\Models\Payment::where('sppg_id', $sppgId)
+            ->where('status', 'paid')
+            ->whereBetween('date', [$startDate, $endDate])
+            ->where('transaction_type', 'Insentif Fasilitas')
+            ->sum('amount_out');
+
+        // Real realization for beneficiaries (from Distribution logs)
+        $realPeserta = \App\Models\MbgDistribution::where('sppg_id', $sppgId)
+            ->whereBetween('distributed_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+            ->sum('quantity');
+
         $data = [
-            'period_start' => now()->subDays(14)->toDateString(),
-            'period_end' => now()->toDateString(),
+            'period_start' => $startDate,
+            'period_end' => $endDate,
             'ketua_yayasan' => 'SILVERIUS BANGUN',
             'ppk_nama' => 'J. HASIHOLAN GULTOM',
             'head_sppg_nama' => $user->name,
@@ -254,6 +281,10 @@ class ReportController extends Controller
             'target_peserta' => $groups->whereIn('category', ['peserta_didik', 'sd', 'smp', 'paud', 'sma'])->sum('total_beneficiaries'),
             'target_pendidik' => $groups->where('category', 'pendidik')->sum('total_beneficiaries'),
             'target_3b' => $groups->where('category', '3b')->sum('total_beneficiaries'),
+            'realisasi_peserta' => $realPeserta,
+            'realisasi_bahan' => $realBahan,
+            'realisasi_ops' => $realOps,
+            'realisasi_insentif' => $realIns,
         ];
         
         return view('reports.lpj_sppg.create', compact('data'));
