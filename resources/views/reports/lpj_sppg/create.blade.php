@@ -80,6 +80,27 @@
             bottom: 30px;
             right: 30px;
             z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10pt;
+        }
+        @media print {
+            .no-print, .sticky-save, .no-print * {
+                display: none !important;
+            }
+            .paper-container {
+                padding: 0;
+                background: white;
+            }
+            .paper {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+                width: 100%;
+            }
+            body {
+                background: white;
+            }
         }
     </style>
 
@@ -248,7 +269,11 @@
                 </div>
             </div>
 
-            <div class="sticky-save">
+            <div class="sticky-save no-print">
+                <button type="button" onclick="window.print()" class="bg-gray-700 hover:bg-gray-800 text-white font-black px-8 py-3 rounded-full shadow-2xl transition-all uppercase tracking-widest flex items-center gap-3">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                    Cetak / Print
+                </button>
                 <button type="submit" class="bg-royal-navy hover:bg-gold text-white font-black px-8 py-4 rounded-full shadow-2xl transition-all uppercase tracking-widest flex items-center gap-3">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                     Simpan Laporan
