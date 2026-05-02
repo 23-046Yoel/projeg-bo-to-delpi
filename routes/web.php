@@ -10,6 +10,7 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RecapController;
 use App\Http\Controllers\SupplierRegistrationController;
 use App\Http\Controllers\RequirementController;
+use App\Http\Controllers\ProductionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -94,6 +95,19 @@ Route::middleware('auth')->group(function () {
     Route::post('/reports/save', [\App\Http\Controllers\ReportController::class, 'saveReport'])->name('reports.save');
     Route::post('/reports/upload', [\App\Http\Controllers\ReportController::class, 'uploadStore'])->name('reports.upload.store');
     Route::get('/test-wablas', [\App\Http\Controllers\WablasTestController::class, 'test'])->name('test.wablas');
+
+    // Production Modules
+    Route::get('/production/preparation', [ProductionController::class, 'preparationIndex'])->name('production.preparation.index');
+    Route::get('/production/preparation/{menu}', [ProductionController::class, 'preparationShow'])->name('production.preparation.show');
+    Route::post('/production/preparation/{menu}', [ProductionController::class, 'preparationStore'])->name('production.preparation.store');
+
+    Route::get('/production/processing', [ProductionController::class, 'processingIndex'])->name('production.processing.index');
+    Route::get('/production/processing/{menu}', [ProductionController::class, 'processingShow'])->name('production.processing.show');
+    Route::post('/production/processing/{menu}', [ProductionController::class, 'processingStore'])->name('production.processing.store');
+
+    Route::get('/production/portioning', [ProductionController::class, 'portioningIndex'])->name('production.portioning.index');
+    Route::get('/production/portioning/{menu}', [ProductionController::class, 'portioningShow'])->name('production.portioning.show');
+    Route::post('/production/portioning/{menu}', [ProductionController::class, 'portioningStore'])->name('production.portioning.store');
 
     Route::resource('users', \App\Http\Controllers\UserController::class);
     Route::get('/users/{user}/signature', [\App\Http\Controllers\UserController::class, 'signatureForm'])->name('users.signature.form');

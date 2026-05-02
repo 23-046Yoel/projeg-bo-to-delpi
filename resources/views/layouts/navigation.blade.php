@@ -76,6 +76,31 @@
             </svg>
             <span class="font-bold tracking-tight">{{ __('Daftar Hidangan (Resep)') }}</span>
         </x-nav-link>
+
+        <div class="px-8 mt-4 mb-2">
+            <p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">Production Monitoring</p>
+        </div>
+
+        <x-nav-link :href="route('production.preparation.index')" :active="request()->routeIs('production.preparation.*')" class="py-3">
+            <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+            <span class="font-bold tracking-tight">{{ __('1. Modul Persiapan') }}</span>
+        </x-nav-link>
+
+        <x-nav-link :href="route('production.processing.index')" :active="request()->routeIs('production.processing.*')" class="py-3">
+            <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            <span class="font-bold tracking-tight">{{ __('2. Modul Pengolahan') }}</span>
+        </x-nav-link>
+
+        <x-nav-link :href="route('production.portioning.index')" :active="request()->routeIs('production.portioning.*')" class="py-3">
+            <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+            </svg>
+            <span class="font-bold tracking-tight">{{ __('3. Modul Pemorsian') }}</span>
+        </x-nav-link>
         @endcan
 
         @can('manage-distribution')

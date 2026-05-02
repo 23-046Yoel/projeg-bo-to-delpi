@@ -18,4 +18,24 @@ class Menu extends Model
     {
         return $this->belongsTo(Sppg::class);
     }
+
+    public function productionLog()
+    {
+        return $this->hasOne(ProductionLog::class);
+    }
+
+    public function preparations()
+    {
+        return $this->hasMany(ProductionPreparation::class);
+    }
+
+    public function processings()
+    {
+        return $this->hasMany(ProductionProcessing::class);
+    }
+
+    public function portionings()
+    {
+        return $this->hasMany(ProductionPortioning::class);
+    }
 }
