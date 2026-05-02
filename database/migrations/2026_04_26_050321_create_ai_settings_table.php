@@ -11,14 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ai_settings', function (Blueprint $table) {
-            $table->id();
-            $table->boolean('is_active')->default(true);
-            $table->string('personality')->default('medan'); // 'formal', 'medan'
-            $table->string('provider')->default('gemini'); // 'gemini', 'groq'
-            $table->text('system_prompt')->nullable();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('ai_settings')) {
+            Schema::create('ai_settings', function (Blueprint $table) {
+                $table->id();
+                $table->boolean('is_active')->default(true);
+                $table->string('personality')->default('medan'); // 'formal', 'medan'
+                $table->string('provider')->default('gemini'); // 'gemini', 'groq'
+                $table->text('system_prompt')->nullable();
+                $table->timestamps();
+            });
+        }
     }
 
     /**
