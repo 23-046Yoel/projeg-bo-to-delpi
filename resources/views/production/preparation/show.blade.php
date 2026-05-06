@@ -26,11 +26,17 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Jam Mulai Seluruh Proses</label>
-                            <input type="datetime-local" name="prep_start" value="{{ ($menu->productionLog && $menu->productionLog->prep_start) ? \Carbon\Carbon::parse($menu->productionLog->prep_start)->format('Y-m-d\TH:i') : '' }}" class="w-full px-5 py-3 bg-silk/30 border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none transition-all">
+                            <div class="flex gap-2">
+                                <input type="datetime-local" name="prep_start" id="prep_start" value="{{ ($menu->productionLog && $menu->productionLog->prep_start) ? \Carbon\Carbon::parse($menu->productionLog->prep_start)->format('Y-m-d\TH:i') : '' }}" class="flex-1 px-5 py-3 bg-silk/30 border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none transition-all">
+                                <button type="button" onclick="setNow('prep_start')" class="px-4 py-2 bg-royal-navy text-white text-[10px] font-black uppercase rounded-xl hover:bg-royal-navy/80 transition-all">Mulai</button>
+                            </div>
                         </div>
                         <div>
                             <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Jam Selesai Seluruh Proses</label>
-                            <input type="datetime-local" name="prep_end" value="{{ ($menu->productionLog && $menu->productionLog->prep_end) ? \Carbon\Carbon::parse($menu->productionLog->prep_end)->format('Y-m-d\TH:i') : '' }}" class="w-full px-5 py-3 bg-silk/30 border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none transition-all">
+                            <div class="flex gap-2">
+                                <input type="datetime-local" name="prep_end" id="prep_end" value="{{ ($menu->productionLog && $menu->productionLog->prep_end) ? \Carbon\Carbon::parse($menu->productionLog->prep_end)->format('Y-m-d\TH:i') : '' }}" class="flex-1 px-5 py-3 bg-silk/30 border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none transition-all">
+                                <button type="button" onclick="setNow('prep_end')" class="px-4 py-2 bg-gold text-royal-navy text-[10px] font-black uppercase rounded-xl hover:bg-gold/80 transition-all">Selesai</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -69,11 +75,17 @@
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div>
                                     <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Jam Mulai</label>
-                                    <input type="datetime-local" name="items[{{ $matId }}][start_time]" value="{{ isset($prep->start_time) ? \Carbon\Carbon::parse($prep->start_time)->format('Y-m-d\TH:i') : '' }}" class="w-full px-5 py-3 bg-silk/30 border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none transition-all">
+                                    <div class="flex gap-2">
+                                        <input type="datetime-local" name="items[{{ $matId }}][start_time]" id="start_{{ $matId }}" value="{{ isset($prep->start_time) ? \Carbon\Carbon::parse($prep->start_time)->format('Y-m-d\TH:i') : '' }}" class="flex-1 px-5 py-3 bg-silk/30 border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none transition-all">
+                                        <button type="button" onclick="setNow('start_{{ $matId }}')" class="px-3 py-2 bg-royal-navy text-white text-[10px] font-black uppercase rounded-xl hover:bg-royal-navy/80 transition-all">Mulai</button>
+                                    </div>
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Jam Selesai</label>
-                                    <input type="datetime-local" name="items[{{ $matId }}][end_time]" value="{{ isset($prep->end_time) ? \Carbon\Carbon::parse($prep->end_time)->format('Y-m-d\TH:i') : '' }}" class="w-full px-5 py-3 bg-silk/30 border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none transition-all">
+                                    <div class="flex gap-2">
+                                        <input type="datetime-local" name="items[{{ $matId }}][end_time]" id="end_{{ $matId }}" value="{{ isset($prep->end_time) ? \Carbon\Carbon::parse($prep->end_time)->format('Y-m-d\TH:i') : '' }}" class="flex-1 px-5 py-3 bg-silk/30 border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none transition-all">
+                                        <button type="button" onclick="setNow('end_{{ $matId }}')" class="px-3 py-2 bg-gold text-royal-navy text-[10px] font-black uppercase rounded-xl hover:bg-gold/80 transition-all">Selesai</button>
+                                    </div>
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Foto Hasil Persiapan</label>
@@ -97,4 +109,16 @@
             </form>
         </div>
     </div>
+    <script>
+        function setNow(inputId) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const formatted = `${year}-${month}-${day}T${hours}:${minutes}`;
+            document.getElementById(inputId).value = formatted;
+        }
+    </script>
 </x-app-layout>
