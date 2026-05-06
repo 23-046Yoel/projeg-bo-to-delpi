@@ -83,7 +83,7 @@
                                 </div>
                             </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                                 <div>
                                     <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Jam Mulai</label>
                                     <div class="flex gap-2">
@@ -97,6 +97,10 @@
                                         <input type="datetime-local" name="items[{{ $matId }}][end_time]" id="end_{{ $matId }}" value="{{ isset($prep->end_time) ? \Carbon\Carbon::parse($prep->end_time)->format('Y-m-d\TH:i') : '' }}" class="flex-1 px-5 py-3 bg-silk/30 border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none transition-all">
                                         <button type="button" onclick="setNow('end_{{ $matId }}')" class="px-3 py-2 bg-gold text-royal-navy text-[10px] font-black uppercase rounded-xl hover:bg-gold/80 transition-all">Selesai</button>
                                     </div>
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Suhu Bahan (°C)</label>
+                                    <input type="number" step="0.1" name="items[{{ $matId }}][temp]" value="{{ $prep->temp ?? '' }}" class="w-full px-5 py-3 bg-silk/30 border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none transition-all" placeholder="Contoh: 4.5">
                                 </div>
                                 <div>
                                     <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Foto Hasil Persiapan</label>

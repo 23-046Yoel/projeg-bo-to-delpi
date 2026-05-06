@@ -96,6 +96,7 @@ class ProductionController extends Controller
                     'qty_waste' => $data['qty_waste'] ?? 0,
                     'start_time' => $data['start_time'] ?? null,
                     'end_time' => $data['end_time'] ?? null,
+                    'temp' => $data['temp'] ?? null,
                     'photo' => $photoPath ?? ($menu->preparations()->where('material_id', $matId)->first()->photo ?? null),
                 ]
             );
@@ -139,11 +140,15 @@ class ProductionController extends Controller
             'items' => 'required|array',
         ]);
 
-        // Update Overall Log only if times are provided
-        if ($request->has('proc_start') || $request->has('proc_end')) {
+        // Update Overall Log only if times or new fields are provided
+        if ($request->has('proc_start') || $request->has('proc_end') || $request->has('proc_temp') || $request->hasFile('proc_all_photo')) {
             $logData = [];
             if ($request->has('proc_start')) $logData['proc_start'] = $request->proc_start;
             if ($request->has('proc_end')) $logData['proc_end'] = $request->proc_end;
+            if ($request->has('proc_temp')) $logData['proc_temp'] = $request->proc_temp;
+            if ($request->hasFile('proc_all_photo')) {
+                $logData['proc_all_photo'] = $request->file('proc_all_photo')->store('production/processing', 'public');
+            }
 
             ProductionLog::updateOrCreate(
                 ['menu_id' => $menu->id],
@@ -166,6 +171,7 @@ class ProductionController extends Controller
                     'weight_per_batch' => $data['weight_per_batch'] ?? 0,
                     'start_time' => $data['start_time'] ?? null,
                     'end_time' => $data['end_time'] ?? null,
+                    'boiling_temp' => $data['boiling_temp'] ?? null,
                     'boiling_temp_photo' => $photoPath ?? ($menu->processings()->where('dish_id', $dishId)->first()->boiling_temp_photo ?? null),
                     'qty_produced' => $data['qty_produced'] ?? 0,
                 ]
