@@ -8,10 +8,7 @@
                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1">Laporan Pengolahan Menu</p>
             </div>
             <div class="flex items-center gap-3">
-                <a href="{{ route('reports.daily') }}" class="px-5 py-2 bg-royal-navy text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-royal-navy/90 transition-all shadow-lg shadow-royal-navy/10 flex items-center gap-2">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                    Tambah Laporan Harian
-                </a>
+                <!-- Button Removed -->
             </div>
         </div>
     </x-slot>
