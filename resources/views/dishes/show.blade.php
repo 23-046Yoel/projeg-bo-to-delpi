@@ -72,16 +72,10 @@
                                                 </td>
                                                 <td class="px-6 py-6 whitespace-nowrap text-right">
                                                     <div class="flex items-center justify-end space-x-2">
-                                                        <button type="button" 
-                                                            data-id="{{ $recipe->id }}"
-                                                            data-name="{{ $recipe->material->name }}"
-                                                            data-quantity="{{ $recipe->quantity }}"
-                                                            data-unit="{{ $recipe->unit }}"
-                                                            data-notes="{{ $recipe->notes }}"
-                                                            onclick="openEditModal(this)"
-                                                            class="w-10 h-10 rounded-xl flex items-center justify-center text-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300">
-                                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-                                                        </button>
+                                                        <a href="{{ route('recipes.edit', $recipe) }}" 
+                                                            class="w-12 h-12 rounded-xl flex items-center justify-center text-blue-400 hover:text-blue-600 hover:bg-blue-50 transition-all duration-300">
+                                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                                        </a>
                                                         <form action="{{ route('recipes.destroy', $recipe) }}" method="POST" onsubmit="return confirm('Hapus bahan ini dari resep?')">
                                                             @csrf
                                                             @method('DELETE')
@@ -171,82 +165,4 @@
             animation: fadeIn 0.5s ease-out forwards;
         }
     </style>
-
-    {{-- Edit Gramasi Modal --}}
-    <div id="edit-modal" class="fixed inset-0 z-[100] hidden bg-black/70 backdrop-blur-xl md:items-center md:justify-center p-0 md:p-4 overflow-y-auto">
-        <div class="bg-white md:rounded-[3rem] shadow-2xl p-8 md:p-12 w-full min-h-screen md:min-h-0 md:max-w-2xl animate-fade-in relative flex flex-col">
-            <div class="absolute top-0 right-0 w-64 h-64 bg-gold/5 rounded-full -mr-32 -mt-32 hidden md:block"></div>
-            
-            <div class="flex items-center justify-between mb-10 relative z-10">
-                <h3 class="text-2xl md:text-xl font-black text-royal-navy uppercase tracking-widest flex items-center" id="modal-title">
-                    <span class="w-10 h-1.5 bg-gold mr-4 rounded-full"></span>
-                    Edit Gramasi
-                </h3>
-                <button type="button" onclick="closeEditModal()" class="md:hidden w-12 h-12 rounded-2xl bg-silk flex items-center justify-center text-royal-navy">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-            </div>
-            <form id="edit-form" method="POST">
-                @csrf
-                @method('PUT')
-                <div class="space-y-12 relative z-10 flex-grow pt-10">
-                    <div>
-                        <label class="block text-xl font-black text-gold-dark uppercase tracking-widest mb-6 ml-1">JUMLAH / GRAMASI :</label>
-                        <input type="number" step="0.0001" name="quantity" id="edit-quantity" required
-                            class="w-full px-10 py-10 bg-silk border-8 border-gold/30 rounded-[3rem] text-7xl font-black text-royal-navy focus:bg-white focus:border-gold outline-none transition-all shadow-2xl text-center">
-                    </div>
-                    
-                    <div class="space-y-10">
-                        <div>
-                            <label class="block text-xl font-black text-gray-400 uppercase tracking-widest mb-6 ml-1">SATUAN :</label>
-                            <input type="text" name="unit" id="edit-unit" required
-                                class="w-full px-10 py-8 bg-silk border-4 border-transparent rounded-[2.5rem] text-4xl font-black text-royal-navy focus:bg-white focus:border-gold outline-none transition-all shadow-inner uppercase"
-                                placeholder="GR / ML / PCS">
-                        </div>
-                        <div>
-                            <label class="block text-xl font-black text-gray-400 uppercase tracking-widest mb-6 ml-1">CATATAN :</label>
-                            <textarea name="notes" id="edit-notes" rows="2"
-                                class="w-full px-10 py-8 bg-silk border-4 border-transparent rounded-[2.5rem] text-2xl font-black text-royal-navy focus:bg-white focus:border-gold outline-none transition-all shadow-inner"
-                                placeholder="Opsional"></textarea>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex flex-col gap-6 mt-12 relative z-10 pb-20">
-                    <button type="submit" class="w-full py-10 bg-gold text-royal-navy font-black text-2xl uppercase tracking-[0.3em] rounded-[3rem] shadow-[0_20px_50px_rgba(212,175,55,0.4)] hover:bg-gold-dark hover:-translate-y-2 transition-all active:scale-95">
-                        SIMPAN DATA
-                    </button>
-                    <button type="button" onclick="closeEditModal()" class="w-full py-8 border-4 border-gray-100 rounded-[3rem] text-gray-400 font-black text-xl uppercase tracking-widest hover:bg-silk transition-all">
-                        BATAL / KEMBALI
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        function openEditModal(button) {
-            const id = button.getAttribute('data-id');
-            const name = button.getAttribute('data-name');
-            const quantity = button.getAttribute('data-quantity');
-            const unit = button.getAttribute('data-unit');
-            const notes = button.getAttribute('data-notes');
-
-            document.getElementById('modal-title').textContent = 'Edit: ' + name;
-            document.getElementById('edit-form').action = '/recipes/' + id;
-            document.getElementById('edit-quantity').value = quantity;
-            document.getElementById('edit-unit').value = unit;
-            document.getElementById('edit-notes').value = notes || '';
-            const modal = document.getElementById('edit-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-        }
-        function closeEditModal() {
-            const modal = document.getElementById('edit-modal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
-        document.getElementById('edit-modal').addEventListener('click', function(e) {
-            if (e.target === this) closeEditModal();
-        });
-    </script>
 </x-app-layout>

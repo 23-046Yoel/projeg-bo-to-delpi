@@ -24,6 +24,12 @@ class RecipeController extends Controller
         return redirect()->back()->with('success', 'Bahan dan instruksi berhasil ditambahkan ke resep.');
     }
 
+    public function edit(Recipe $recipe)
+    {
+        $recipe->load('material', 'dish');
+        return view('recipes.edit', compact('recipe'));
+    }
+
     public function update(Request $request, Recipe $recipe)
     {
         $validated = $request->validate([
