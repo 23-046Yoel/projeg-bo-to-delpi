@@ -42,7 +42,7 @@
                                 </div>
                                 <div class="grid grid-cols-3 items-center">
                                     <span class="text-[10px] font-bold text-gray-400 uppercase">Menu Utama</span>
-                                    <span class="col-span-2 text-xs font-black text-royal-navy uppercase">: {{ $menu->karbo }}</span>
+                                    <span class="col-span-2 text-xs font-black text-royal-navy uppercase">: {{ $menu?->karbo ?? '(Isi Manual)' }}</span>
                                 </div>
                             </div>
                         </div>
@@ -85,27 +85,27 @@
                         <div class="space-y-3">
                             <div class="flex justify-between border-b border-gray-100 pb-2">
                                 <span class="text-[10px] font-bold text-gray-400 uppercase">Karbohidrat</span>
-                                <span class="text-[10px] font-black text-royal-navy uppercase">{{ $menu->karbo }}</span>
+                                <span class="text-[10px] font-black text-royal-navy uppercase">{{ $menu?->karbo ?? '-' }}</span>
                             </div>
                             <div class="flex justify-between border-b border-gray-100 pb-2">
                                 <span class="text-[10px] font-bold text-gray-400 uppercase">Protein Hewani</span>
-                                <span class="text-[10px] font-black text-royal-navy uppercase">{{ $menu->protein_hewani }}</span>
+                                <span class="text-[10px] font-black text-royal-navy uppercase">{{ $menu?->protein_hewani ?? '-' }}</span>
                             </div>
                             <div class="flex justify-between border-b border-gray-100 pb-2">
                                 <span class="text-[10px] font-bold text-gray-400 uppercase">Protein Nabati</span>
-                                <span class="text-[10px] font-black text-royal-navy uppercase">{{ $menu->protein_nabati }}</span>
+                                <span class="text-[10px] font-black text-royal-navy uppercase">{{ $menu?->protein_nabati ?? '-' }}</span>
                             </div>
                             <div class="flex justify-between border-b border-gray-100 pb-2">
                                 <span class="text-[10px] font-bold text-gray-400 uppercase">Sayur</span>
-                                <span class="text-[10px] font-black text-royal-navy uppercase">{{ $menu->sayur }}</span>
+                                <span class="text-[10px] font-black text-royal-navy uppercase">{{ $menu?->sayur ?? '-' }}</span>
                             </div>
                             <div class="flex justify-between border-b border-gray-100 pb-2">
                                 <span class="text-[10px] font-bold text-gray-400 uppercase">Buah</span>
-                                <span class="text-[10px] font-black text-royal-navy uppercase">{{ $menu->buah }}</span>
+                                <span class="text-[10px] font-black text-royal-navy uppercase">{{ $menu?->buah ?? '-' }}</span>
                             </div>
                             <div class="flex justify-between pt-2">
                                 <span class="text-[10px] font-bold text-gold-dark uppercase">Total Energi / Protein</span>
-                                <span class="text-[10px] font-black text-gold-dark">{{ $menu->energy ?? 0 }} kkal / {{ $menu->protein ?? 0 }} g</span>
+                                <span class="text-[10px] font-black text-gold-dark">{{ $menu?->energy ?? 0 }} kkal / {{ $menu?->protein ?? 0 }} g</span>
                             </div>
                         </div>
                     </div>
