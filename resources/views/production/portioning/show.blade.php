@@ -26,15 +26,15 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
                             <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Jam Mulai Seluruhnya</label>
-                            <input type="datetime-local" name="port_start" value="{{ $menu->productionLog->port_start ? \Carbon\Carbon::parse($menu->productionLog->port_start)->format('Y-m-d\TH:i') : '' }}" class="w-full px-5 py-3 bg-silk/30 border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none transition-all">
+                            <input type="datetime-local" name="port_start" value="{{ ($menu->productionLog && $menu->productionLog->port_start) ? \Carbon\Carbon::parse($menu->productionLog->port_start)->format('Y-m-d\TH:i') : '' }}" class="w-full px-5 py-3 bg-silk/30 border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none transition-all">
                         </div>
                         <div>
                             <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Jam Selesai Seluruhnya</label>
-                            <input type="datetime-local" name="port_end" value="{{ $menu->productionLog->port_end ? \Carbon\Carbon::parse($menu->productionLog->port_end)->format('Y-m-d\TH:i') : '' }}" class="w-full px-5 py-3 bg-silk/30 border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none transition-all">
+                            <input type="datetime-local" name="port_end" value="{{ ($menu->productionLog && $menu->productionLog->port_end) ? \Carbon\Carbon::parse($menu->productionLog->port_end)->format('Y-m-d\TH:i') : '' }}" class="w-full px-5 py-3 bg-silk/30 border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none transition-all">
                         </div>
                         <div>
                             <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Foto Kumpulan Ompreng</label>
-                            @if(isset($menu->productionLog->port_all_photo))
+                            @if($menu->productionLog && isset($menu->productionLog->port_all_photo))
                                 <div class="mb-2">
                                     <img src="{{ asset('storage/' . $menu->productionLog->port_all_photo) }}" class="w-20 h-20 object-cover rounded-lg border">
                                 </div>
