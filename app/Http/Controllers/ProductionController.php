@@ -68,14 +68,17 @@ class ProductionController extends Controller
             'items' => 'required|array',
         ]);
 
-        // Update Overall Log
-        ProductionLog::updateOrCreate(
-            ['menu_id' => $menu->id],
-            [
-                'prep_start' => $request->prep_start,
-                'prep_end' => $request->prep_end,
-            ]
-        );
+        // Update Overall Log only if times are provided
+        if ($request->has('prep_start') || $request->has('prep_end')) {
+            $logData = [];
+            if ($request->has('prep_start')) $logData['prep_start'] = $request->prep_start;
+            if ($request->has('prep_end')) $logData['prep_end'] = $request->prep_end;
+            
+            ProductionLog::updateOrCreate(
+                ['menu_id' => $menu->id],
+                $logData
+            );
+        }
 
         // Update/Create Per Material
         foreach ($request->items as $matId => $data) {
@@ -136,14 +139,17 @@ class ProductionController extends Controller
             'items' => 'required|array',
         ]);
 
-        // Update Overall Log
-        ProductionLog::updateOrCreate(
-            ['menu_id' => $menu->id],
-            [
-                'proc_start' => $request->proc_start,
-                'proc_end' => $request->proc_end,
-            ]
-        );
+        // Update Overall Log only if times are provided
+        if ($request->has('proc_start') || $request->has('proc_end')) {
+            $logData = [];
+            if ($request->has('proc_start')) $logData['proc_start'] = $request->proc_start;
+            if ($request->has('proc_end')) $logData['proc_end'] = $request->proc_end;
+
+            ProductionLog::updateOrCreate(
+                ['menu_id' => $menu->id],
+                $logData
+            );
+        }
 
         // Update/Create Per Dish
         foreach ($request->items as $dishId => $data) {
@@ -205,20 +211,20 @@ class ProductionController extends Controller
             'items' => 'required|array',
         ]);
 
-        $allPhotoPath = null;
-        if ($request->hasFile('port_all_photo')) {
-            $allPhotoPath = $request->file('port_all_photo')->store('production/portioning', 'public');
-        }
-
         // Update Overall Log
-        ProductionLog::updateOrCreate(
-            ['menu_id' => $menu->id],
-            [
-                'port_start' => $request->port_start,
-                'port_end' => $request->port_end,
-                'port_all_photo' => $allPhotoPath ?? ($menu->productionLog->port_all_photo ?? null),
-            ]
-        );
+        if ($request->has('port_start') || $request->has('port_end') || $request->hasFile('port_all_photo')) {
+            $logData = [];
+            if ($request->has('port_start')) $logData['port_start'] = $request->port_start;
+            if ($request->has('port_end')) $logData['port_end'] = $request->port_end;
+            if ($request->hasFile('port_all_photo')) {
+                $logData['port_all_photo'] = $request->file('port_all_photo')->store('production/portioning', 'public');
+            }
+
+            ProductionLog::updateOrCreate(
+                ['menu_id' => $menu->id],
+                $logData
+            );
+        }
 
         // Update/Create Per Beneficiary Group
         foreach ($request->items as $groupId => $data) {

@@ -17,12 +17,14 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Overall Section -->
             <form action="{{ route('production.portioning.store', $menu) }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                
-                <!-- Overall Section -->
-                <div class="premium-card p-8 mb-8">
-                    <h3 class="text-sm font-black text-royal-navy uppercase tracking-widest mb-6 border-b pb-4">Waktu & Foto Keseluruhan Pemorsian</h3>
+                <div class="premium-card p-8 mb-8 border-l-8 border-gold">
+                    <h3 class="text-sm font-black text-royal-navy uppercase tracking-widest mb-6 border-b pb-4 flex items-center justify-between">
+                        Waktu & Foto Keseluruhan Pemorsian
+                        <button type="submit" class="px-6 py-2 bg-gold text-royal-navy text-[10px] font-black uppercase rounded-xl hover:bg-gold/80 transition-all shadow-lg shadow-gold/20">Simpan Foto & Waktu</button>
+                    </h3>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div>
                             <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Jam Mulai Seluruhnya</label>
@@ -48,18 +50,27 @@
                             <input type="file" name="port_all_photo" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-gold file:text-royal-navy hover:file:bg-gold/80 cursor-pointer">
                         </div>
                     </div>
+                    <input type="hidden" name="items" value="[]">
                 </div>
+            </form>
 
-                <!-- Per Beneficiary Group Section -->
-                <div class="space-y-6">
-                    @foreach($menu->sppg->beneficiaryGroups as $group)
-                        @php
-                            $port = $menu->portionings->where('beneficiary_group_id', $group->id)->first();
-                        @endphp
-                        <div class="premium-card p-8">
-                            <div class="flex items-center justify-between mb-6 border-b pb-4">
-                                <h3 class="text-sm font-black text-gold-dark uppercase tracking-widest">{{ $group->name }}</h3>
-                                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Target: {{ $group->total_beneficiaries }} PM</span>
+            <!-- Per Beneficiary Group Section -->
+            <div class="space-y-8">
+                @foreach($menu->sppg->beneficiaryGroups as $group)
+                    @php
+                        $port = $menu->portionings->where('beneficiary_group_id', $group->id)->first();
+                    @endphp
+                    <form action="{{ route('production.portioning.store', $menu) }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="premium-card p-8 border-l-8 border-royal-navy hover:shadow-2xl transition-shadow duration-500">
+                            <div class="flex items-center justify-between mb-8 border-b pb-6">
+                                <div>
+                                    <h3 class="text-lg font-black text-royal-navy uppercase tracking-widest">{{ $group->name }}</h3>
+                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Target: {{ $group->total_beneficiaries }} PM</p>
+                                </div>
+                                <button type="submit" class="px-10 py-4 bg-royal-navy text-gold text-xs font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-royal-navy/90 transition-all transform hover:-translate-y-1 shadow-xl shadow-royal-navy/20">
+                                    Simpan PM: {{ $group->name }}
+                                </button>
                             </div>
                             
                             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
@@ -103,15 +114,9 @@
                                 </div>
                             </div>
                         </div>
-                    @endforeach
-                </div>
-
-                <div class="mt-8 flex justify-end">
-                    <button type="submit" class="px-10 py-4 bg-gold text-royal-navy font-black text-xs uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-gold/20 hover:bg-gold/80 transition-all transform hover:-translate-y-1">
-                        Simpan Laporan Pemorsian
-                    </button>
-                </div>
-            </form>
+                    </form>
+                @endforeach
+            </div>
         </div>
     </div>
     <script>
