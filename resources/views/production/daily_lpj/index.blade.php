@@ -8,16 +8,28 @@
                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1">Laporan Pertanggungjawaban Harian (MBG)</p>
             </div>
             <div class="flex items-center gap-3">
-                <button onclick="document.getElementById('createLpjModal').showModal()" class="px-5 py-2 bg-royal-navy text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-royal-navy/90 transition-all shadow-lg shadow-royal-navy/10 flex items-center gap-2">
+                <a href="{{ route('production.daily-lpj.create', ['date' => date('Y-m-d'), 'sppg_id' => auth()->user()->sppg_id]) }}" class="px-5 py-2 bg-royal-navy text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-royal-navy/90 transition-all shadow-lg shadow-royal-navy/10 flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                    Buat LPJ Baru
-                </button>
+                    Buat LPJ Hari Ini
+                </a>
             </div>
         </div>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Alerts -->
+            @if(session('error'))
+                <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-xs font-bold uppercase tracking-widest rounded-r-xl shadow-sm">
+                    {{ session('error') }}
+                </div>
+            @endif
+            @if(session('success'))
+                <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 text-green-700 text-xs font-bold uppercase tracking-widest rounded-r-xl shadow-sm">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             <!-- Filter Section -->
             <div class="mb-8">
                 <form action="{{ route('production.daily-lpj.index') }}" method="GET" class="flex flex-wrap items-end gap-4">
