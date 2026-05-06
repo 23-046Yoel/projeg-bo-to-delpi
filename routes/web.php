@@ -11,6 +11,7 @@ use App\Http\Controllers\RecapController;
 use App\Http\Controllers\SupplierRegistrationController;
 use App\Http\Controllers\RequirementController;
 use App\Http\Controllers\ProductionController;
+use App\Http\Controllers\DailyLpjController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -108,6 +109,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/production/portioning', [ProductionController::class, 'portioningIndex'])->name('production.portioning.index');
     Route::get('/production/portioning/{menu}', [ProductionController::class, 'portioningShow'])->name('production.portioning.show');
     Route::post('/production/portioning/{menu}', [ProductionController::class, 'portioningStore'])->name('production.portioning.store');
+
+    // Daily LPJ
+    Route::prefix('production')->name('production.')->group(function() {
+        Route::resource('daily-lpj', DailyLpjController::class);
+    });
 
     Route::resource('users', \App\Http\Controllers\UserController::class);
     Route::get('/users/{user}/signature', [\App\Http\Controllers\UserController::class, 'signatureForm'])->name('users.signature.form');
