@@ -173,36 +173,43 @@
     </style>
 
     {{-- Edit Gramasi Modal --}}
-    <div id="edit-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50 backdrop-blur-sm">
-        <div class="bg-white rounded-[2.5rem] shadow-2xl p-10 w-full max-w-md mx-4 animate-fade-in">
-            <h3 class="text-[11px] font-black text-royal-navy uppercase tracking-[0.3em] mb-6" id="modal-title">Edit Gramasi Bahan</h3>
+    <div id="edit-modal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/60 backdrop-blur-md p-4">
+        <div class="bg-white rounded-[3rem] shadow-2xl p-8 md:p-12 w-full max-w-xl animate-fade-in overflow-hidden relative">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-full -mr-16 -mt-16"></div>
+            
+            <h3 class="text-lg font-black text-royal-navy uppercase tracking-widest mb-8 relative z-10 flex items-center" id="modal-title">
+                <span class="w-8 h-1 bg-gold mr-3 rounded-full"></span>
+                Edit Gramasi Bahan
+            </h3>
             <form id="edit-form" method="POST">
                 @csrf
                 @method('PUT')
-                <div class="space-y-5">
+                <div class="space-y-6 relative z-10">
                     <div>
-                        <label class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-2">Gramasi</label>
+                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Gramasi / Jumlah</label>
                         <input type="number" step="0.0001" name="quantity" id="edit-quantity" required
-                            class="w-full px-5 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none transition-all">
+                            class="w-full px-6 py-5 bg-silk/50 border-2 border-transparent rounded-[1.5rem] text-lg font-black text-royal-navy focus:bg-white focus:border-gold outline-none transition-all shadow-sm">
                     </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-2">Satuan</label>
-                        <input type="text" name="unit" id="edit-unit" required
-                            class="w-full px-5 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none transition-all"
-                            placeholder="gr / kg / ml">
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-2">Catatan</label>
-                        <input type="text" name="notes" id="edit-notes"
-                            class="w-full px-5 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none transition-all"
-                            placeholder="Opsional">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Satuan</label>
+                            <input type="text" name="unit" id="edit-unit" required
+                                class="w-full px-6 py-5 bg-silk/50 border-2 border-transparent rounded-[1.5rem] text-base font-bold text-royal-navy focus:bg-white focus:border-gold outline-none transition-all shadow-sm"
+                                placeholder="gr / kg / ml">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Catatan</label>
+                            <input type="text" name="notes" id="edit-notes"
+                                class="w-full px-6 py-5 bg-silk/50 border-2 border-transparent rounded-[1.5rem] text-base font-bold text-royal-navy focus:bg-white focus:border-gold outline-none transition-all shadow-sm"
+                                placeholder="Opsional">
+                        </div>
                     </div>
                 </div>
-                <div class="flex gap-4 mt-8">
-                    <button type="submit" class="flex-1 py-4 bg-royal-navy text-gold font-black text-xs uppercase tracking-[0.3em] rounded-2xl hover:bg-royal-navy/90 transition-all">
+                <div class="flex flex-col md:flex-row gap-4 mt-10 relative z-10">
+                    <button type="submit" class="flex-1 py-5 bg-gold text-royal-navy font-black text-xs uppercase tracking-[0.3em] rounded-2xl shadow-xl shadow-gold/20 hover:bg-gold/80 hover:-translate-y-1 transition-all order-2 md:order-1">
                         Simpan Perubahan
                     </button>
-                    <button type="button" onclick="closeEditModal()" class="px-8 py-4 border-2 border-gray-100 rounded-2xl text-gray-400 font-bold text-xs uppercase tracking-widest hover:bg-silk transition-all">
+                    <button type="button" onclick="closeEditModal()" class="flex-1 py-5 border-2 border-gray-100 rounded-2xl text-gray-400 font-bold text-xs uppercase tracking-widest hover:bg-silk transition-all order-1 md:order-2">
                         Batal
                     </button>
                 </div>
