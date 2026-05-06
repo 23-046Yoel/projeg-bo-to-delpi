@@ -107,7 +107,7 @@ class DailyLpjController extends Controller
             'menu_id'                        => $menu?->id,
             'sppg_id'                        => $sppgId,
             'date'                           => $date,
-            'sppg_name'                      => $sppg->name,
+            'sppg_name'                      => $sppg?->name ?? 'SPPG Tidak Ditemukan',
             'total_production'               => $totalProduction,
             'total_distribution'             => $totalDistribution,
             'leftover_food'                  => max(0, $totalProduction - $totalDistribution),
@@ -127,7 +127,7 @@ class DailyLpjController extends Controller
             'final_balance_virtual'          => $finalBalance,
             'conclusion'                     => 'Distribusi berjalan normal, tidak ada kejadian menonjol.',
             'signatures'                     => [
-                'kepala_sppg'        => $sppg->head_name ?? $user->name,
+                'kepala_sppg'        => $sppg?->head_name ?? $user->name,
                 'pengawas_gizi'      => 'Lestari Ginting',
                 'pengawas_keuangan'  => 'Agita Sebayang',
                 'asisten_lapangan'   => 'Yoel Surbakti',
