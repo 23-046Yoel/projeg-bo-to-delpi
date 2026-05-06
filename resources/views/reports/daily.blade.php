@@ -83,6 +83,12 @@
                             </div>
                         </label>
                         <label class="relative flex items-center justify-center p-5 rounded-[1.5rem] border-2 border-gold/5 bg-silk hover:border-gold-premium/30 cursor-pointer transition-all has-[:checked]:border-gold-premium has-[:checked]:bg-gold-light/20 group overflow-hidden">
+                            <input type="radio" name="report_type" value="Harian Persiapan" class="hidden">
+                            <div class="text-center">
+                                <span class="block text-[11px] font-black text-royal-navy group-hover:text-gold-dark uppercase tracking-wider">Harian Persiapan</span>
+                            </div>
+                        </label>
+                        <label class="relative flex items-center justify-center p-5 rounded-[1.5rem] border-2 border-gold/5 bg-silk hover:border-gold-premium/30 cursor-pointer transition-all has-[:checked]:border-gold-premium has-[:checked]:bg-gold-light/20 group overflow-hidden">
                             <input type="radio" name="report_type" value="Informasi Penting" class="hidden">
                             <div class="text-center">
                                 <span class="block text-[11px] font-black text-royal-navy group-hover:text-gold-dark uppercase tracking-wider">Informasi Penting</span>

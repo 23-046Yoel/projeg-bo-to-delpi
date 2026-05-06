@@ -26,11 +26,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Jam Mulai Seluruh Proses</label>
-                            <input type="datetime-local" name="prep_start" value="{{ $menu->productionLog->prep_start ? \Carbon\Carbon::parse($menu->productionLog->prep_start)->format('Y-m-d\TH:i') : '' }}" class="w-full px-5 py-3 bg-silk/30 border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none transition-all">
+                            <input type="datetime-local" name="prep_start" value="{{ ($menu->productionLog && $menu->productionLog->prep_start) ? \Carbon\Carbon::parse($menu->productionLog->prep_start)->format('Y-m-d\TH:i') : '' }}" class="w-full px-5 py-3 bg-silk/30 border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none transition-all">
                         </div>
                         <div>
                             <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Jam Selesai Seluruh Proses</label>
-                            <input type="datetime-local" name="prep_end" value="{{ $menu->productionLog->prep_end ? \Carbon\Carbon::parse($menu->productionLog->prep_end)->format('Y-m-d\TH:i') : '' }}" class="w-full px-5 py-3 bg-silk/30 border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none transition-all">
+                            <input type="datetime-local" name="prep_end" value="{{ ($menu->productionLog && $menu->productionLog->prep_end) ? \Carbon\Carbon::parse($menu->productionLog->prep_end)->format('Y-m-d\TH:i') : '' }}" class="w-full px-5 py-3 bg-silk/30 border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none transition-all">
                         </div>
                     </div>
                 </div>
