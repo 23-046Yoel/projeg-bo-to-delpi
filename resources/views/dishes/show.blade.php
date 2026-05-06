@@ -189,34 +189,34 @@
             <form id="edit-form" method="POST">
                 @csrf
                 @method('PUT')
-                <div class="space-y-8 relative z-10 flex-grow">
+                <div class="space-y-12 relative z-10 flex-grow pt-10">
                     <div>
-                        <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-4 ml-1">Gramasi / Jumlah (Angka)</label>
+                        <label class="block text-xl font-black text-gold-dark uppercase tracking-widest mb-6 ml-1">JUMLAH / GRAMASI :</label>
                         <input type="number" step="0.0001" name="quantity" id="edit-quantity" required
-                            class="w-full px-8 py-6 bg-silk/50 border-4 border-transparent rounded-[2rem] text-3xl font-black text-royal-navy focus:bg-white focus:border-gold outline-none transition-all shadow-inner">
+                            class="w-full px-10 py-10 bg-silk border-8 border-gold/30 rounded-[3rem] text-7xl font-black text-royal-navy focus:bg-white focus:border-gold outline-none transition-all shadow-2xl text-center">
                     </div>
                     
-                    <div class="grid grid-cols-1 gap-8">
+                    <div class="space-y-10">
                         <div>
-                            <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-4 ml-1">Satuan (Contoh: GR, ML, PCS)</label>
+                            <label class="block text-xl font-black text-gray-400 uppercase tracking-widest mb-6 ml-1">SATUAN :</label>
                             <input type="text" name="unit" id="edit-unit" required
-                                class="w-full px-8 py-6 bg-silk/50 border-4 border-transparent rounded-[2rem] text-xl font-black text-royal-navy focus:bg-white focus:border-gold outline-none transition-all shadow-inner"
-                                placeholder="gr / kg / ml">
+                                class="w-full px-10 py-8 bg-silk border-4 border-transparent rounded-[2.5rem] text-4xl font-black text-royal-navy focus:bg-white focus:border-gold outline-none transition-all shadow-inner uppercase"
+                                placeholder="GR / ML / PCS">
                         </div>
                         <div>
-                            <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-4 ml-1">Catatan Tambahan</label>
-                            <textarea name="notes" id="edit-notes" rows="3"
-                                class="w-full px-8 py-6 bg-silk/50 border-4 border-transparent rounded-[2rem] text-lg font-bold text-royal-navy focus:bg-white focus:border-gold outline-none transition-all shadow-inner"
+                            <label class="block text-xl font-black text-gray-400 uppercase tracking-widest mb-6 ml-1">CATATAN :</label>
+                            <textarea name="notes" id="edit-notes" rows="2"
+                                class="w-full px-10 py-8 bg-silk border-4 border-transparent rounded-[2.5rem] text-2xl font-black text-royal-navy focus:bg-white focus:border-gold outline-none transition-all shadow-inner"
                                 placeholder="Opsional"></textarea>
                         </div>
                     </div>
                 </div>
-                <div class="flex flex-col gap-4 mt-12 relative z-10 pb-10 md:pb-0">
-                    <button type="submit" class="w-full py-7 bg-gold text-royal-navy font-black text-lg uppercase tracking-[0.3em] rounded-[2rem] shadow-2xl shadow-gold/30 hover:bg-gold/80 hover:-translate-y-1 transition-all">
-                        Simpan Perubahan
+                <div class="flex flex-col gap-6 mt-12 relative z-10 pb-20">
+                    <button type="submit" class="w-full py-10 bg-gold text-royal-navy font-black text-2xl uppercase tracking-[0.3em] rounded-[3rem] shadow-[0_20px_50px_rgba(212,175,55,0.4)] hover:bg-gold-dark hover:-translate-y-2 transition-all active:scale-95">
+                        SIMPAN DATA
                     </button>
-                    <button type="button" onclick="closeEditModal()" class="w-full py-6 border-2 border-gray-100 rounded-[2rem] text-gray-400 font-bold text-sm uppercase tracking-widest hover:bg-silk transition-all">
-                        Kembali ke Daftar
+                    <button type="button" onclick="closeEditModal()" class="w-full py-8 border-4 border-gray-100 rounded-[3rem] text-gray-400 font-black text-xl uppercase tracking-widest hover:bg-silk transition-all">
+                        BATAL / KEMBALI
                     </button>
                 </div>
             </form>
