@@ -57,7 +57,7 @@ class DailyLpjController extends Controller
         $distributionData = [];
 
         if ($menu) {
-            $totalProduction = DB::table('production_processings')->where('menu_id', $menu->id)->sum('qty_produced');
+            $totalProduction = DB::table('production_portionings')->where('menu_id', $menu->id)->sum('qty_received');
             
             $materialReceipts = MaterialLog::with('material')
                 ->where('sppg_id', $sppgId)->where('date', $date)->where('type', 'in')
