@@ -173,44 +173,50 @@
     </style>
 
     {{-- Edit Gramasi Modal --}}
-    <div id="edit-modal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/60 backdrop-blur-md p-4">
-        <div class="bg-white rounded-[3rem] shadow-2xl p-8 md:p-12 w-full max-w-xl animate-fade-in overflow-hidden relative">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-gold/5 rounded-full -mr-16 -mt-16"></div>
+    <div id="edit-modal" class="fixed inset-0 z-[100] hidden bg-black/70 backdrop-blur-xl md:items-center md:justify-center p-0 md:p-4 overflow-y-auto">
+        <div class="bg-white md:rounded-[3rem] shadow-2xl p-8 md:p-12 w-full min-h-screen md:min-h-0 md:max-w-2xl animate-fade-in relative flex flex-col">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-gold/5 rounded-full -mr-32 -mt-32 hidden md:block"></div>
             
-            <h3 class="text-lg font-black text-royal-navy uppercase tracking-widest mb-8 relative z-10 flex items-center" id="modal-title">
-                <span class="w-8 h-1 bg-gold mr-3 rounded-full"></span>
-                Edit Gramasi Bahan
-            </h3>
+            <div class="flex items-center justify-between mb-10 relative z-10">
+                <h3 class="text-2xl md:text-xl font-black text-royal-navy uppercase tracking-widest flex items-center" id="modal-title">
+                    <span class="w-10 h-1.5 bg-gold mr-4 rounded-full"></span>
+                    Edit Gramasi
+                </h3>
+                <button type="button" onclick="closeEditModal()" class="md:hidden w-12 h-12 rounded-2xl bg-silk flex items-center justify-center text-royal-navy">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
             <form id="edit-form" method="POST">
                 @csrf
                 @method('PUT')
-                <div class="space-y-6 relative z-10">
+                <div class="space-y-8 relative z-10 flex-grow">
                     <div>
-                        <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Gramasi / Jumlah</label>
+                        <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-4 ml-1">Gramasi / Jumlah (Angka)</label>
                         <input type="number" step="0.0001" name="quantity" id="edit-quantity" required
-                            class="w-full px-6 py-5 bg-silk/50 border-2 border-transparent rounded-[1.5rem] text-lg font-black text-royal-navy focus:bg-white focus:border-gold outline-none transition-all shadow-sm">
+                            class="w-full px-8 py-6 bg-silk/50 border-4 border-transparent rounded-[2rem] text-3xl font-black text-royal-navy focus:bg-white focus:border-gold outline-none transition-all shadow-inner">
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <div class="grid grid-cols-1 gap-8">
                         <div>
-                            <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Satuan</label>
+                            <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-4 ml-1">Satuan (Contoh: GR, ML, PCS)</label>
                             <input type="text" name="unit" id="edit-unit" required
-                                class="w-full px-6 py-5 bg-silk/50 border-2 border-transparent rounded-[1.5rem] text-base font-bold text-royal-navy focus:bg-white focus:border-gold outline-none transition-all shadow-sm"
+                                class="w-full px-8 py-6 bg-silk/50 border-4 border-transparent rounded-[2rem] text-xl font-black text-royal-navy focus:bg-white focus:border-gold outline-none transition-all shadow-inner"
                                 placeholder="gr / kg / ml">
                         </div>
                         <div>
-                            <label class="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Catatan</label>
-                            <input type="text" name="notes" id="edit-notes"
-                                class="w-full px-6 py-5 bg-silk/50 border-2 border-transparent rounded-[1.5rem] text-base font-bold text-royal-navy focus:bg-white focus:border-gold outline-none transition-all shadow-sm"
-                                placeholder="Opsional">
+                            <label class="block text-xs font-black text-gray-400 uppercase tracking-widest mb-4 ml-1">Catatan Tambahan</label>
+                            <textarea name="notes" id="edit-notes" rows="3"
+                                class="w-full px-8 py-6 bg-silk/50 border-4 border-transparent rounded-[2rem] text-lg font-bold text-royal-navy focus:bg-white focus:border-gold outline-none transition-all shadow-inner"
+                                placeholder="Opsional"></textarea>
                         </div>
                     </div>
                 </div>
-                <div class="flex flex-col md:flex-row gap-4 mt-10 relative z-10">
-                    <button type="submit" class="flex-1 py-5 bg-gold text-royal-navy font-black text-xs uppercase tracking-[0.3em] rounded-2xl shadow-xl shadow-gold/20 hover:bg-gold/80 hover:-translate-y-1 transition-all order-2 md:order-1">
+                <div class="flex flex-col gap-4 mt-12 relative z-10 pb-10 md:pb-0">
+                    <button type="submit" class="w-full py-7 bg-gold text-royal-navy font-black text-lg uppercase tracking-[0.3em] rounded-[2rem] shadow-2xl shadow-gold/30 hover:bg-gold/80 hover:-translate-y-1 transition-all">
                         Simpan Perubahan
                     </button>
-                    <button type="button" onclick="closeEditModal()" class="flex-1 py-5 border-2 border-gray-100 rounded-2xl text-gray-400 font-bold text-xs uppercase tracking-widest hover:bg-silk transition-all order-1 md:order-2">
-                        Batal
+                    <button type="button" onclick="closeEditModal()" class="w-full py-6 border-2 border-gray-100 rounded-[2rem] text-gray-400 font-bold text-sm uppercase tracking-widest hover:bg-silk transition-all">
+                        Kembali ke Daftar
                     </button>
                 </div>
             </form>
