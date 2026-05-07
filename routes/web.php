@@ -112,10 +112,6 @@ Route::middleware('auth')->group(function () {
 
     // Daily LPJ
     Route::prefix('production')->name('production.')->group(function() {
-        Route::get('/daily-lpj/force-pull', function() {
-            $output = shell_exec('git pull origin main 2>&1');
-            return "<pre>$output</pre><br><a href='".route('production.daily-lpj.index')."'>Kembali ke LPJ</a>";
-        })->name('daily-lpj.force-pull');
         Route::resource('daily-lpj', DailyLpjController::class);
     });
 
@@ -237,6 +233,11 @@ Route::get('/jalankan-migrasi-baru-8x92k', function () {
     } catch (\Exception $e) {
         return "<pre style='color:red;padding:20px'>❌ Gagal: " . $e->getMessage() . "</pre>";
     }
+});
+
+Route::get('/force-pull-public', function() {
+    $output = shell_exec('git pull origin main 2>&1');
+    return "<pre>$output</pre><br><a href='/login'>Ke Halaman Login</a>";
 });
 
 require __DIR__.'/auth.php';
