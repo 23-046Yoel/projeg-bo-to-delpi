@@ -136,6 +136,10 @@
 
         // Handle OTP input behavior
         document.addEventListener('DOMContentLoaded', () => {
+            @if ($errors->any())
+                switchTab('email');
+            @endif
+
             const inputs = document.querySelectorAll('.otp-input');
 
             inputs.forEach((input, index) => {
