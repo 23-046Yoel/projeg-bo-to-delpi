@@ -206,6 +206,7 @@ Route::get('/pindah-storage', function () {
 });
 
 Route::get('/setup-admins', function () {
+    // 1. Upgrade Akun Email
     $users = [
         ['email' => 'yoelflemming8@gmail.com', 'name' => 'Yoel Flemming'],
         ['email' => 'grasellatobing1611@gmail.com', 'name' => 'Grasella Tobing'],
@@ -222,7 +223,15 @@ Route::get('/setup-admins', function () {
             ]
         );
     }
-    return "3 Akun Admin berhasil dibuat/diupdate! Silakan login dengan email tersebut.";
+
+    // 2. Upgrade Akun Nomor HP Yoel Flemming
+    $targetPhone = '6285767610448';
+    $phoneUser = \App\Models\User::where('phone', $targetPhone)->first();
+    if ($phoneUser) {
+        $phoneUser->update(['role' => 'master admin']);
+    }
+
+    return "SEMUA BERHASIL! 3 Akun Email & Akun WhatsApp ($targetPhone) sekarang sudah jadi MASTER ADMIN. <br><a href='/dashboard'>Kembali ke Dashboard</a>";
 });
 
 Route::get('/jalankan-migrasi-baru-8x92k', function () {
