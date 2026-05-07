@@ -19,6 +19,26 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
             </button>
+
+            <div style="margin: 2rem 0; text-align: center; position: relative;">
+                <hr style="border-top: 1px solid #E5E7EB; margin: 0;">
+                <span style="background: white; padding: 0 10px; color: #9CA3AF; font-size: 0.875rem; position: relative; top: -10px;">Atau masuk dengan</span>
+            </div>
+
+            <form method="POST" action="{{ url('/login') }}">
+                @csrf
+                <div style="margin-bottom: 1rem;">
+                    <label class="field-label" style="display: block; margin-bottom: 0.5rem;">Email</label>
+                    <input type="email" name="email" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #F3F4F6; border-radius: 12px; font-size: 1rem; outline: none; transition: all 0.3s;" placeholder="admin@example.com">
+                </div>
+                <div style="margin-bottom: 1.5rem;">
+                    <label class="field-label" style="display: block; margin-bottom: 0.5rem;">Password</label>
+                    <input type="password" name="password" required style="width: 100%; padding: 0.75rem 1rem; border: 2px solid #F3F4F6; border-radius: 12px; font-size: 1rem; outline: none; transition: all 0.3s;" placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn-premium" style="background: #1B2631; color: white; width: 100%; padding: 0.875rem; border-radius: 12px; font-weight: bold; border: none; cursor: pointer;">
+                    <span>Masuk dengan Email</span>
+                </button>
+            </form>
         </div>
 
         {{-- STEP 2: Verifikasi OTP --}}
