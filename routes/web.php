@@ -218,20 +218,19 @@ Route::get('/setup-admins', function () {
             [
                 'name' => $u['name'],
                 'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
-                'role' => 'master admin',
+                'role' => 'admin',
                 'email_verified_at' => now(),
             ]
         );
     }
 
-    // 2. Upgrade Akun Nomor HP Yoel Flemming
-    $targetPhone = '6285767610448';
-    $phoneUser = \App\Models\User::where('phone', $targetPhone)->first();
-    if ($phoneUser) {
-        $phoneUser->update(['role' => 'master admin']);
-    }
+    // 2. Upgrade Akun Nomor HP Yoel Flemming (Cari semua kemungkinan format)
+    $phonePatterns = ['6285767610448', '085767610448', '85767610448'];
+    \App\Models\User::whereIn('phone', $phonePatterns)
+        ->orWhere('name', 'like', '%YOEL FLEMMING%')
+        ->update(['role' => 'admin']);
 
-    return "SEMUA BERHASIL! 3 Akun Email & Akun WhatsApp ($targetPhone) sekarang sudah jadi MASTER ADMIN. <br><a href='/dashboard'>Kembali ke Dashboard</a>";
+    return "SEMUA BERHASIL! Akun Yoel Flemming (WhatsApp & Email) sekarang SUDAH JADI MASTER ADMIN. <br><a href='/dashboard'>KLIK DISINI UNTUK LIHAT HASILNYA</a>";
 });
 
 Route::get('/jalankan-migrasi-baru-8x92k', function () {
