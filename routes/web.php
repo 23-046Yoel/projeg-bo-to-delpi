@@ -209,6 +209,26 @@ Route::get('/pindah-storage', function () {
     return "Storage link berhasil dibuat! <br><a href='/'>Kembali ke Home</a>";
 });
 
+Route::get('/setup-admins', function () {
+    $users = [
+        ['email' => 'yoelflemming8@gmail.com', 'name' => 'Yoel Flemming'],
+        ['email' => 'grasellatobing1611@gmail.com', 'name' => 'Grasella Tobing'],
+        ['email' => 'sarahmanuellalumbangaol21@gmail.com', 'name' => 'Sarah Manuella']
+    ];
+    foreach ($users as $u) {
+        \App\Models\User::updateOrCreate(
+            ['email' => $u['email']],
+            [
+                'name' => $u['name'],
+                'password' => \Illuminate\Support\Facades\Hash::make('admin123'),
+                'role' => 'master admin',
+                'email_verified_at' => now(),
+            ]
+        );
+    }
+    return "3 Akun Admin berhasil dibuat/diupdate! Silakan login dengan email tersebut.";
+});
+
 Route::get('/jalankan-migrasi-baru-8x92k', function () {
     try {
         \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
