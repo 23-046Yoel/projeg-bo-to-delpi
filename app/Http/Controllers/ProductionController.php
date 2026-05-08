@@ -21,7 +21,7 @@ class ProductionController extends Controller
     public function preparationIndex(Request $request)
     {
         $user = auth()->user();
-        $query = Menu::with('sppg')->latest();
+        $query = Menu::with('sppg')->orderBy('date', 'desc');
 
         if (!$user->isAdmin()) {
             $query->where('sppg_id', $user->sppg_id);
@@ -29,6 +29,10 @@ class ProductionController extends Controller
 
         if ($request->filled('sppg_id')) {
             $query->where('sppg_id', $request->sppg_id);
+        }
+
+        if ($request->filled('date')) {
+            $query->whereDate('date', $request->date);
         }
 
         $menus = $query->paginate(15);
@@ -110,7 +114,7 @@ class ProductionController extends Controller
     public function processingIndex(Request $request)
     {
         $user = auth()->user();
-        $query = Menu::with('sppg')->latest();
+        $query = Menu::with('sppg')->orderBy('date', 'desc');
 
         if (!$user->isAdmin()) {
             $query->where('sppg_id', $user->sppg_id);
@@ -118,6 +122,10 @@ class ProductionController extends Controller
 
         if ($request->filled('sppg_id')) {
             $query->where('sppg_id', $request->sppg_id);
+        }
+
+        if ($request->filled('date')) {
+            $query->whereDate('date', $request->date);
         }
 
         $menus = $query->paginate(15);
@@ -186,7 +194,7 @@ class ProductionController extends Controller
     public function portioningIndex(Request $request)
     {
         $user = auth()->user();
-        $query = Menu::with('sppg')->latest();
+        $query = Menu::with('sppg')->orderBy('date', 'desc');
 
         if (!$user->isAdmin()) {
             $query->where('sppg_id', $user->sppg_id);
@@ -194,6 +202,10 @@ class ProductionController extends Controller
 
         if ($request->filled('sppg_id')) {
             $query->where('sppg_id', $request->sppg_id);
+        }
+
+        if ($request->filled('date')) {
+            $query->whereDate('date', $request->date);
         }
 
         $menus = $query->paginate(15);

@@ -16,16 +16,32 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <!-- Filter Section -->
-            <div class="mb-8">
-                <form action="{{ route('production.processing.index') }}" method="GET" class="flex flex-wrap items-end gap-4">
+            <div class="mb-8 p-6 bg-white rounded-[1.5rem] border border-gray-100 shadow-sm">
+                <form action="{{ route('production.processing.index') }}" method="GET" class="flex flex-wrap items-end gap-6">
+                    @if(auth()->user()->isAdmin())
                     <div class="w-full md:w-64">
                         <label for="sppg_id" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-2">Filter Dapur (SPPG)</label>
-                        <select name="sppg_id" id="sppg_id" onchange="this.form.submit()" class="w-full px-5 py-3 bg-white border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy shadow-lg shadow-royal-navy/5 focus:border-gold outline-none transition-all">
+                        <select name="sppg_id" id="sppg_id" onchange="this.form.submit()" class="w-full px-5 py-3 bg-silk/30 border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none transition-all">
                             <option value="">-- SEMUA DAPUR --</option>
                             @foreach($sppgs as $sppg)
                                 <option value="{{ $sppg->id }}" {{ request('sppg_id') == $sppg->id ? 'selected' : '' }}>{{ $sppg->name }}</option>
                             @endforeach
                         </select>
+                    </div>
+                    @endif
+
+                    <div class="w-full md:w-48">
+                        <label for="date" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-2">Filter Tanggal</label>
+                        <input type="date" name="date" id="date" value="{{ request('date') }}" onchange="this.form.submit()" class="w-full px-5 py-3 bg-silk/30 border-2 border-transparent rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none transition-all">
+                    </div>
+
+                    <div class="flex-1 flex items-center mb-1">
+                        @if(request('sppg_id') || request('date'))
+                            <a href="{{ route('production.processing.index') }}" class="text-[10px] font-black text-rose-500 uppercase tracking-widest hover:text-rose-600 transition-colors flex items-center">
+                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                Clear Filter
+                            </a>
+                        @endif
                     </div>
                 </form>
             </div>
