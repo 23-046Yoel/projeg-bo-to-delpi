@@ -15,6 +15,7 @@ class DashboardController extends Controller
     {
         $stats = [
             'suppliers_count' => Supplier::count(),
+            'units_count' => \App\Models\BeneficiaryGroup::count(),
             'beneficiaries_count' => \App\Models\BeneficiaryGroup::sum('total_beneficiaries'),
             'materials_count' => Material::count(),
             'total_payments' => Payment::sum('amount'),
