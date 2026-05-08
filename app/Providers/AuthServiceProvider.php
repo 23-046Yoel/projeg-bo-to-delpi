@@ -65,9 +65,9 @@ class AuthServiceProvider extends ServiceProvider
             return in_array($user->role, [\App\Models\User::ROLE_ADMIN, \App\Models\User::ROLE_PENGAWAS_KEUANGAN]);
         });
 
-        // 8. Management & Monitoring (Staf, Aspirasi, Rute): Ka SPPG, Admin, Pengawas Keuangan
+        // 8. Management & Monitoring (Staf, Aspirasi, Rute): Ka SPPG, Admin, Pengawas Keuangan, Aslap
         \Illuminate\Support\Facades\Gate::define('manage-system', function ($user) {
-            return in_array($user->role, [\App\Models\User::ROLE_ADMIN, \App\Models\User::ROLE_KA_SPPG, \App\Models\User::ROLE_PENGAWAS_KEUANGAN]);
+            return in_array($user->role, [\App\Models\User::ROLE_ADMIN, \App\Models\User::ROLE_KA_SPPG, \App\Models\User::ROLE_PENGAWAS_KEUANGAN, \App\Models\User::ROLE_ASLAP]);
         });
 
         // 9. Laporan Umum (Absensi, Pengaduan): All except Warehouse
