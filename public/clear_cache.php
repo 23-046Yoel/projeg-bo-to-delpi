@@ -17,9 +17,6 @@ $kernel->bootstrap();
 // LOGIKA ACTION
 $message = "";
 $action = $_GET['action'] ?? null;
-if ($action) {
-    die("ACTION RECEIVED: " . htmlspecialchars($action));
-}
 
 if ($action === 'mati') {
     try {
@@ -66,15 +63,16 @@ if ($action === 'mati') {
             ]
         ];
         
-        $info = "Driver: " . config('cache.default') . " | ";
-        $info .= "Write/Read: " . ($readValue === 'success_value' ? 'SUCCESS' : 'FAILED') . " (Read: " . ($readValue ?? 'NULL') . ") | ";
-        $info .= "Storage Perms: " . $permissions['storage']['perms'] . " (Writable: " . ($permissions['storage']['writable'] ? 'Yes' : 'No') . ") | ";
-        $info .= "Cache Perms: " . $permissions['framework_cache']['perms'] . " (Writable: " . ($permissions['framework_cache']['writable'] ? 'Yes' : 'No') . ") | ";
-        $info .= "Cache Data Perms: " . $permissions['framework_cache_data']['perms'] . " (Writable: " . ($permissions['framework_cache_data']['writable'] ? 'Yes' : 'No') . ")";
+        $info = "DIAGNOSTIK CACHE:\n";
+        $info .= "Driver: " . config('cache.default') . "\n";
+        $info .= "Write/Read Test: " . ($readValue === 'success_value' ? 'SUCCESS' : 'FAILED') . " (Read: " . ($readValue ?? 'NULL') . ")\n";
+        $info .= "Storage Perms: " . $permissions['storage']['perms'] . " (Writable: " . ($permissions['storage']['writable'] ? 'Yes' : 'No') . ")\n";
+        $info .= "Cache Perms: " . $permissions['framework_cache']['perms'] . " (Writable: " . ($permissions['framework_cache']['writable'] ? 'Yes' : 'No') . ")\n";
+        $info .= "Cache Data Perms: " . $permissions['framework_cache_data']['perms'] . " (Writable: " . ($permissions['framework_cache_data']['writable'] ? 'Yes' : 'No') . ")\n";
         
-        $message = ["info", "HASIL DIAGNOSTIK: " . $info];
+        die($info);
     } catch (\Exception $e) {
-        $message = ["error", "Diagnostics Error: " . $e->getMessage()];
+        die("DIAGNOSTIK ERROR: " . $e->getMessage() . "\n" . $e->getTraceAsString());
     }
 }
 
