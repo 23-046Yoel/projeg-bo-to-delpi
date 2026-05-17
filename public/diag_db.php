@@ -5,7 +5,5 @@ $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 
 header('Content-Type: text/plain');
 
-echo "=== USERS ===\n";
-foreach(App\Models\User::all() as $u) {
-    echo "ID: {$u->id} | Name: {$u->name} | Role: {$u->role} | SPPG ID: {$u->sppg_id} (Name: " . ($u->sppg->name ?? 'None') . ") | Phone: {$u->phone}\n";
-}
+echo "=== BENEFICIARY GROUP DETAIL ===\n";
+print_r(App\Models\BeneficiaryGroup::where('sppg_id', 4)->get()->toArray());
