@@ -115,7 +115,7 @@ class OrderController extends Controller
             'supplier_id' => $request->supplier_id,
             'order_date' => $request->order_date,
             'status' => 'pending',
-            'sppg_id' => auth()->user()->sppg_id
+            'sppg_id' => $request->sppg_id ?? auth()->user()->sppg_id
         ]);
 
         foreach ($request->items as $item) {
