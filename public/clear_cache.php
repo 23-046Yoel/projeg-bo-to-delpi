@@ -17,6 +17,9 @@ $kernel->bootstrap();
 // LOGIKA ACTION
 $message = "";
 $action = $_GET['action'] ?? null;
+if ($action) {
+    die("ACTION RECEIVED: " . htmlspecialchars($action));
+}
 
 if ($action === 'mati') {
     try {
