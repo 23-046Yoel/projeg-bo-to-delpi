@@ -15,6 +15,13 @@ class VolunteerAttendanceController extends Controller
             $query->where('sppg_id', $request->sppg_id);
         }
 
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->whereHas('user', function($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%');
+            });
+        }
+
         $attendances = $query->latest()->paginate(20);
         $sppgs = \App\Models\Sppg::all();
         

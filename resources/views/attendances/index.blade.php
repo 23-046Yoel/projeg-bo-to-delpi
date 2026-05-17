@@ -253,18 +253,35 @@
                 }
             </script>
 
-            <!-- Filter Tabs -->
-            <div class="flex items-center space-x-2 mb-6 overflow-x-auto pb-2 custom-scrollbar">
-                <a href="{{ route('attendances.index') }}" 
-                   class="px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all {{ !request('sppg_id') ? 'bg-royal-navy text-gold shadow-lg ring-2 ring-gold/20' : 'bg-white text-gray-400 border border-gray-100 hover:bg-silk' }}">
-                    SEMUA LOKASI
-                </a>
-                @foreach($sppgs as $s)
-                    <a href="{{ route('attendances.index', ['sppg_id' => $s->id]) }}" 
-                       class="px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all {{ request('sppg_id') == $s->id ? 'bg-royal-navy text-gold shadow-lg ring-2 ring-gold/20' : 'bg-white text-gray-400 border border-gray-100 hover:bg-silk whitespace-nowrap' }}">
-                        {{ $s->name }}
+            <!-- Filter Tabs & Search -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <!-- Filter Tabs -->
+                <div class="flex items-center space-x-2 overflow-x-auto pb-2 custom-scrollbar max-w-full md:max-w-[70%]">
+                    <a href="{{ route('attendances.index', ['search' => request('search')]) }}" 
+                       class="px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all {{ !request('sppg_id') ? 'bg-royal-navy text-gold shadow-lg ring-2 ring-gold/20' : 'bg-white text-gray-400 border border-gray-100 hover:bg-silk whitespace-nowrap' }}">
+                        SEMUA LOKASI
                     </a>
-                @endforeach
+                    @foreach($sppgs as $s)
+                        <a href="{{ route('attendances.index', ['sppg_id' => $s->id, 'search' => request('search')]) }}" 
+                           class="px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all {{ request('sppg_id') == $s->id ? 'bg-royal-navy text-gold shadow-lg ring-2 ring-gold/20' : 'bg-white text-gray-400 border border-gray-100 hover:bg-silk whitespace-nowrap' }}">
+                            {{ $s->name }}
+                        </a>
+                    @endforeach
+                </div>
+
+                <!-- Search Input Form -->
+                <form action="{{ route('attendances.index') }}" method="GET" class="flex items-center w-full md:w-auto">
+                    @if(request('sppg_id'))
+                        <input type="hidden" name="sppg_id" value="{{ request('sppg_id') }}">
+                    @endif
+                    <div class="relative w-full md:w-64">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama relawan..." 
+                               class="w-full bg-white border border-slate-200 rounded-2xl px-5 py-2.5 pl-11 text-xs font-bold text-royal-navy focus:ring-2 focus:ring-gold focus:border-gold transition-all shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        </div>
+                    </div>
+                </form>
             </div>
 
             <div class="glass overflow-hidden shadow-2xl sm:rounded-[2.5rem] border border-gold/10 relative">

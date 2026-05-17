@@ -771,7 +771,7 @@ class WhatsAppController extends Controller
         // Detect SPPG via Geofence
         $targetSppg = $this->attendance->findSppgByCoordinates($lat, $lng);
         
-        $sppgId = $targetSppg ? $targetSppg->id : ($user->sppg_id ?? null);
+        $sppgId = $targetSppg ? $targetSppg->id : ($user->sppg_id ?? \App\Models\Sppg::first()->id ?? 3);
         $locationName = $targetSppg ? $targetSppg->name : ($user->sppg->name ?? 'Lokasi Luar');
         $isOutside = !$targetSppg;
 
