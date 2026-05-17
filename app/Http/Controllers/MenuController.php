@@ -22,7 +22,7 @@ class MenuController extends Controller
             $query->where('sppg_id', $request->sppg_id);
         }
 
-        $menus = $query->latest()->paginate(15)->withQueryString();
+        $menus = $query->orderBy('date', 'desc')->paginate(15)->withQueryString();
         $sppgs = Sppg::all();
         return view('menus.index', compact('menus', 'sppgs'));
     }
