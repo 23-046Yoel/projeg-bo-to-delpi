@@ -30,7 +30,8 @@ class OrderController extends Controller
     public function show(Order $order)
     {
         $order->load(['supplier', 'items.material']);
-        return view('orders.show', compact('order'));
+        $sppgs = \App\Models\Sppg::orderBy('name')->get();
+        return view('orders.show', compact('order', 'sppgs'));
     }
 
     public function create(Request $request)
@@ -129,6 +130,15 @@ class OrderController extends Controller
         }
 
         return redirect()->route('orders.index')->with('success', 'Surat Pesanan berhasil dibuat!');
+    }
+
+    public function update(Request $request, Order $order)
+    {
+        if ($request->has('sppg_id')) {
+            $order->update(['sppg_id' => $request->sppg_id]);
+            return back()->with('success', 'Dapur SPPG berhasil diperbarui!');
+        }
+        return back();
     }
 
     public function dailyReport(Request $request)

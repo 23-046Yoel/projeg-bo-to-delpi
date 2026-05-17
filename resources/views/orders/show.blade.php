@@ -59,8 +59,20 @@
                                 <td class="py-1 font-black text-royal-navy">#SP{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }}</td>
                             </tr>
                             <tr>
-                                <td class="py-1 font-bold text-gray-500 uppercase tracking-wider">Dapur</td>
-                                <td class="py-1 font-black text-royal-navy">{{ $order->sppg->name ?? (auth()->user()->sppg->name ?? '-') }}</td>
+                                <td class="py-1 font-bold text-gray-500 uppercase tracking-wider align-middle">Dapur</td>
+                                <td class="py-1 font-black text-royal-navy align-middle">
+                                    <span class="hidden print:block">{{ $order->sppg->name ?? (auth()->user()->sppg->name ?? '-') }}</span>
+                                    <form action="{{ route('orders.update', $order) }}" method="POST" class="no-print m-0 inline-block">
+                                        @csrf
+                                        @method('PUT')
+                                        <select name="sppg_id" onchange="this.form.submit()" class="pl-2 pr-8 py-1 bg-white border border-gray-200 rounded text-xs font-bold text-royal-navy focus:border-gold outline-none cursor-pointer hover:bg-gray-50 transition-all">
+                                            <option value="">- Belum Diatur -</option>
+                                            @foreach($sppgs as $sppg)
+                                                <option value="{{ $sppg->id }}" {{ ($order->sppg_id ?? auth()->user()->sppg_id) == $sppg->id ? 'selected' : '' }}>{{ $sppg->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </form>
+                                </td>
                             </tr>
                             <tr>
                                 <td class="py-1 font-bold text-gray-500 uppercase tracking-wider">Status</td>
