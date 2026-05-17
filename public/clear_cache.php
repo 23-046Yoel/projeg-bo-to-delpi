@@ -74,6 +74,15 @@ if ($action === 'mati') {
     } catch (\Exception $e) {
         die("DIAGNOSTIK ERROR: " . $e->getMessage() . "\n" . $e->getTraceAsString());
     }
+} elseif ($action === 'logs') {
+    $logPath = storage_path('logs/laravel.log');
+    if (file_exists($logPath)) {
+        $lines = file($logPath);
+        $lastLines = array_slice($lines, -150); // Get last 150 lines
+        die("LAST 150 LINES OF PRODUCTION LOGS:\n\n" . implode("", $lastLines));
+    } else {
+        die("Log file does not exist at: $logPath");
+    }
 }
 
 // CEK STATUS MAINTENANCE
@@ -271,6 +280,11 @@ $isDown = file_exists(storage_path('framework/down'));
             <a href="?action=diag" class="btn">
                 <strong>🔬 Diagnostics</strong>
                 <span>Test Cache & Perms</span>
+            </a>
+
+            <a href="?action=logs" class="btn">
+                <strong>📝 Logs</strong>
+                <span>View Laravel Logs</span>
             </a>
 
             <a href="?action=pull" class="btn btn-main">
