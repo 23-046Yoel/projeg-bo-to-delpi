@@ -9,14 +9,18 @@ echo "=== FIXING total_beneficiaries ===\n";
 $groups = App\Models\BeneficiaryGroup::all();
 $fixed = 0;
 foreach ($groups as $group) {
-    $total = ($group->porsi_besar ?? 0) + ($group->porsi_kecil ?? 0);
+    $porsiBesar = $group->porsi_besar ?? 0;
+    $porsiKecil = $group->porsi_kecil ?? 0;
+    $total = $porsiBesar + $porsiKecil;
+    echo "Check: {$group->name} | porsi_besar={$porsiBesar} | porsi_kecil={$porsiKecil} | current total={$group->total_beneficiaries}\n";
     if ($group->total_beneficiaries == 0 && $total > 0) {
-        $group->total_beneficiaries = $total;
-        $group->save();
-        echo "Fixed: {$group->name} -> total_beneficiaries = {$total}\n";
+        \Illuminate\Support\Facades\DB::table('beneficiary_groups')
+            ->where('id', $group->id)
+            ->update(['total_beneficiaries' => $total]);
+        echo "  --> FIXED! total_beneficiaries = {$total}\n";
         $fixed++;
     }
 }
 
 echo "\nTotal fixed: {$fixed} groups.\n";
-echo "\n=== DONE ===\n";
+echo "=== DONE ===\n";
