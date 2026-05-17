@@ -36,6 +36,43 @@ if ($action === 'mati') {
 } elseif ($action === 'pull') {
     $out = shell_exec("git pull origin main 2>&1");
     $message = ["info", "Git Pull Result: <br><pre style='font-size:12px; margin-top:10px;'>$out</pre>"];
+} elseif ($action === 'diag') {
+    try {
+        \Illuminate\Support\Facades\Cache::put('diag_test_key', 'success_value', 10);
+        $readValue = \Illuminate\Support\Facades\Cache::get('diag_test_key');
+        
+        $storagePath = storage_path();
+        $cachePath = storage_path('framework/cache');
+        $cacheDataPath = storage_path('framework/cache/data');
+        
+        $permissions = [
+            'storage' => [
+                'exists' => file_exists($storagePath),
+                'writable' => is_writable($storagePath),
+                'perms' => substr(sprintf('%o', fileperms($storagePath)), -4)
+            ],
+            'framework_cache' => [
+                'exists' => file_exists($cachePath),
+                'writable' => is_writable($cachePath),
+                'perms' => file_exists($cachePath) ? substr(sprintf('%o', fileperms($cachePath)), -4) : 'N/A'
+            ],
+            'framework_cache_data' => [
+                'exists' => file_exists($cacheDataPath),
+                'writable' => is_writable($cacheDataPath),
+                'perms' => file_exists($cacheDataPath) ? substr(sprintf('%o', fileperms($cacheDataPath)), -4) : 'N/A'
+            ]
+        ];
+        
+        $info = "Driver: " . config('cache.default') . "<br>";
+        $info .= "Write/Read Test: " . ($readValue === 'success_value' ? '<span style="color:#4ade80; font-weight:bold;">SUCCESS</span>' : '<span style="color:#ef4444; font-weight:bold;">FAILED</span>') . " (Read: " . ($readValue ?? 'NULL') . ")<br>";
+        $info .= "Storage Perms: " . $permissions['storage']['perms'] . " (Writable: " . ($permissions['storage']['writable'] ? 'Yes' : 'No') . ")<br>";
+        $info .= "Cache Perms: " . $permissions['framework_cache']['perms'] . " (Writable: " . ($permissions['framework_cache']['writable'] ? 'Yes' : 'No') . ")<br>";
+        $info .= "Cache Data Perms: " . $permissions['framework_cache_data']['perms'] . " (Writable: " . ($permissions['framework_cache_data']['writable'] ? 'Yes' : 'No') . ")<br>";
+        
+        $message = ["info", "Cache Diagnostics: <br><div style='font-size:12px; font-family:monospace; line-height:1.6; text-align:left; margin-top:10px; padding:12px; background:rgba(0,0,0,0.2); border-radius:8px;'>$info</div>"];
+    } catch (\Exception $e) {
+        $message = ["error", "Diagnostics Error: " . $e->getMessage()];
+    }
 }
 
 // CEK STATUS MAINTENANCE
@@ -228,6 +265,11 @@ $isDown = file_exists(storage_path('framework/down'));
             <a href="?action=clear" class="btn">
                 <strong>🧹 Clean Cache</strong>
                 <span>Clear Artisan</span>
+            </a>
+
+            <a href="?action=diag" class="btn">
+                <strong>🔬 Diagnostics</strong>
+                <span>Test Cache & Perms</span>
             </a>
 
             <a href="?action=pull" class="btn btn-main">
