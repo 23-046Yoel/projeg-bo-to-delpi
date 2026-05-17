@@ -48,7 +48,7 @@
     <h2>IDENTITAS SPPG</h2>
     <table>
         <tr><td width="30%">Nama SPPG</td><td>{{ $dailyLpj->sppg->name }}</td></tr>
-        <tr><td>Yayasan/Mitra</td><td>{{ $dailyLpj->sppg->foundation ?? 'Yayasan Pendidikan Ala Delphi' }}</td></tr>
+        <tr><td>Yayasan/Mitra</td><td>Yayasan Pendidikan Ala Delphi Tigabinanga Kab Karo</td></tr>
         <tr><td>Alamat</td><td>{{ $dailyLpj->sppg->location ?? 'Kompleks SMK Ala Delphi Tiga Binanga' }}</td></tr>
         <tr><td>Kepala SPPG</td><td>{{ $dailyLpj->signatures['kepala_sppg'] ?? '-' }}</td></tr>
         <tr><td>Tanggal</td><td>{{ $dailyLpj->date->translatedFormat('d F Y') }}</td></tr>
@@ -137,6 +137,7 @@
         <tbody>
             <tr><td>Saldo Awal</td><td align="right">{{ number_format($dailyLpj->initial_balance_virtual, 0, ',', '.') }}</td><td align="right">{{ number_format($dailyLpj->initial_balance_cash, 0, ',', '.') }}</td></tr>
             <tr><td>Pengeluaran Bahan Baku</td><td align="right">{{ number_format($dailyLpj->expenditure_materials_virtual, 0, ',', '.') }}</td><td align="right">{{ number_format($dailyLpj->expenditure_materials_cash, 0, ',', '.') }}</td></tr>
+            <tr style="font-weight:bold; background-color:#f9f9f9"><td>Pengeluaran Operasional:</td><td align="right">{{ number_format($dailyLpj->expenditure_ops_salary_virtual + $dailyLpj->expenditure_ops_gas_virtual + $dailyLpj->expenditure_ops_electricity_virtual + $dailyLpj->expenditure_ops_admin_virtual, 0, ',', '.') }}</td><td align="right">{{ number_format($dailyLpj->expenditure_ops_salary_cash + $dailyLpj->expenditure_ops_gas_cash + $dailyLpj->expenditure_ops_electricity_cash + $dailyLpj->expenditure_ops_admin_cash, 0, ',', '.') }}</td></tr>
             <tr><td style="padding-left:20px">1. Gaji Relawan</td><td align="right">{{ number_format($dailyLpj->expenditure_ops_salary_virtual, 0, ',', '.') }}</td><td align="right">{{ number_format($dailyLpj->expenditure_ops_salary_cash, 0, ',', '.') }}</td></tr>
             <tr><td style="padding-left:20px">2. Gas</td><td align="right">{{ number_format($dailyLpj->expenditure_ops_gas_virtual, 0, ',', '.') }}</td><td align="right">{{ number_format($dailyLpj->expenditure_ops_gas_cash, 0, ',', '.') }}</td></tr>
             <tr><td style="padding-left:20px">3. Listrik</td><td align="right">{{ number_format($dailyLpj->expenditure_ops_electricity_virtual, 0, ',', '.') }}</td><td align="right">{{ number_format($dailyLpj->expenditure_ops_electricity_cash, 0, ',', '.') }}</td></tr>

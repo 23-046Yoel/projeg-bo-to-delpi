@@ -103,6 +103,11 @@ class DailyLpjController extends Controller
         $expIncentive = Payment::where('sppg_id', $sppgId)->where('date', $date)->where('transaction_type', 'Insentif Fasilitas')->sum('amount_out');
         $finalBalance = Payment::where('sppg_id', $sppgId)->where('date', $date)->orderBy('id', 'desc')->value('balance') ?? $initialBalance;
 
+        $kepalaSppg = \App\Models\User::where('sppg_id', $sppgId)->where('role', \App\Models\User::ROLE_KA_SPPG)->first();
+        $pengawasGizi = \App\Models\User::where('sppg_id', $sppgId)->where('role', \App\Models\User::ROLE_PENGAWAS_GIZI)->first();
+        $pengawasKeuangan = \App\Models\User::where('sppg_id', $sppgId)->where('role', \App\Models\User::ROLE_PENGAWAS_KEUANGAN)->first();
+        $aslap = \App\Models\User::where('sppg_id', $sppgId)->where('role', \App\Models\User::ROLE_ASLAP)->first();
+
         $data = [
             'menu_id'                        => $menu?->id,
             'sppg_id'                        => $sppgId,
@@ -127,10 +132,10 @@ class DailyLpjController extends Controller
             'final_balance_virtual'          => $finalBalance,
             'conclusion'                     => 'Distribusi berjalan normal, tidak ada kejadian menonjol.',
             'signatures'                     => [
-                'kepala_sppg'        => $sppg?->head_name ?? $user->name,
-                'pengawas_gizi'      => 'Lestari Ginting',
-                'pengawas_keuangan'  => 'Agita Sebayang',
-                'asisten_lapangan'   => 'Yoel Surbakti',
+                'kepala_sppg'        => $kepalaSppg?->name ?? ($sppg?->head_name ?? $user->name),
+                'pengawas_gizi'      => $pengawasGizi?->name ?? 'Lestari Ginting',
+                'pengawas_keuangan'  => $pengawasKeuangan?->name ?? 'Agita Sebayang',
+                'asisten_lapangan'   => $aslap?->name ?? 'Yoel Surbakti',
                 'perwakilan_yayasan' => 'Silverius Bangun',
             ],
         ];

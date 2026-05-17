@@ -248,6 +248,11 @@
                                     <td><input type="number" step="0.01" name="expenditure_materials_virtual" value="{{ $data['expenditure_materials_virtual'] }}" class="w-full bg-transparent border-none p-0 text-right font-black text-royal-navy focus:ring-0"></td>
                                     <td><input type="number" step="0.01" name="expenditure_materials_cash" value="0" class="w-full bg-transparent border-none p-0 text-right font-black text-royal-navy focus:ring-0"></td>
                                 </tr>
+                                <tr class="border-b border-gray-100 bg-gray-50/50">
+                                    <td class="py-2 text-royal-navy font-black uppercase text-[9px]">Pengeluaran Operasional</td>
+                                    <td class="text-right py-2 pr-2 font-black text-royal-navy text-[10px]" id="ops_total_virtual_display">Rp {{ number_format($data['expenditure_ops_salary_virtual'] + $data['expenditure_ops_gas_virtual'] + $data['expenditure_ops_electricity_virtual'] + $data['expenditure_ops_admin_virtual'], 0, ',', '.') }}</td>
+                                    <td class="text-right py-2 pr-2 font-black text-royal-navy text-[10px]" id="ops_total_cash_display">Rp 0</td>
+                                </tr>
                                 <tr>
                                     <td class="py-2 text-gray-400 font-bold uppercase text-[8px] pl-4">1. Gaji Relawan</td>
                                     <td><input type="number" step="0.01" name="expenditure_ops_salary_virtual" value="{{ $data['expenditure_ops_salary_virtual'] }}" class="w-full bg-transparent border-none p-0 text-right font-bold text-gray-500 focus:ring-0"></td>
