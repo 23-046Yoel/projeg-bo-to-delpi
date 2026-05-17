@@ -10,7 +10,11 @@ class BeneficiaryGroupController extends Controller
     public function index(Request $request)
     {
         $user = auth()->user();
-        $query = BeneficiaryGroup::query()->where('total_beneficiaries', '>', 0);
+        $query = BeneficiaryGroup::query()->where(function($q) {
+            $q->where('total_beneficiaries', '>', 0)
+              ->orWhere('porsi_besar', '>', 0)
+              ->orWhere('porsi_kecil', '>', 0);
+        });
 
         // Admin can filter by SPPG
         if ($request->has('sppg_id') && $request->sppg_id != '') {
