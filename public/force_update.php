@@ -36,7 +36,20 @@ echo "<h3>3. Membersihkan Cache Laravel:</h3><pre style='background:#1e293b; pad
 passthru("$phpPath ../artisan optimize:clear 2>&1");
 echo "</pre>";
 
+echo "<h3>4. Membersihkan PHP OPcache:</h3><pre style='background:#1e293b; padding:15px; border-radius:8px;'>";
+if (function_exists('opcache_reset')) {
+    if (opcache_reset()) {
+        echo "OPcache successfully cleared!\n";
+    } else {
+        echo "OPcache reset failed.\n";
+    }
+} else {
+    echo "opcache_reset function not available.\n";
+}
+echo "</pre>";
+
 echo "<hr style='border:1px solid #1e293b;'>";
 echo "<h2 style='color:white;'>✅ SELESAI!</h2>";
 echo "<p>Sekarang silakan cek Control Panel baru Anda di: <a href='/clear_cache.php' style='color:#6366f1;'>aladelphi.or.id/clear_cache.php</a></p>";
 echo "</body>";
+echo "</html>";
