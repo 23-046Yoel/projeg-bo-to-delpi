@@ -42,7 +42,7 @@
                                 </div>
                                 <div class="grid grid-cols-3 items-center">
                                     <span class="text-[10px] font-bold text-gray-400 uppercase">Menu Utama</span>
-                                    <span class="col-span-2 text-xs font-black text-royal-navy uppercase">: {{ $menu?->karbo ?? '(Isi Manual)' }}</span>
+                                    <span class="col-span-2 text-xs font-black text-royal-navy uppercase">: {{ $menu?->karbo ?? '(Belum Ada Rencana Menu)' }}</span>
                                 </div>
                             </div>
                         </div>
