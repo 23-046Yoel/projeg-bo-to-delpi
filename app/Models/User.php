@@ -23,6 +23,7 @@ class User extends Authenticatable
     const ROLE_WAREHOUSE = 'warehouse';
     const ROLE_QC = 'qc';
     const ROLE_DRIVER = 'driver'; // Existing role
+    const ROLE_PERWAKILAN_YAYASAN = 'perwakilan_yayasan';
 
     public function isAdmin()
     {
@@ -41,6 +42,7 @@ class User extends Authenticatable
             self::ROLE_WAREHOUSE => 'STAF GUDANG',
             self::ROLE_QC => 'QUALITY CONTROL',
             self::ROLE_DRIVER => 'DRIVER OPERASIONAL',
+            self::ROLE_PERWAKILAN_YAYASAN => 'PERWAKILAN YAYASAN',
         ][$this->role] ?? 'PENGGUNA';
     }
 

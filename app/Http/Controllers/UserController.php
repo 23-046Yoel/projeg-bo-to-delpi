@@ -37,6 +37,7 @@ class UserController extends Controller
             User::ROLE_QC => 'QUALITY CONTROL',
             User::ROLE_DRIVER => 'DRIVER OPERASIONAL',
             User::ROLE_VOLUNTEER => 'RELAWAN / PUBLIK',
+            User::ROLE_PERWAKILAN_YAYASAN => 'PERWAKILAN YAYASAN',
         ];
         return view('users.create', compact('sppgs', 'roles'));
     }
@@ -87,6 +88,7 @@ class UserController extends Controller
             User::ROLE_QC => 'QUALITY CONTROL',
             User::ROLE_DRIVER => 'DRIVER OPERASIONAL',
             User::ROLE_VOLUNTEER => 'RELAWAN / PUBLIK',
+            User::ROLE_PERWAKILAN_YAYASAN => 'PERWAKILAN YAYASAN',
         ];
         return view('users.edit', compact('user', 'sppgs', 'roles'));
     }

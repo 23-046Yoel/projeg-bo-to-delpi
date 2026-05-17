@@ -130,32 +130,40 @@
                                     </div>
                                 </div>
 
-                                {{-- Main Population Data - Perfect match to PDF --}}
+                                {{-- Main Population Data --}}
                                 <div class="bg-slate-50 rounded-[2rem] p-6 mb-4 relative z-10 border border-slate-100">
                                     <div class="grid grid-cols-2 gap-4">
                                         @if(($group->type ?? 'sekolah') === 'sekolah')
                                             <div>
-                                                <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Jumlah Siswa</div>
-                                                <div class="text-2xl font-black text-royal-navy">{{ $group->count_siswa }}</div>
+                                                <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Porsi Besar</div>
+                                                <div class="text-2xl font-black text-royal-navy">{{ $group->count_siswa > 0 ? $group->count_siswa : $group->porsi_besar }}</div>
+                                                <div class="text-[8px] text-slate-400 font-bold mt-1">{{ $group->count_siswa > 0 ? 'Siswa' : 'Porsi Besar' }}</div>
                                             </div>
                                             <div class="border-l border-slate-200 pl-4">
-                                                <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Guru & Staff</div>
-                                                <div class="text-2xl font-black text-royal-navy">{{ $group->count_guru }}</div>
+                                                <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Porsi Kecil</div>
+                                                <div class="text-2xl font-black text-royal-navy">{{ $group->count_guru > 0 ? $group->count_guru : $group->porsi_kecil }}</div>
+                                                <div class="text-[8px] text-slate-400 font-bold mt-1">{{ $group->count_guru > 0 ? 'Guru & Staff' : 'Porsi Kecil' }}</div>
                                             </div>
                                         @else
                                             <div class="col-span-2 grid grid-cols-3 gap-2">
                                                 <div>
                                                     <div class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Ibu Hamil</div>
-                                                    <div class="text-xl font-black text-rose-600">{{ $group->count_hamil }}</div>
+                                                    <div class="text-xl font-black text-rose-600">{{ $group->count_hamil > 0 ? $group->count_hamil : '-' }}</div>
                                                 </div>
                                                 <div class="border-x border-slate-200 px-3 text-center">
                                                     <div class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Ibu Menyusui</div>
-                                                    <div class="text-xl font-black text-rose-600">{{ $group->count_menyusui }}</div>
+                                                    <div class="text-xl font-black text-rose-600">{{ $group->count_menyusui > 0 ? $group->count_menyusui : '-' }}</div>
                                                 </div>
                                                 <div class="text-right">
                                                     <div class="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Balita</div>
-                                                    <div class="text-xl font-black text-rose-600">{{ $group->count_balita }}</div>
+                                                    <div class="text-xl font-black text-rose-600">{{ $group->count_balita > 0 ? $group->count_balita : '-' }}</div>
                                                 </div>
+                                                @if($group->porsi_besar > 0 || $group->porsi_kecil > 0)
+                                                <div class="col-span-3 mt-2 pt-2 border-t border-slate-100 flex justify-between">
+                                                    <div class="text-[8px] text-slate-400 font-bold">Porsi Besar: <span class="text-royal-navy font-black">{{ $group->porsi_besar }}</span></div>
+                                                    <div class="text-[8px] text-slate-400 font-bold">Porsi Kecil: <span class="text-royal-navy font-black">{{ $group->porsi_kecil }}</span></div>
+                                                </div>
+                                                @endif
                                             </div>
                                         @endif
                                     </div>

@@ -95,7 +95,7 @@ class BeneficiaryGroupController extends Controller
             'name' => 'required|string|max:255',
             'location' => 'nullable|string|max:255',
             'type' => 'required|string',
-            'category' => 'required|string',
+            'category' => 'nullable|string',
             'porsi_besar' => 'nullable|integer|min:0',
             'porsi_kecil' => 'nullable|integer|min:0',
             'sppg_id' => 'nullable|exists:sppgs,id',
@@ -106,16 +106,31 @@ class BeneficiaryGroupController extends Controller
             'count_balita' => 'nullable|integer|min:0',
         ]);
 
-        $total = ($request->count_siswa ?? 0) + 
-                 ($request->count_guru ?? 0) + 
-                 ($request->count_hamil ?? 0) + 
-                 ($request->count_menyusui ?? 0) + 
-                 ($request->count_balita ?? 0);
+        $countSiswa   = (int) ($request->count_siswa ?? 0);
+        $countGuru    = (int) ($request->count_guru ?? 0);
+        $countHamil   = (int) ($request->count_hamil ?? 0);
+        $countMenyusui= (int) ($request->count_menyusui ?? 0);
+        $countBalita  = (int) ($request->count_balita ?? 0);
+
+        $porsiBesar = $request->filled('porsi_besar') ? (int)$request->porsi_besar : ($countSiswa + $countHamil + $countMenyusui);
+        $porsiKecil = $request->filled('porsi_kecil') ? (int)$request->porsi_kecil : ($countGuru + $countBalita);
+
+        $total = $countSiswa + $countGuru + $countHamil + $countMenyusui + $countBalita;
+        // Jika semua count 0, gunakan porsi_besar + porsi_kecil sebagai total
+        if ($total === 0) {
+            $total = $porsiBesar + $porsiKecil;
+        }
 
         $beneficiaryGroup->update(array_merge($validated, [
+            'category'            => $request->category ?? ($request->type === 'posyandu' ? 'Posyandu' : 'Anak Sekolah'),
             'total_beneficiaries' => $total,
-            'porsi_besar' => $request->porsi_besar ?? (($request->count_siswa ?? 0) + ($request->count_hamil ?? 0) + ($request->count_menyusui ?? 0)),
-            'porsi_kecil' => $request->porsi_kecil ?? (($request->count_guru ?? 0) + ($request->count_balita ?? 0)),
+            'porsi_besar'         => $porsiBesar,
+            'porsi_kecil'         => $porsiKecil,
+            'count_siswa'         => $countSiswa,
+            'count_guru'          => $countGuru,
+            'count_hamil'         => $countHamil,
+            'count_menyusui'      => $countMenyusui,
+            'count_balita'        => $countBalita,
         ]));
 
         return redirect()->route('beneficiary-groups.index')->with('success', 'Penerima Manfaat berhasil diperbarui.');

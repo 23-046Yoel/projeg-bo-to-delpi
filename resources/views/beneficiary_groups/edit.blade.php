@@ -51,11 +51,11 @@
                         <div id="section-sekolah" class="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8 {{ $beneficiaryGroup->type == 'posyandu' ? 'hidden' : '' }}">
                             <div>
                                 <label class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Jumlah Siswa</label>
-                                <input type="number" name="count_siswa" value="{{ $beneficiaryGroup->count_siswa }}" class="w-full px-6 py-4 bg-blue-50/50 border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-blue-300 transition-all outline-none">
+                                <input type="number" name="count_siswa" value="{{ $beneficiaryGroup->count_siswa }}" min="0" class="w-full px-6 py-4 bg-blue-50/50 border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-blue-300 transition-all outline-none">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Guru & Staff</label>
-                                <input type="number" name="count_guru" value="{{ $beneficiaryGroup->count_guru }}" class="w-full px-6 py-4 bg-blue-50/50 border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-blue-300 transition-all outline-none">
+                                <input type="number" name="count_guru" value="{{ $beneficiaryGroup->count_guru }}" min="0" class="w-full px-6 py-4 bg-blue-50/50 border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-blue-300 transition-all outline-none">
                             </div>
                         </div>
 
@@ -63,15 +63,30 @@
                         <div id="section-posyandu" class="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6 {{ $beneficiaryGroup->type == 'sekolah' ? 'hidden' : '' }}">
                             <div>
                                 <label class="block text-[10px] font-black text-pink-600 uppercase tracking-[0.2em] mb-3">Ibu Hamil</label>
-                                <input type="number" name="count_hamil" value="{{ $beneficiaryGroup->count_hamil }}" class="w-full px-6 py-4 bg-pink-50/50 border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-pink-300 transition-all outline-none">
+                                <input type="number" name="count_hamil" value="{{ $beneficiaryGroup->count_hamil }}" min="0" class="w-full px-6 py-4 bg-pink-50/50 border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-pink-300 transition-all outline-none">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-black text-pink-600 uppercase tracking-[0.2em] mb-3">Ibu Menyusui</label>
-                                <input type="number" name="count_menyusui" value="{{ $beneficiaryGroup->count_menyusui }}" class="w-full px-6 py-4 bg-pink-50/50 border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-pink-300 transition-all outline-none">
+                                <input type="number" name="count_menyusui" value="{{ $beneficiaryGroup->count_menyusui }}" min="0" class="w-full px-6 py-4 bg-pink-50/50 border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-pink-300 transition-all outline-none">
                             </div>
                             <div>
                                 <label class="block text-[10px] font-black text-pink-600 uppercase tracking-[0.2em] mb-3">Balita</label>
-                                <input type="number" name="count_balita" value="{{ $beneficiaryGroup->count_balita }}" class="w-full px-6 py-4 bg-pink-50/50 border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-pink-300 transition-all outline-none">
+                                <input type="number" name="count_balita" value="{{ $beneficiaryGroup->count_balita }}" min="0" class="w-full px-6 py-4 bg-pink-50/50 border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-pink-300 transition-all outline-none">
+                            </div>
+                        </div>
+
+                        {{-- Porsi Override (opsional jika sudah ada dari data lama) --}}
+                        <div class="col-span-1 md:col-span-2 p-6 bg-amber-50/50 border border-amber-100 rounded-2xl">
+                            <p class="text-[9px] font-black text-amber-600 uppercase tracking-widest mb-4">⚠ Override Porsi (jika berbeda dari jumlah di atas)</p>
+                            <div class="grid grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Porsi Besar</label>
+                                    <input type="number" name="porsi_besar" value="{{ $beneficiaryGroup->porsi_besar }}" min="0" class="w-full px-6 py-4 bg-white border-2 border-amber-200 rounded-2xl text-sm font-bold text-royal-navy focus:border-gold transition-all outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Porsi Kecil</label>
+                                    <input type="number" name="porsi_kecil" value="{{ $beneficiaryGroup->porsi_kecil }}" min="0" class="w-full px-6 py-4 bg-white border-2 border-amber-200 rounded-2xl text-sm font-bold text-royal-navy focus:border-gold transition-all outline-none">
+                                </div>
                             </div>
                         </div>
                     </div>
