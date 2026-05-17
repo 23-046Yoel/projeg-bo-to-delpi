@@ -20,4 +20,21 @@ class VolunteerAttendanceController extends Controller
         
         return view('attendances.index', compact('attendances', 'sppgs'));
     }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'sppg_id'   => 'required|exists:sppgs,id',
+            'latitude'  => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'status'    => 'required|in:in,out',
+            'address'   => 'nullable|string',
+        ]);
+
+        $validated['user_id'] = auth()->id();
+
+        VolunteerAttendance::create($validated);
+
+        return redirect()->back()->with('success', 'Presensi Anda berhasil dicatat! Status: ' . ($validated['status'] === 'in' ? 'Check In' : 'Check Out'));
+    }
 }

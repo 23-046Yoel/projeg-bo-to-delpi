@@ -72,6 +72,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('menus', \App\Http\Controllers\MenuController::class);
     Route::post('orders/{order}/receive', [\App\Http\Controllers\OrderController::class, 'receive'])->name('orders.receive');
     Route::get('/attendances', [\App\Http\Controllers\VolunteerAttendanceController::class, 'index'])->name('attendances.index');
+    Route::post('/attendances', [\App\Http\Controllers\VolunteerAttendanceController::class, 'store'])->name('attendances.store');
     Route::get('/recap', [RecapController::class, 'index'])->name('recap.index');
     
     Route::get('/inventory', [\App\Http\Controllers\InventoryController::class, 'index'])->name('inventory.index');
