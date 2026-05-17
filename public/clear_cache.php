@@ -69,6 +69,13 @@ if ($action === 'mati') {
         $info .= "Cache Perms: " . $permissions['framework_cache']['perms'] . " (Writable: " . ($permissions['framework_cache']['writable'] ? 'Yes' : 'No') . ")<br>";
         $info .= "Cache Data Perms: " . $permissions['framework_cache_data']['perms'] . " (Writable: " . ($permissions['framework_cache_data']['writable'] ? 'Yes' : 'No') . ")<br>";
         
+        $txtInfo = "Driver: " . config('cache.default') . "\n";
+        $txtInfo .= "Write/Read Test: " . ($readValue === 'success_value' ? 'SUCCESS' : 'FAILED') . " (Read: " . ($readValue ?? 'NULL') . ")\n";
+        $txtInfo .= "Storage Perms: " . $permissions['storage']['perms'] . " (Writable: " . ($permissions['storage']['writable'] ? 'Yes' : 'No') . ")\n";
+        $txtInfo .= "Cache Perms: " . $permissions['framework_cache']['perms'] . " (Writable: " . ($permissions['framework_cache']['writable'] ? 'Yes' : 'No') . ")\n";
+        $txtInfo .= "Cache Data Perms: " . $permissions['framework_cache_data']['perms'] . " (Writable: " . ($permissions['framework_cache_data']['writable'] ? 'Yes' : 'No') . ")\n";
+        file_put_contents(__DIR__ . '/diag_result.txt', $txtInfo);
+        
         $message = ["info", "Cache Diagnostics: <br><div style='font-size:12px; font-family:monospace; line-height:1.6; text-align:left; margin-top:10px; padding:12px; background:rgba(0,0,0,0.2); border-radius:8px;'>$info</div>"];
     } catch (\Exception $e) {
         $message = ["error", "Diagnostics Error: " . $e->getMessage()];
