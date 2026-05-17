@@ -7,23 +7,28 @@ $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
 use App\Models\VolunteerAttendance;
 use App\Models\User;
 
-$user = User::where('name', 'like', '%Yoel%')->first();
-if ($user) {
-    echo "User Yoel: ID = " . $user->id . ", Phone = " . $user->phone . "\n";
-    $attendances = VolunteerAttendance::where('user_id', $user->id)->latest()->take(10)->get();
-    foreach ($attendances as $att) {
-        echo "Attendance ID: " . $att->id . " | Status: " . $att->status . " | Created At: " . $att->created_at . " | SPPG: " . $att->sppg_id . " | Address: " . $att->address . "\n";
-    }
-} else {
-    echo "User not found\n";
+echo "--- ALL YOEL USERS ---\n";
+$users = User::where('name', 'like', '%Yoel%')->get();
+foreach ($users as $u) {
+    echo "ID: " . $u->id . " | Name: " . $u->name . " | Phone: " . $u->phone . " | Email: " . $u->email . " | SPPG ID: " . $u->sppg_id . "\n";
 }
 
-echo "\n--- LAST 50 LINES OF LARAVEL LOG ---\n";
-$logPath = storage_path('logs/laravel.log');
-if (file_exists($logPath)) {
-    $lines = file($logPath);
-    $lastLines = array_slice($lines, -50);
-    echo implode("", $lastLines);
+echo "\n--- ALL ATTENDANCES CREATED TODAY (" . date('Y-m-d') . ") ---\n";
+$todayAttendances = VolunteerAttendance::with('user', 'sppg')
+    ->whereDate('created_at', date('Y-m-d'))
+    ->latest()
+    ->get();
+
+if ($todayAttendances->isEmpty()) {
+    echo "No attendances recorded today.\n";
 } else {
-    echo "Log file not found at: $logPath\n";
+    foreach ($todayAttendances as $att) {
+        echo "ID: " . $att->id . " | User: " . ($att->user->name ?? 'Unknown') . " | Status: " . $att->status . " | Created At: " . $att->created_at . " | Coordinates: " . $att->latitude . ", " . $att->longitude . " | Address: " . $att->address . "\n";
+    }
+}
+
+echo "\n--- LATEST 10 GENERAL ATTENDANCES ---\n";
+$latest = VolunteerAttendance::with('user', 'sppg')->latest()->take(10)->get();
+foreach ($latest as $att) {
+    echo "ID: " . $att->id . " | User: " . ($att->user->name ?? 'Unknown') . " | Status: " . $att->status . " | Created At: " . $att->created_at . " | Coordinates: " . $att->latitude . ", " . $att->longitude . "\n";
 }
