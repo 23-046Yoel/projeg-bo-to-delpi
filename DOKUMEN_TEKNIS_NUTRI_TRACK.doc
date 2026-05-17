@@ -1,0 +1,104 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.5; color: #000; padding: 30px; }
+    h1 { color: #000; text-align: center; border-bottom: 3px solid #000; padding-bottom: 10px; font-weight: bold; margin-bottom: 20px; }
+    h2 { color: #000; border-left: 8px solid #000; padding-left: 12px; margin-top: 30px; font-weight: bold; text-transform: uppercase; font-size: 1.2em; }
+    h3 { color: #000; margin-top: 15px; font-weight: bold; font-size: 1.1em; }
+    p { margin-bottom: 10px; text-align: justify; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px; }
+    th { background-color: #000; color: white; padding: 10px; text-align: left; border: 1px solid #333; font-weight: bold; font-size: 0.9em; }
+    td { padding: 8px; border: 1px solid #333; vertical-align: top; font-size: 0.9em; }
+    tr:nth-child(even) { background-color: #f9f9f9; }
+    .footer { margin-top: 40px; text-align: center; font-size: 0.85em; color: #000; border-top: 2px solid #000; padding-top: 10px; font-weight: bold; }
+</style>
+</head>
+<body>
+
+<h1>RESUME TEKNIS: NUTRI-TRACK</h1>
+
+<p style="text-align: center; font-weight: bold; font-style: italic;">"Solusi Digital Terintegrasi untuk Program Makanan Bergizi Gratis Nasional"</p>
+
+<h2>I. CORE TECHNOLOGY STACK</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Layer</th>
+            <th>Teknologi</th>
+            <th>Keunggulan Strategis</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><b>Backend</b></td>
+            <td>Laravel 10 (PHP 8.2)</td>
+            <td>Engine tangguh untuk otomatisasi LPJ & keamanan data tingkat tinggi.</td>
+        </tr>
+        <tr>
+            <td><b>Frontend</b></td>
+            <td>Tailwind CSS & Alpine.js</td>
+            <td>Akses super cepat & responsif, optimal untuk perangkat entry-level.</td>
+        </tr>
+        <tr>
+            <td><b>Artificial Intelligence</b></td>
+            <td>Google Gemini AI (RAG)</td>
+            <td>Metode <b>RAG</b> memastikan jawaban AI akurat berdasarkan data database.</td>
+        </tr>
+        <tr>
+            <td><b>Access System</b></td>
+            <td>WhatsApp Gateway (OTP)</td>
+            <td>Login tanpa password; menjangkau pengguna dengan literasi digital rendah.</td>
+        </tr>
+        <tr>
+            <td><b>Infrastructure</b></td>
+            <td>Cloud Kilat (VPS Indo)</td>
+            <td>Menjamin <b>Kedaulatan Data Nasional</b> (Server berlokasi di Indonesia).</td>
+        </tr>
+        <tr>
+            <td><b>Server Panel</b></td>
+            <td>CyberPanel & LiteSpeed</td>
+            <td>Performa loading 5x lebih cepat dengan optimasi LSCache.</td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>II. FITUR UNGGULAN & SOLUSI NYATA</h2>
+<ul>
+    <li><b>Automated LPJ Engine:</b> Menghasilkan dokumen <b>SPTJ, BAPSD, dan LPJ Harian</b> secara instan (PDF), memangkas beban birokrasi manual hingga 90%.</li>
+    <li><b>Smart Inventory System:</b> Manajemen stok bahan baku dari supplier lokal dengan fitur prediksi kebutuhan berbasis AI (Forecasting).</li>
+    <li><b>HACCP Production Log:</b> Pencatatan proses dapur yang higienis dan terstandarisasi mulai dari persiapan hingga penyajian.</li>
+    <li><b>Real-time Public Monitoring:</b> Dashboard transparansi anggaran, harga pangan mitra, dan saluran pengaduan masyarakat yang terintegrasi.</li>
+</ul>
+
+<h2>III. ANALISIS BATASAN & MITIGASI</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Tantangan Lapangan</th>
+            <th>Mitigasi Teknis (Solusi)</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Konektivitas Rendah</td>
+            <td>Optimasi aset web & caching LiteSpeed untuk akses lancar di jaringan 3G.</td>
+        </tr>
+        <tr>
+            <td>Akurasi Data AI</td>
+            <td>Penerapan fitur <b>Manual Override</b> untuk validasi final oleh ahli gizi.</td>
+        </tr>
+        <tr>
+            <td>Keamanan Akses</td>
+            <td>Proteksi enkripsi SSL & sistem Role-Based Access Control (RBAC) yang ketat.</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="footer">
+    <p>Nutri-Track Team: Grasella A. | Sarah M. | Yoel Flemming Marbun</p>
+    <p>Live Platform: https://aladelphi.or.id/</p>
+</div>
+
+</body>
+</html>

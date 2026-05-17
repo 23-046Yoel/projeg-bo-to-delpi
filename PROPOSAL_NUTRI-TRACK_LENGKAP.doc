@@ -1,0 +1,124 @@
+<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+    <meta charset="utf-8">
+    <title>PROPOSAL NUTRI-TRACK</title>
+    <!--[if gte mso 9]>
+    <xml>
+        <w:WordDocument>
+            <w:View>Print</w:View>
+            <w:Zoom>100</w:Zoom>
+            <w:DoNotOptimizeForBrowser/>
+        </w:WordDocument>
+    </xml>
+    <![endif]-->
+    <style>
+        body { font-family: 'Calibri', 'Arial', sans-serif; line-height: 1.6; }
+        h1 { color: #004d40; text-align: center; border-bottom: 2px solid #004d40; padding-bottom: 10px; }
+        h2 { color: #00695c; margin-top: 25px; border-left: 5px solid #00695c; padding-left: 10px; }
+        h3 { color: #00796b; }
+        p, li { font-size: 11pt; }
+        .footer { text-align: right; font-style: italic; color: grey; margin-top: 50px; border-top: 1px solid #ccc; padding-top: 10px; }
+        .highlight { background-color: #e0f2f1; padding: 10px; border-radius: 5px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        table, th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>PROPOSAL PENGEMBANGAN TEKNOLOGI</h1>
+    <h2 style="text-align: center; border: none;">NUTRI-TRACK: Ekosistem Digital Berbasis AI & WhatsApp Gateway untuk Tata Kelola Program Makanan Bergizi Gratis (MBG) Nasional</h2>
+
+    <hr>
+
+    <h3>RINGKASAN EKSEKUTIF</h3>
+    <p>Nutri-Track adalah platform manajemen rantai pasok dan operasional yang dirancang khusus untuk mendukung Program Makanan Bergizi Gratis (MBG) di Indonesia. Dengan mengintegrasikan teknologi Laravel, AI Gemini, dan WhatsApp Gateway, platform ini menutup celah inefisiensi pada sistem manual, menjamin transparansi anggaran, dan memastikan standar gizi setiap porsi makanan yang sampai ke tangan siswa.</p>
+
+    <h2>1. ANALISIS LATAR BELAKANG & PERMASALAHAN</h2>
+    <h3>1.1 Kondisi Saat Ini</h3>
+    <p>Program MBG merupakan lompatan besar menuju Indonesia Emas 2045. Namun, pengelolaan di lapangan masih menghadapi hambatan birokrasi yang berat. Satuan Pelayanan Pemenuhan Gizi (SPPG) seringkali terbebani oleh administrasi manual yang memakan waktu produktif mereka untuk memasak.</p>
+
+    <h3>1.2 Identifikasi Masalah Utama</h3>
+    <ul>
+        <li><b>Data Silo:</b> Informasi stok bahan baku di gudang tidak tersinkronisasi dengan kebutuhan dapur harian.</li>
+        <li><b>Complexity of Reporting (LPJ):</b> Penyusunan Laporan Pertanggungjawaban (LPJ) yang melibatkan banyak dokumen (SPTJ, BAPSD) sering terlambat karena harus dibuat manual.</li>
+        <li><b>Verification Gap:</b> Sulitnya memvalidasi secara real-time apakah distribusi makanan benar-benar sampai ke lokasi tujuan tepat waktu.</li>
+        <li><b>Low Digital Literacy:</b> Banyak relawan lapangan yang kesulitan menggunakan aplikasi kompleks dengan sistem email/password tradisional.</li>
+    </ul>
+
+    <h2>2. TUJUAN DAN SOLUSI STRATEGIS</h2>
+    <h3>2.1 Visi Proyek</h3>
+    <p>Menciptakan standar baru dalam pengelolaan program sosial pemerintah yang transparan, akuntabel, dan berbasis data (Data-Driven).</p>
+
+    <h3>2.2 Solusi Teknologi (Nutri-Track)</h3>
+    <p>Aplikasi ini hadir sebagai solusi <i>end-to-end</i> yang mendigitalisasi proses produksi (Preparation, Processing, Portioning), manajemen supplier, hingga otomatisasi dokumen legalitas (SPTJ, BAPSD, LPJ) hanya dengan satu klik.</p>
+
+    <h2>3. DETAIL FITUR DAN FUNGSIONALITAS SISTEM</h2>
+    
+    <h3>A. Modul Manajemen Dapur (Kitchen/SPPG Control)</h3>
+    <p>Modul ini memungkinkan pengelola dapur untuk memantau inventori secara real-time dengan metode FIFO. Setiap tahap produksi (Persiapan, Pengolahan, dan Pemorsian) dicatat secara digital untuk memastikan standar kebersihan dan kecepatan kerja.</p>
+
+    <h3>B. Modul Pelaporan Otomatis (The LPJ Engine)</h3>
+    <p>Fitur unggulan yang mampu menghasilkan dokumen laporan (SPTJ, BAPSD, LPJ Harian) dalam format PDF/Excel hanya dalam hitungan detik. Ini mengurangi beban administratif relawan secara signifikan.</p>
+
+    <h3>C. Modul AI Nutrition Assistant</h3>
+    <p>Integrasi dengan <b>Google Gemini AI</b> memungkinkan sistem memberikan analisis gizi instan terhadap menu yang disusun. Masyarakat juga dapat berkonsultasi mengenai gizi anak melalui chatbot interaktif.</p>
+
+    <h2>4. SPESIFIKASI TEKNOLOGI (TECH-STACK)</h2>
+    <table>
+        <tr>
+            <th>Komponen</th>
+            <th>Teknologi</th>
+        </tr>
+        <tr>
+            <td>Framework Utama</td>
+            <td>Laravel 10 (PHP 8.2)</td>
+        </tr>
+        <tr>
+            <td>Frontend</td>
+            <td>Tailwind CSS & Alpine.js</td>
+        </tr>
+        <tr>
+            <td>Database</td>
+            <td>MySQL / MariaDB</td>
+        </tr>
+        <tr>
+            <td>Autentikasi</td>
+            <td>WhatsApp Gateway OTP (Kirim.WA/Wablas)</td>
+        </tr>
+        <tr>
+            <td>AI Engine</td>
+            <td>Google Gemini AI API</td>
+        </tr>
+    </table>
+
+    <h2>5. ANALISIS STRATEGIS (SWOT)</h2>
+    <p><b>Strengths (Kekuatan):</b> Login tanpa password melalui WA, Otomatisasi LPJ, Integrasi AI canggih.<br>
+    <b>Weaknesses (Kelemahan):</b> Memerlukan koneksi internet (dalam pengembangan mode offline).<br>
+    <b>Opportunities (Peluang):</b> Standarisasi nasional untuk pengelolaan dapur gizi sekolah.<br>
+    <b>Threats (Ancaman):</b> Perubahan regulasi format dokumen pemerintah.</p>
+
+    <h2>6. TARGET PENGGUNA & PASAR</h2>
+    <ul>
+        <li>Pemerintah Pusat dan Daerah (Dinas Pendidikan/Kesehatan).</li>
+        <li>Satuan Pelayanan Pemenuhan Gizi (SPPG) seluruh Indonesia.</li>
+        <li>Supplier Bahan Pangan Lokal.</li>
+        <li>Orang Tua Siswa & Pemerhati Gizi.</li>
+    </ul>
+
+    <h2>7. RENCANA PENGEMBANGAN (ROADMAP)</h2>
+    <ul>
+        <li><b>Jangka Pendek:</b> Fitur QR Code untuk validasi penerimaan makanan di kelas.</li>
+        <li><b>Jangka Menengah:</b> Aplikasi Mobile Native untuk driver pengantar.</li>
+        <li><b>Jangka Panjang:</b> Implementasi <b>Blockchain</b> untuk transparansi anggaran 100% anti-korupsi.</li>
+    </ul>
+
+    <h2>8. KESIMPULAN</h2>
+    <p>Nutri-Track adalah instrumen masa depan untuk menjamin keberhasilan Program Makanan Bergizi Gratis. Dengan efisiensi digital, kita memastikan anak bangsa mendapatkan hak gizinya tanpa terhambat oleh birokrasi manual yang usang.</p>
+
+    <div class="footer">
+        <p>Diajukan Oleh: <b>Yoel Flemming</b></p>
+        <p>Proyek: Nutri-Track (Powered by Bo To Delpi)</p>
+        <p>Tanggal: 10 Mei 2026</p>
+    </div>
+</body>
+</html>

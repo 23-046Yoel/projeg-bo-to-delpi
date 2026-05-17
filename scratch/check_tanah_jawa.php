@@ -9,11 +9,12 @@ $searchTerm = 'Tanah Jawa';
 $file = 'Daftar (1).xlsx';
 $filePath = __DIR__ . '/../' . $file;
 
-if (!file_exists($filePath)) {
-    die("File not found.\n");
+if (!file_exists($filePath)) { 
+
+     die("File not found.\n");
 }
 
-try {
+try {   
     $spreadsheet = IOFactory::load($filePath);
     $sheet = $spreadsheet->getActiveSheet();
     $data = $sheet->toArray(null, true, true, true);
