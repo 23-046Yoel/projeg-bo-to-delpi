@@ -16,7 +16,7 @@
                 <a href="{{ route('orders.index') }}" class="px-6 py-3 bg-white border border-gray-200 text-royal-navy font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl hover:bg-gray-50 transition-all">
                     ← Kembali
                 </a>
-                <button onclick="window.print()" class="px-6 py-3 bg-royal-navy text-gold font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl shadow-xl hover:-translate-y-1 transition-all flex items-center">
+                <button onclick="printPO()" class="px-6 py-3 bg-royal-navy text-gold font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl shadow-xl hover:-translate-y-1 transition-all flex items-center">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
                     Cetak PO
                 </button>
@@ -91,14 +91,19 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-50">
+                            @php $computedTotal = 0; @endphp
                             @foreach($order->items as $idx => $item)
+                            @php
+                                $subtotal = $item->requested_quantity * $item->price;
+                                $computedTotal += $subtotal;
+                            @endphp
                             <tr>
                                 <td class="px-4 py-4 text-xs text-gray-400 font-bold">{{ $idx + 1 }}</td>
                                 <td class="px-4 py-4">
                                     <p class="text-sm font-black text-royal-navy">{{ $item->material->name }}</p>
                                 </td>
                                 <td class="px-4 py-4 text-center text-sm font-black text-royal-navy">
-                                    {{ number_format($item->requested_quantity, 2) }}
+                                    {{ rtrim(rtrim(number_format($item->requested_quantity, 4, '.', ''), '0'), '.') }}
                                 </td>
                                 <td class="px-4 py-4 text-center text-xs font-bold text-gray-500 uppercase">
                                     {{ $item->unit }}
@@ -107,7 +112,7 @@
                                     Rp {{ number_format($item->price, 0, ',', '.') }}
                                 </td>
                                 <td class="px-4 py-4 text-right text-sm font-black text-royal-navy">
-                                    Rp {{ number_format($item->requested_quantity * $item->price, 0, ',', '.') }}
+                                    Rp {{ number_format($subtotal, 0, ',', '.') }}
                                 </td>
                             </tr>
                             @endforeach
@@ -116,7 +121,7 @@
                             <tr class="border-t-2 border-royal-navy/20">
                                 <td colspan="5" class="px-4 py-5 text-right text-[10px] font-black text-royal-navy uppercase tracking-[0.2em]">Total Nilai Pesanan</td>
                                 <td class="px-4 py-5 text-right text-xl font-black text-royal-navy">
-                                    Rp {{ number_format($order->total_amount, 0, ',', '.') }}
+                                    Rp {{ number_format($computedTotal, 0, ',', '.') }}
                                 </td>
                             </tr>
                         </tfoot>
@@ -194,4 +199,15 @@
             </div><!-- end #printable -->
         </div>
     </div>
+
+    <script>
+        function printPO() {
+            const originalTitle = document.title;
+            const orderDate = '{{ \Carbon\Carbon::parse($order->order_date)->format("d-m-Y") }}';
+            const noRef = '#SP{{ str_pad($order->id, 5, "0", STR_PAD_LEFT) }}';
+            document.title = 'Surat Pesanan ' + orderDate + ' ' + noRef;
+            window.print();
+            document.title = originalTitle;
+        }
+    </script>
 </x-app-layout>

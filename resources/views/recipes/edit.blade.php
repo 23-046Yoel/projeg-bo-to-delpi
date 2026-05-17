@@ -28,7 +28,7 @@
                             <div class="text-center">
                                 <label class="block text-2xl font-black text-royal-navy uppercase tracking-[0.3em] mb-10">JUMLAH / GRAMASI :</label>
                                 <div class="relative">
-                                    <input type="number" step="0.0001" name="quantity" value="{{ $recipe->quantity }}" required
+                                    <input type="number" step="any" name="quantity" value="{{ rtrim(rtrim(number_format($recipe->quantity, 4, '.', ''), '0'), '.') }}" required
                                         class="w-full px-12 py-14 bg-silk/50 border-8 border-gold/30 rounded-[4rem] text-8xl font-black text-royal-navy focus:bg-white focus:border-gold outline-none transition-all shadow-2xl text-center tracking-tighter">
                                     <div class="mt-6 text-gold-dark font-black text-xl tracking-[0.5em] uppercase">ANGKA PRESISI</div>
                                 </div>

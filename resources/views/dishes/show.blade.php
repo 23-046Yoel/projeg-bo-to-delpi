@@ -65,7 +65,7 @@
                                                     </div>
                                                 </td>
                                                 <td class="px-6 py-6 whitespace-nowrap">
-                                                    <div class="text-sm font-black text-royal-navy tracking-tight">{{ number_format($recipe->quantity, 2) }}</div>
+                                                    <div class="text-sm font-black text-royal-navy tracking-tight">{{ rtrim(rtrim(number_format($recipe->quantity, 4, '.', ''), '0'), '.') }}</div>
                                                 </td>
                                                 <td class="px-6 py-6 whitespace-nowrap">
                                                     <span class="px-3 py-1 bg-royal-navy text-gold rounded-lg text-[9px] font-black uppercase tracking-widest shadow-lg shadow-royal-navy/10">{{ $recipe->unit }}</span>
