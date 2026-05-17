@@ -1,10 +1,8 @@
 <x-app-layout>
     <style>
         @media print {
-            body * { visibility: hidden; }
-            #printable, #printable * { visibility: visible; }
-            #printable { position: absolute; left: 0; top: 0; width: 100%; }
             .no-print { display: none !important; }
+            #printable { width: 100%; }
         }
     </style>
 
@@ -206,8 +204,17 @@
             const orderDate = '{{ \Carbon\Carbon::parse($order->order_date)->format("d-m-Y") }}';
             const noRef = '#SP{{ str_pad($order->id, 5, "0", STR_PAD_LEFT) }}';
             document.title = 'Surat Pesanan ' + orderDate + ' ' + noRef;
+            
+            const printableArea = document.getElementById('printable').outerHTML;
+            const originalBody = document.body.innerHTML;
+            
+            document.body.innerHTML = '<div style="background:white;width:100%;">' + printableArea + '</div>';
+            
             window.print();
+            
+            document.body.innerHTML = originalBody;
             document.title = originalTitle;
+            window.location.reload();
         }
     </script>
 </x-app-layout>
