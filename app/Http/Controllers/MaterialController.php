@@ -47,13 +47,15 @@ class MaterialController extends Controller
             'name'                 => 'required|string|max:255',
             'category'             => 'required|string',
             'unit'                 => 'nullable|string|max:50',
-            'price'                => 'numeric|min:0',
+            'price'                => 'nullable|numeric|min:0',
             'stock'                => 'numeric|min:0',
             'expiry_date'          => 'nullable|date',
             'notes'                => 'nullable|string|max:1000',
             'last_price'           => 'nullable|numeric|min:0',
             'estimated_daily_need' => 'nullable|numeric|min:0',
         ]);
+
+        $validated['price'] = $validated['price'] ?? 0;
 
         Material::create(array_merge($validated, [
             'sppg_id' => auth()->user()->sppg_id
@@ -73,10 +75,12 @@ class MaterialController extends Controller
             'name' => 'required|string|max:255',
             'category' => 'required|string',
             'unit' => 'nullable|string|max:50',
-            'price' => 'numeric|min:0',
+            'price' => 'nullable|numeric|min:0',
             'stock' => 'numeric|min:0',
             'expiry_date' => 'nullable|date',
         ]);
+
+        $validated['price'] = $validated['price'] ?? 0;
 
         $material->update($validated);
 

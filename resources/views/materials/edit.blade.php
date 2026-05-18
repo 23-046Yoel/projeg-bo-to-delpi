@@ -61,11 +61,12 @@
                                 </div>
 
                                 <div>
-                                    <label for="price" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Harga per Satuan</label>
+                                    <label for="price" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Harga per Satuan (Opsional)</label>
                                     <div class="relative">
                                         <span class="absolute left-6 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-400">Rp</span>
-                                        <input type="number" name="price" id="price" value="{{ old('price', $material->price) }}" required
-                                            class="w-full pl-14 pr-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
+                                        <input type="number" name="price" id="price" value="{{ old('price', $material->price) }}"
+                                            class="w-full pl-14 pr-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none"
+                                            placeholder="0">
                                     </div>
                                 </div>
 
