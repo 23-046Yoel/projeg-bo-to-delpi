@@ -146,9 +146,7 @@ class OrderController extends Controller
         $date = $request->get('date', now()->toDateString());
         $user = auth()->user();
 
-        $query = \App\Models\Menu::with(['dishes.recipes.material' => function($q) {
-            $q->withTrashed();
-        }])->where('date', $date);
+        $query = \App\Models\Menu::with(['dishes.recipes.material'])->where('date', $date);
 
         if (!$user->isAdmin()) {
             $query->where('sppg_id', $user->sppg_id);
