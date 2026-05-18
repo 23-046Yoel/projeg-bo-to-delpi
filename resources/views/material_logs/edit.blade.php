@@ -93,6 +93,18 @@
                                 </div>
                                 <x-input-error :messages="$errors->get('date')" class="mt-2" />
                             </div>
+
+                            <!-- Notes (Catatan) -->
+                            <div class="group">
+                                <x-input-label for="notes" :value="__('Catatan (Opsional)')" />
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-gray-300 group-focus-within:text-gold transition-colors">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                    </div>
+                                    <x-text-input id="notes" class="pl-14 w-full" type="text" name="notes" :value="old('notes', $materialLog->notes)" placeholder="Contoh: Tambahan stok dari relawan, barang cacat, dll." />
+                                </div>
+                                <x-input-error :messages="$errors->get('notes')" class="mt-2" />
+                            </div>
                         </div>
 
                         <div class="pt-6 border-t border-gray-50 flex items-center justify-between">

@@ -61,9 +61,22 @@ class MaterialLogController extends Controller
             'type' => 'required|in:in,out',
             'quantity' => 'required|numeric|min:0.01',
             'date' => 'required|date',
+            'notes' => 'nullable|string|max:255',
         ]);
 
         $sppgId = auth()->user()->sppg_id;
+
+        if ($request->type == 'out') {
+            $material = Material::where('name', $request->material_name)
+                                ->where('sppg_id', $sppgId)
+                                ->first();
+            $currentStock = $material ? $material->stock : 0;
+            if ($currentStock < $request->quantity) {
+                return back()->withErrors([
+                    'quantity' => "Stok tidak mencukupi! Stok saat ini untuk {$request->material_name} adalah " . number_format($currentStock, 2) . " " . ($material->unit ?? 'Unit') . "."
+                ])->withInput();
+            }
+        }
 
         DB::transaction(function () use ($request, $sppgId) {
             $material = Material::firstOrCreate(
@@ -77,6 +90,7 @@ class MaterialLogController extends Controller
                 'type' => $request->type,
                 'quantity' => $request->quantity,
                 'date' => $request->date,
+                'notes' => $request->notes,
             ]);
 
             if ($request->type == 'in') {
@@ -98,11 +112,31 @@ class MaterialLogController extends Controller
             'type' => 'required|in:in,out',
             'quantity' => 'required|numeric|min:0.01',
             'date' => 'required|date',
+            'notes' => 'nullable|string|max:255',
         ]);
 
-        DB::transaction(function () use ($request, $materialLog) {
-            $material = $materialLog->material;
-            
+        $material = $materialLog->material;
+        
+        $reversedStock = $material->stock;
+        if ($materialLog->type == 'in') {
+            $reversedStock -= $materialLog->quantity;
+        } else {
+            $reversedStock += $materialLog->quantity;
+        }
+
+        if ($request->type == 'out' && $reversedStock < $request->quantity) {
+            return back()->withErrors([
+                'quantity' => "Stok tidak mencukupi setelah penyesuaian! Stok setelah pembalikan transaksi lama adalah " . number_format($reversedStock, 2) . " " . ($material->unit ?? 'Unit') . "."
+            ])->withInput();
+        }
+
+        if ($materialLog->type == 'in' && $reversedStock < 0) {
+            return back()->withErrors([
+                'quantity' => "Tidak dapat mengubah transaksi masuk ini karena stok saat ini akan menjadi negatif (" . number_format($reversedStock, 2) . " " . ($material->unit ?? 'Unit') . ")."
+            ])->withInput();
+        }
+
+        DB::transaction(function () use ($request, $materialLog, $material) {
             // Reverse old impact
             if ($materialLog->type == 'in') {
                 $material->decrement('stock', $materialLog->quantity);
@@ -121,6 +155,7 @@ class MaterialLogController extends Controller
                 'type' => $request->type,
                 'quantity' => $request->quantity,
                 'date' => $request->date,
+                'notes' => $request->notes,
             ]);
             
             $this->notifyStakeholders($materialLog, 'DIUBAH', $material->name);
@@ -131,9 +166,15 @@ class MaterialLogController extends Controller
 
     public function destroy(MaterialLog $materialLog)
     {
-        DB::transaction(function () use ($materialLog) {
-            $material = $materialLog->material;
-            
+        $material = $materialLog->material;
+
+        if ($materialLog->type == 'in' && $material->stock < $materialLog->quantity) {
+            return back()->withErrors([
+                'error' => "Tidak dapat menghapus transaksi masuk ini karena stok saat ini (" . number_format($material->stock, 2) . " " . ($material->unit ?? 'Unit') . ") lebih kecil dari jumlah transaksi yang akan dihapus (" . number_format($materialLog->quantity, 2) . " " . ($material->unit ?? 'Unit') . "). Stok tidak boleh negatif!"
+            ]);
+        }
+
+        DB::transaction(function () use ($materialLog, $material) {
             // Reverse impact before deleting
             if ($materialLog->type == 'in') {
                 $material->decrement('stock', $materialLog->quantity);

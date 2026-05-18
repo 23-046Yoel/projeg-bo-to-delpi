@@ -57,9 +57,20 @@ class MaterialController extends Controller
 
         $validated['price'] = $validated['price'] ?? 0;
 
-        Material::create(array_merge($validated, [
+        $material = Material::create(array_merge($validated, [
             'sppg_id' => auth()->user()->sppg_id
         ]));
+
+        if ($material->stock > 0) {
+            \App\Models\MaterialLog::create([
+                'material_id' => $material->id,
+                'sppg_id' => $material->sppg_id,
+                'type' => 'in',
+                'quantity' => $material->stock,
+                'date' => now()->toDateString(),
+                'notes' => 'Stok Awal',
+            ]);
+        }
 
         return redirect()->route('materials.index')->with('success', 'Bahan Baku berhasil ditambahkan.');
     }
