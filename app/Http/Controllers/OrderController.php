@@ -138,6 +138,27 @@ class OrderController extends Controller
             $order->update(['sppg_id' => $request->sppg_id]);
             return back()->with('success', 'Dapur SPPG berhasil diperbarui!');
         }
+
+        if ($request->has('items')) {
+            $request->validate([
+                'items' => 'required|array',
+                'items.*.requested_quantity' => 'required|numeric|min:0',
+                'items.*.price' => 'required|numeric|min:0',
+            ]);
+
+            DB::transaction(function () use ($request) {
+                foreach ($request->items as $itemId => $data) {
+                    $orderItem = \App\Models\OrderItem::findOrFail($itemId);
+                    $orderItem->update([
+                        'requested_quantity' => $data['requested_quantity'],
+                        'price' => $data['price'],
+                    ]);
+                }
+            });
+
+            return back()->with('success', 'Nominal jumlah dan harga pesanan berhasil diperbarui!');
+        }
+
         return back();
     }
 
@@ -261,6 +282,7 @@ class OrderController extends Controller
                     'type' => 'in',
                     'quantity' => $item->requested_quantity,
                     'date' => now(),
+                    'notes' => 'Penerimaan PO #SP' . str_pad($order->id, 5, '0', STR_PAD_LEFT),
                 ]);
                 
                 $item->material->increment('stock', $item->requested_quantity);
