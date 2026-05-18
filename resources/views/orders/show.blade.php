@@ -1,31 +1,62 @@
 <x-app-layout>
     <style>
+        [x-cloak] { display: none !important; }
         @media print {
             .no-print { display: none !important; }
             #printable { width: 100%; }
         }
     </style>
 
-    <div class="py-8 bg-gray-100 min-h-screen print:bg-white print:py-0">
+    <div class="py-8 bg-gray-100 min-h-screen print:bg-white print:py-0" x-data="{ editMode: false }">
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+
+            @if(session('success'))
+                <div class="no-print mb-4 p-4 bg-emerald-50 border border-emerald-100 rounded-2xl text-emerald-600 text-sm font-bold flex items-center shadow-sm animate-fade-in uppercase tracking-widest">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                    {{ session('success') }}
+                </div>
+            @endif
 
             <!-- Action Buttons (hidden on print) -->
             <div class="no-print flex justify-end space-x-3 mb-4">
                 <a href="{{ route('orders.index') }}" class="px-6 py-3 bg-white border border-gray-200 text-royal-navy font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl hover:bg-gray-50 transition-all">
                     ← Kembali
                 </a>
-                <button onclick="printPO()" class="px-6 py-3 bg-royal-navy text-gold font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl shadow-xl hover:-translate-y-1 transition-all flex items-center">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-                    Cetak PO
-                </button>
-                @if($order->status === 'pending')
-                <form action="{{ route('orders.receive', $order) }}" method="POST" onsubmit="return confirm('Tandai pesanan ini sudah diterima?')">
-                    @csrf
-                    <button type="submit" class="px-6 py-3 bg-emerald-600 text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl hover:bg-emerald-700 transition-all">
-                        ✓ Terima Barang
-                    </button>
-                </form>
-                @endif
+                
+                <!-- View Mode Buttons -->
+                <template x-if="!editMode">
+                    <div class="flex space-x-3">
+                        <button onclick="printPO()" class="px-6 py-3 bg-royal-navy text-gold font-black text-[10px] uppercase tracking-[0.3em] rounded-2xl shadow-xl hover:-translate-y-1 transition-all flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+                            Cetak PO
+                        </button>
+                        
+                        @if($order->status === 'pending')
+                            <button @click="editMode = true" class="px-6 py-3 bg-amber-500 text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl shadow-xl hover:-translate-y-1 transition-all flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                                Edit Nominal
+                            </button>
+                            <form action="{{ route('orders.receive', $order) }}" method="POST" onsubmit="return confirm('Tandai pesanan ini sudah diterima?')">
+                                @csrf
+                                <button type="submit" class="px-6 py-3 bg-emerald-600 text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl hover:bg-emerald-700 transition-all">
+                                    ✓ Terima Barang
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+                </template>
+
+                <!-- Edit Mode Buttons -->
+                <template x-if="editMode">
+                    <div class="flex space-x-3">
+                        <button @click="editMode = false" type="button" class="px-6 py-3 bg-white border border-gray-200 text-red-500 font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl hover:bg-gray-50 transition-all">
+                            Batal
+                        </button>
+                        <button type="submit" form="edit-po-form" class="px-6 py-3 bg-emerald-600 text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl shadow-xl hover:-translate-y-1 transition-all">
+                            ✓ Simpan Perubahan
+                        </button>
+                    </div>
+                </template>
             </div>
 
             <!-- PRINTABLE DOCUMENT -->
@@ -89,53 +120,84 @@
 
                 <!-- ===== ITEMS TABLE ===== -->
                 <div class="p-10">
-                    <table class="w-full mb-10">
-                        <thead>
-                            <tr class="bg-royal-navy/5">
-                                <th class="px-4 py-3 text-left text-[9px] font-black text-royal-navy uppercase tracking-widest rounded-l-xl">No.</th>
-                                <th class="px-4 py-3 text-left text-[9px] font-black text-royal-navy uppercase tracking-widest">Nama Bahan Baku</th>
-                                <th class="px-4 py-3 text-center text-[9px] font-black text-royal-navy uppercase tracking-widest">Jumlah</th>
-                                <th class="px-4 py-3 text-center text-[9px] font-black text-royal-navy uppercase tracking-widest">Satuan</th>
-                                <th class="px-4 py-3 text-right text-[9px] font-black text-royal-navy uppercase tracking-widest">Harga Satuan</th>
-                                <th class="px-4 py-3 text-right text-[9px] font-black text-royal-navy uppercase tracking-widest rounded-r-xl">Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-50">
-                            @php $computedTotal = 0; @endphp
-                            @foreach($order->items as $idx => $item)
-                            @php
-                                $subtotal = $item->requested_quantity * $item->price;
-                                $computedTotal += $subtotal;
-                            @endphp
-                            <tr>
-                                <td class="px-4 py-4 text-xs text-gray-400 font-bold">{{ $idx + 1 }}</td>
-                                <td class="px-4 py-4">
-                                    <p class="text-sm font-black text-royal-navy">{{ $item->material->name }}</p>
-                                </td>
-                                <td class="px-4 py-4 text-center text-sm font-black text-royal-navy">
-                                    {{ rtrim(rtrim(number_format($item->requested_quantity, 4, '.', ''), '0'), '.') }}
-                                </td>
-                                <td class="px-4 py-4 text-center text-xs font-bold text-gray-500 uppercase">
-                                    {{ $item->unit }}
-                                </td>
-                                <td class="px-4 py-4 text-right text-xs font-medium text-gray-600">
-                                    Rp {{ number_format($item->price, 0, ',', '.') }}
-                                </td>
-                                <td class="px-4 py-4 text-right text-sm font-black text-royal-navy">
-                                    Rp {{ number_format($subtotal, 0, ',', '.') }}
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                        <tfoot>
-                            <tr class="border-t-2 border-royal-navy/20">
-                                <td colspan="5" class="px-4 py-5 text-right text-[10px] font-black text-royal-navy uppercase tracking-[0.2em]">Total Nilai Pesanan</td>
-                                <td class="px-4 py-5 text-right text-xl font-black text-royal-navy">
-                                    Rp {{ number_format($computedTotal, 0, ',', '.') }}
-                                </td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                    <form id="edit-po-form" action="{{ route('orders.update', $order) }}" method="POST" class="m-0">
+                        @csrf
+                        @method('PUT')
+                        
+                        <table class="w-full mb-10">
+                            <thead>
+                                <tr class="bg-royal-navy/5">
+                                    <th class="px-4 py-3 text-left text-[9px] font-black text-royal-navy uppercase tracking-widest rounded-l-xl">No.</th>
+                                    <th class="px-4 py-3 text-left text-[9px] font-black text-royal-navy uppercase tracking-widest">Nama Bahan Baku</th>
+                                    <th class="px-4 py-3 text-center text-[9px] font-black text-royal-navy uppercase tracking-widest">Jumlah</th>
+                                    <th class="px-4 py-3 text-center text-[9px] font-black text-royal-navy uppercase tracking-widest">Satuan</th>
+                                    <th class="px-4 py-3 text-right text-[9px] font-black text-royal-navy uppercase tracking-widest">Harga Satuan</th>
+                                    <th class="px-4 py-3 text-right text-[9px] font-black text-royal-navy uppercase tracking-widest rounded-r-xl">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-50">
+                                @php $computedTotal = 0; @endphp
+                                @foreach($order->items as $idx => $item)
+                                @php
+                                    $subtotal = $item->requested_quantity * $item->price;
+                                    $computedTotal += $subtotal;
+                                @endphp
+                                <tr x-data="{ 
+                                    qty: {{ $item->requested_quantity }}, 
+                                    price: {{ $item->price }},
+                                    get subtotal() { return this.qty * this.price; }
+                                }">
+                                    <td class="px-4 py-4 text-xs text-gray-400 font-bold">{{ $idx + 1 }}</td>
+                                    <td class="px-4 py-4">
+                                        <p class="text-sm font-black text-royal-navy">{{ $item->material->name }}</p>
+                                    </td>
+                                    <td class="px-4 py-4 text-center">
+                                        <span x-show="!editMode" class="text-sm font-black text-royal-navy">
+                                            {{ rtrim(rtrim(number_format($item->requested_quantity, 4, '.', ''), '0'), '.') }}
+                                        </span>
+                                        <div x-show="editMode" class="inline-block" x-cloak>
+                                            <input type="number" step="0.0001" min="0" 
+                                                name="items[{{ $item->id }}][requested_quantity]" 
+                                                x-model.number="qty"
+                                                class="w-24 text-center border-2 border-gray-200 rounded-xl px-2 py-1 text-xs font-black text-royal-navy focus:border-gold outline-none">
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-4 text-center text-xs font-bold text-gray-500 uppercase">
+                                        {{ $item->unit }}
+                                    </td>
+                                    <td class="px-4 py-4 text-right">
+                                        <span x-show="!editMode" class="text-xs font-medium text-gray-600">
+                                            Rp {{ number_format($item->price, 0, ',', '.') }}
+                                        </span>
+                                        <div x-show="editMode" class="inline-flex items-center justify-end" x-cloak>
+                                            <span class="text-xs font-bold text-gray-400 mr-1">Rp</span>
+                                            <input type="number" step="0.01" min="0" 
+                                                name="items[{{ $item->id }}][price]" 
+                                                x-model.number="price"
+                                                class="w-24 text-right border-2 border-gray-200 rounded-xl px-2 py-1 text-xs font-black text-royal-navy focus:border-gold outline-none">
+                                        </div>
+                                    </td>
+                                    <td class="px-4 py-4 text-right">
+                                        <span x-show="!editMode" class="text-sm font-black text-royal-navy">
+                                            Rp {{ number_format($subtotal, 0, ',', '.') }}
+                                        </span>
+                                        <span x-show="editMode" class="text-sm font-black text-royal-navy" x-cloak>
+                                            Rp <span x-text="new Intl.NumberFormat('id-ID').format(subtotal)"></span>
+                                        </span>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                <tr class="border-t-2 border-royal-navy/20">
+                                    <td colspan="5" class="px-4 py-5 text-right text-[10px] font-black text-royal-navy uppercase tracking-[0.2em]">Total Nilai Pesanan</td>
+                                    <td class="px-4 py-5 text-right text-xl font-black text-royal-navy">
+                                        Rp {{ number_format($computedTotal, 0, ',', '.') }}
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </form>
 
                     <!-- ===== CATATAN ===== -->
                     <div class="bg-amber-50 border border-amber-100 rounded-2xl p-5 mb-10">
