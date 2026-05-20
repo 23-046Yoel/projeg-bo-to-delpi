@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,900&family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <style>
         :root {
             --primary: #0F172A;
@@ -760,6 +761,79 @@
         </div>
     </section>
 
+    <!-- Survey Program MBG Section -->
+    <section class="bg-slate-50 py-24 border-t border-slate-100 relative overflow-hidden" id="survey-section">
+        <div class="absolute top-0 left-0 w-96 h-96 bg-gold/5 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2"></div>
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="text-center mb-16">
+                <span class="inline-block px-4 py-1 rounded-full bg-[#D4AF37]/10 text-[#B8860B] font-black text-xs uppercase tracking-[0.2em] mb-4">Hasil Survey Real-Time</span>
+                <h2 class="playfair text-4xl lg:text-6xl font-black italic text-[#0F172A] mb-6">Umpan Balik <span class="text-[#D4AF37]">Penerima Manfaat</span></h2>
+                <p class="text-gray-500 max-w-2xl mx-auto">
+                    Data diambil secara real-time dari kuesioner evaluasi program Makan Bergizi Gratis (MBG) di SPPG Balimbingan 2 & Karang Rejo. Setiap pembaruan spreadsheet akan langsung memperbarui grafik di bawah ini.
+                </p>
+                <div class="mt-6 flex justify-center items-center gap-4 text-xs font-bold text-slate-600">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span> Live
+                    </span>
+                    <span>Total Responden: <strong class="text-slate-900 text-base" id="respondent-count">791</strong> Orang</span>
+                </div>
+            </div>
+
+            <!-- Charts Loading Spinner -->
+            <div id="charts-loading" class="flex flex-col items-center justify-center py-20">
+                <div class="w-12 h-12 border-4 border-[#D4AF37] border-t-transparent rounded-full animate-spin"></div>
+                <p class="mt-4 text-slate-500 text-xs font-black uppercase tracking-widest animate-pulse">Memuat data survey...</p>
+            </div>
+
+            <!-- Charts Grid (Hidden initially, shown after load) -->
+            <div id="charts-grid" class="hidden space-y-10">
+                <!-- First Row: Donut Charts -->
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl hover:shadow-2xl transition-all duration-300">
+                        <h3 class="playfair text-xl font-black italic text-[#0F172A] mb-6 text-center border-b border-slate-100 pb-4">Distribusi Jenis Kelamin</h3>
+                        <div id="gender_chart" class="w-full h-80"></div>
+                    </div>
+                    <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl hover:shadow-2xl transition-all duration-300">
+                        <h3 class="playfair text-xl font-black italic text-[#0F172A] mb-6 text-center border-b border-slate-100 pb-4">Kebiasaan Sarapan Responden</h3>
+                        <div id="sarapan_chart" class="w-full h-80"></div>
+                    </div>
+                </div>
+
+                <!-- Second Row: Bar & Column Charts -->
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl hover:shadow-2xl transition-all duration-300">
+                        <h3 class="playfair text-xl font-black italic text-[#0F172A] mb-6 text-center border-b border-slate-100 pb-4">Penilaian Indikator Program (Skala 1-5)</h3>
+                        <div id="mbg_chart" class="w-full h-80"></div>
+                    </div>
+                    <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl hover:shadow-2xl transition-all duration-300">
+                        <h3 class="playfair text-xl font-black italic text-[#0F172A] mb-6 text-center border-b border-slate-100 pb-4">Kebiasaan Sarapan vs Semangat Belajar</h3>
+                        <div id="scatter_chart" class="w-full h-80"></div>
+                    </div>
+                </div>
+
+                <!-- Third Row: Trend Chart -->
+                <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl hover:shadow-2xl transition-all duration-300">
+                    <h3 class="playfair text-xl font-black italic text-[#0F172A] mb-6 text-center border-b border-slate-100 pb-4">Tren Kepuasan Program Dari Waktu ke Waktu (Skala 1-5)</h3>
+                    <div id="trend_chart" class="w-full h-96"></div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center text-xs text-slate-400 font-bold flex flex-wrap justify-center items-center gap-6">
+                <span>Sumber Data: <a href="https://docs.google.com/spreadsheets/d/1e3UZu0mxKD8Da8WIEQkX8JXAm7Z7TKDAUJBlXIeQsb0/edit?usp=sharing" target="_blank" class="text-[#D4AF37] hover:underline">Google Sheet Kuesioner MBG</a></span>
+                <span class="hidden md:inline">•</span>
+                <span class="flex items-center gap-2">
+                    <img src="/images/ala_delphi.png" alt="Ala Delphi" class="h-5 w-auto" onerror="this.style.display='none'">
+                    Yayasan Ala Delphi
+                </span>
+                <span class="hidden md:inline">•</span>
+                <span class="flex items-center gap-2">
+                    <img src="/images/bgn_logo.png" alt="BGN" class="h-5 w-auto" onerror="this.style.display='none'">
+                    Badan Gizi Nasional
+                </span>
+            </div>
+        </div>
+    </section>
+
     <!-- Aspiration Section -->
     <section class="bg-[#0F172A] py-24">
         <div class="max-w-4xl mx-auto px-6 text-center">
@@ -1045,5 +1119,282 @@
         </a>
     </div>
 
+    <!-- Google Visualization Charts Implementation -->
+    <script type="text/javascript">
+        google.charts.load('current', { 'packages': ['corechart'] });
+        google.charts.setOnLoadCallback(initCharts);
+
+        var dataTableFetched = null;
+
+        function initCharts() {
+            var query = new google.visualization.Query(
+                'https://docs.google.com/spreadsheets/d/1e3UZu0mxKD8Da8WIEQkX8JXAm7Z7TKDAUJBlXIeQsb0/gviz/tq?gid=437285728'
+            );
+            query.send(handleQueryResponse);
+        }
+
+        function handleQueryResponse(response) {
+            if (response.isError()) {
+                console.error('Error: ' + response.getMessage() + ' ' + response.getDetailedMessage());
+                document.getElementById('charts-loading').innerHTML = 
+                    '<p class="text-red-500 font-bold p-6 bg-red-50 border border-red-200 rounded-3xl">Gagal memuat data dari Google Sheets. Pastikan Anda terhubung ke internet.</p>';
+                return;
+            }
+            
+            dataTableFetched = response.getDataTable();
+            var numRows = dataTableFetched.getNumberOfRows();
+            
+            // Update Respondent Count in UI
+            document.getElementById('respondent-count').innerText = numRows;
+            
+            // Show charts grid, hide loader
+            document.getElementById('charts-loading').classList.add('hidden');
+            document.getElementById('charts-grid').classList.remove('hidden');
+            
+            drawAllCharts();
+        }
+
+        function drawAllCharts() {
+            if (!dataTableFetched) return;
+            
+            var dataTable = dataTableFetched;
+            var numRows = dataTable.getNumberOfRows();
+
+            // 1. Gender Pie Chart
+            var genderCounts = {};
+            // 2. Sarapan Pie Chart
+            var sarapanCounts = {};
+            // 3. Ratings (Columns 22 to 27)
+            var ratingSums = {
+                'Makanan Enak': 0, 'Porsi Cukup': 0, 'Menu Bervariasi': 0, 
+                'Bersih & Higienis': 0, 'Tepat Waktu': 0, 'Petugas Ramah': 0
+            };
+            var ratingCounts = {
+                'Makanan Enak': 0, 'Porsi Cukup': 0, 'Menu Bervariasi': 0, 
+                'Bersih & Higienis': 0, 'Tepat Waktu': 0, 'Petugas Ramah': 0
+            };
+            // 4. Sarapan vs Semangat Belajar Grouping
+            var sarapanGroups = {
+                'Tidak pernah': { sum: 0, count: 0 },
+                'Jarang': { sum: 0, count: 0 },
+                'Kadang': { sum: 0, count: 0 },
+                'Sering': { sum: 0, count: 0 },
+                'Selalu': { sum: 0, count: 0 }
+            };
+            // 5. Daily trend
+            var dailyRatings = {};
+
+            for (var i = 0; i < numRows; i++) {
+                // Gender (Col 12)
+                var gender = dataTable.getValue(i, 12);
+                if (gender) {
+                    genderCounts[gender] = (genderCounts[gender] || 0) + 1;
+                }
+
+                // Sarapan (Col 15)
+                var sarapan = dataTable.getValue(i, 15);
+                if (sarapan) {
+                    sarapanCounts[sarapan] = (sarapanCounts[sarapan] || 0) + 1;
+                }
+
+                // Ratings (Cols 22 to 27)
+                var c22 = dataTable.getValue(i, 22);
+                var c23 = dataTable.getValue(i, 23);
+                var c24 = dataTable.getValue(i, 24);
+                var c25 = dataTable.getValue(i, 25);
+                var c26 = dataTable.getValue(i, 26);
+                var c27 = dataTable.getValue(i, 27);
+
+                if (c22 !== null && !isNaN(c22)) { ratingSums['Makanan Enak'] += Number(c22); ratingCounts['Makanan Enak']++; }
+                if (c23 !== null && !isNaN(c23)) { ratingSums['Porsi Cukup'] += Number(c23); ratingCounts['Porsi Cukup']++; }
+                if (c24 !== null && !isNaN(c24)) { ratingSums['Menu Bervariasi'] += Number(c24); ratingCounts['Menu Bervariasi']++; }
+                if (c25 !== null && !isNaN(c25)) { ratingSums['Bersih & Higienis'] += Number(c25); ratingCounts['Bersih & Higienis']++; }
+                if (c26 !== null && !isNaN(c26)) { ratingSums['Tepat Waktu'] += Number(c26); ratingCounts['Tepat Waktu']++; }
+                if (c27 !== null && !isNaN(c27)) { ratingSums['Petugas Ramah'] += Number(c27); ratingCounts['Petugas Ramah']++; }
+
+                // Relationship: Sarapan (Col 15) vs Semangat Belajar (Col 28)
+                var semangat = dataTable.getValue(i, 28);
+                if (sarapan && semangat !== null && !isNaN(semangat)) {
+                    var key = sarapan;
+                    if (key.toLowerCase() === 'tidak pernah') key = 'Tidak pernah';
+                    if (key.toLowerCase() === 'kadang-kadang') key = 'Kadang';
+                    if (key.toLowerCase() === 'kadang') key = 'Kadang';
+                    if (sarapanGroups[key]) {
+                        sarapanGroups[key].sum += Number(semangat);
+                        sarapanGroups[key].count++;
+                    }
+                }
+
+                // Date Trend (Col 35 or Col 0)
+                var fillDate = dataTable.getValue(i, 35);
+                if (!fillDate) {
+                    var ts = dataTable.getValue(i, 0);
+                    if (ts instanceof Date) {
+                        fillDate = ts.getFullYear() + '-' + String(ts.getMonth() + 1).padStart(2, '0') + '-' + String(ts.getDate()).padStart(2, '0');
+                    }
+                }
+                if (fillDate) {
+                    var rowRatings = [];
+                    if (c22 !== null && !isNaN(c22)) rowRatings.push(Number(c22));
+                    if (c23 !== null && !isNaN(c23)) rowRatings.push(Number(c23));
+                    if (c24 !== null && !isNaN(c24)) rowRatings.push(Number(c24));
+                    if (c25 !== null && !isNaN(c25)) rowRatings.push(Number(c25));
+                    if (c26 !== null && !isNaN(c26)) rowRatings.push(Number(c26));
+                    if (c27 !== null && !isNaN(c27)) rowRatings.push(Number(c27));
+                    
+                    if (rowRatings.length > 0) {
+                        var rowAvg = rowRatings.reduce(function(a, b){ return a + b; }, 0) / rowRatings.length;
+                        if (!dailyRatings[fillDate]) {
+                            dailyRatings[fillDate] = { sum: 0, count: 0 };
+                        }
+                        dailyRatings[fillDate].sum += rowAvg;
+                        dailyRatings[fillDate].count++;
+                    }
+                }
+            }
+
+            // Draw Chart 1: Gender Pie Chart (Donut)
+            var genderDT = new google.visualization.DataTable();
+            genderDT.addColumn('string', 'Jenis Kelamin');
+            genderDT.addColumn('number', 'Jumlah');
+            for (var k in genderCounts) {
+                genderDT.addRow([k, genderCounts[k]]);
+            }
+            var genderChart = new google.visualization.PieChart(document.getElementById('gender_chart'));
+            genderChart.draw(genderDT, {
+                fontName: 'Inter',
+                backgroundColor: 'transparent',
+                legend: { position: 'bottom', textStyle: { color: '#0F172A', fontName: 'Inter', fontSize: 12 } },
+                pieHole: 0.45,
+                colors: ['#0F172A', '#D4AF37', '#10B981', '#3B82F6'],
+                chartArea: { width: '90%', height: '80%' }
+            });
+
+            // Draw Chart 2: Sarapan Pie Chart (Donut)
+            var sarapanDT = new google.visualization.DataTable();
+            sarapanDT.addColumn('string', 'Sarapan');
+            sarapanDT.addColumn('number', 'Jumlah');
+            for (var k in sarapanCounts) {
+                sarapanDT.addRow([k, sarapanCounts[k]]);
+            }
+            var sarapanChart = new google.visualization.PieChart(document.getElementById('sarapan_chart'));
+            sarapanChart.draw(sarapanDT, {
+                fontName: 'Inter',
+                backgroundColor: 'transparent',
+                legend: { position: 'bottom', textStyle: { color: '#0F172A', fontName: 'Inter', fontSize: 12 } },
+                pieHole: 0.45,
+                colors: ['#10B981', '#F59E0B', '#3B82F6', '#EF4444', '#8B5CF6'],
+                chartArea: { width: '90%', height: '80%' }
+            });
+
+            // Draw Chart 3: MBG Bar Chart (Evaluation Indicator)
+            var mbgDT = new google.visualization.DataTable();
+            mbgDT.addColumn('string', 'Indikator');
+            mbgDT.addColumn('number', 'Rata-rata Nilai');
+            mbgDT.addColumn({type: 'string', role: 'style'});
+            
+            var colors = ['#0F172A', '#D4AF37', '#10B981', '#3B82F6', '#8B5CF6', '#F59E0B'];
+            var index = 0;
+            for (var k in ratingSums) {
+                var avg = ratingCounts[k] > 0 ? (ratingSums[k] / ratingCounts[k]) : 0;
+                mbgDT.addRow([k, Number(avg.toFixed(2)), colors[index % colors.length]]);
+                index++;
+            }
+            var mbgChart = new google.visualization.BarChart(document.getElementById('mbg_chart'));
+            mbgChart.draw(mbgDT, {
+                fontName: 'Inter',
+                backgroundColor: 'transparent',
+                legend: { position: 'none' },
+                hAxis: {
+                    minValue: 1,
+                    maxValue: 5,
+                    gridlines: { color: '#F1F5F9' },
+                    textStyle: { color: '#64748B', fontName: 'Inter', fontSize: 11 }
+                },
+                vAxis: {
+                    textStyle: { color: '#0F172A', fontName: 'Inter', fontSize: 11, bold: true }
+                },
+                chartArea: { width: '75%', height: '80%' }
+            });
+
+            // Draw Chart 4: Sarapan vs Semangat Belajar Column Chart
+            var relationDT = new google.visualization.DataTable();
+            relationDT.addColumn('string', 'Frekuensi Sarapan');
+            relationDT.addColumn('number', 'Rata-rata Semangat Belajar (1-5)');
+            relationDT.addColumn({type: 'string', role: 'style'});
+            
+            var order = ['Tidak pernah', 'Jarang', 'Kadang', 'Sering', 'Selalu'];
+            order.forEach(function(k) {
+                var g = sarapanGroups[k];
+                var avg = g && g.count > 0 ? (g.sum / g.count) : 0;
+                relationDT.addRow([k, Number(avg.toFixed(2)), '#D4AF37']);
+            });
+            var relationChart = new google.visualization.ColumnChart(document.getElementById('scatter_chart'));
+            relationChart.draw(relationDT, {
+                fontName: 'Inter',
+                backgroundColor: 'transparent',
+                legend: { position: 'none' },
+                vAxis: {
+                    minValue: 1,
+                    maxValue: 5,
+                    gridlines: { color: '#F1F5F9' },
+                    textStyle: { color: '#64748B', fontName: 'Inter', fontSize: 11 }
+                },
+                hAxis: {
+                    textStyle: { color: '#0F172A', fontName: 'Inter', fontSize: 11, bold: true }
+                },
+                chartArea: { width: '85%', height: '75%' }
+            });
+
+            // Draw Chart 5: Trend Line Chart
+            var trendDT = new google.visualization.DataTable();
+            trendDT.addColumn('string', 'Tanggal');
+            trendDT.addColumn('number', 'Index Kepuasan (1-5)');
+            
+            var sortedDates = Object.keys(dailyRatings).sort();
+            sortedDates.forEach(function(d) {
+                var g = dailyRatings[d];
+                var avg = g.count > 0 ? (g.sum / g.count) : 0;
+                var displayD = d;
+                if (d.indexOf('-') !== -1) {
+                    var parts = d.split('-');
+                    if (parts.length === 3) {
+                        displayD = parts[2] + '/' + parts[1];
+                    }
+                } else if (d.indexOf('/') !== -1) {
+                    var parts = d.split(' ');
+                    displayD = parts[0];
+                }
+                trendDT.addRow([displayD, Number(avg.toFixed(2))]);
+            });
+            
+            var trendChart = new google.visualization.LineChart(document.getElementById('trend_chart'));
+            trendChart.draw(trendDT, {
+                fontName: 'Inter',
+                backgroundColor: 'transparent',
+                colors: ['#0F172A'],
+                lineWidth: 3,
+                pointsVisible: true,
+                pointSize: 6,
+                legend: { position: 'none' },
+                vAxis: {
+                    minValue: 1,
+                    maxValue: 5,
+                    gridlines: { color: '#F1F5F9' },
+                    textStyle: { color: '#64748B', fontName: 'Inter', fontSize: 11 }
+                },
+                hAxis: {
+                    gridlines: { color: 'transparent' },
+                    textStyle: { color: '#64748B', fontName: 'Inter', fontSize: 11 }
+                },
+                chartArea: { width: '90%', height: '75%' }
+            });
+        }
+
+        window.addEventListener('resize', function() {
+            drawAllCharts();
+        });
+    </script>
 </body>
 </html>
+
