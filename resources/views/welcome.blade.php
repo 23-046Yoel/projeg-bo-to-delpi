@@ -785,37 +785,127 @@
                 <p class="mt-4 text-slate-500 text-xs font-black uppercase tracking-widest animate-pulse">Memuat data survey...</p>
             </div>
 
-            <!-- Charts Grid (Hidden initially, shown after load) -->
-            <div id="charts-grid" class="hidden space-y-10">
-                <!-- First Row: Donut Charts -->
-                <div class="grid md:grid-cols-2 gap-8">
-                    <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl hover:shadow-2xl transition-all duration-300">
-                        <h3 class="playfair text-xl font-black italic text-[#0F172A] mb-6 text-center border-b border-slate-100 pb-4">Distribusi Jenis Kelamin</h3>
-                        <div id="gender_chart" class="w-full h-80"></div>
+            <!-- Charts Slideshow (Hidden initially, shown after load) -->
+            <div id="charts-grid" class="hidden">
+
+                <!-- Slideshow Controls -->
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
+                    <div class="flex items-center gap-3">
+                        <button onclick="surveyPrev()" class="w-10 h-10 rounded-full border border-slate-200 hover:border-[#D4AF37] text-slate-400 hover:text-[#D4AF37] flex items-center justify-center transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                        </button>
+                        <div class="flex items-center gap-2" id="survey-dots">
+                            <button onclick="surveyGoto(0)" class="survey-dot h-2 rounded-full bg-[#D4AF37] transition-all duration-300" style="width:24px;border-radius:4px;"></button>
+                            <button onclick="surveyGoto(1)" class="survey-dot h-2 w-2 rounded-full bg-slate-300 transition-all duration-300"></button>
+                            <button onclick="surveyGoto(2)" class="survey-dot h-2 w-2 rounded-full bg-slate-300 transition-all duration-300"></button>
+                            <button onclick="surveyGoto(3)" class="survey-dot h-2 w-2 rounded-full bg-slate-300 transition-all duration-300"></button>
+                            <button onclick="surveyGoto(4)" class="survey-dot h-2 w-2 rounded-full bg-slate-300 transition-all duration-300"></button>
+                        </div>
+                        <button onclick="surveyNext()" class="w-10 h-10 rounded-full border border-slate-200 hover:border-[#D4AF37] text-slate-400 hover:text-[#D4AF37] flex items-center justify-center transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                        </button>
                     </div>
-                    <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl hover:shadow-2xl transition-all duration-300">
-                        <h3 class="playfair text-xl font-black italic text-[#0F172A] mb-6 text-center border-b border-slate-100 pb-4">Kebiasaan Sarapan Responden</h3>
-                        <div id="sarapan_chart" class="w-full h-80"></div>
+                    <div class="flex items-center gap-4">
+                        <span id="survey-counter" class="text-xs font-black text-slate-400 uppercase tracking-widest">1 / 5</span>
+                        <button onclick="surveyTogglePlay()" id="survey-playbtn" class="text-[10px] font-black text-[#D4AF37] uppercase tracking-widest border border-[#D4AF37]/30 px-3 py-1.5 rounded-full hover:bg-[#D4AF37]/10 transition-all">&#9646;&#9646; Pause</button>
                     </div>
                 </div>
 
-                <!-- Second Row: Bar & Column Charts -->
-                <div class="grid md:grid-cols-2 gap-8">
-                    <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl hover:shadow-2xl transition-all duration-300">
-                        <h3 class="playfair text-xl font-black italic text-[#0F172A] mb-6 text-center border-b border-slate-100 pb-4">Penilaian Indikator Program (Skala 1-5)</h3>
-                        <div id="mbg_chart" class="w-full h-80"></div>
-                    </div>
-                    <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl hover:shadow-2xl transition-all duration-300">
-                        <h3 class="playfair text-xl font-black italic text-[#0F172A] mb-6 text-center border-b border-slate-100 pb-4">Kebiasaan Sarapan vs Semangat Belajar</h3>
-                        <div id="scatter_chart" class="w-full h-80"></div>
+                <!-- Progress Bar -->
+                <div class="h-1 bg-slate-200 rounded-full mb-8 overflow-hidden">
+                    <div id="survey-progress" class="h-full bg-[#D4AF37] rounded-full" style="width:0%;"></div>
+                </div>
+
+                <!-- Slide 0: Distribusi Jenis Kelamin -->
+                <div class="survey-slide" id="survey-slide-0">
+                    <div class="grid md:grid-cols-2 gap-8 items-stretch">
+                        <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl">
+                            <h3 class="playfair text-xl font-black italic text-[#0F172A] mb-6 text-center border-b border-slate-100 pb-4">Distribusi Jenis Kelamin</h3>
+                            <div id="gender_chart" class="w-full h-80"></div>
+                        </div>
+                        <div class="bg-gradient-to-br from-[#0F172A] to-[#1E293B] rounded-[2.5rem] p-8 border border-slate-700 shadow-xl flex flex-col justify-center gap-5">
+                            <span class="inline-block px-3 py-1 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] text-[10px] font-black uppercase tracking-widest w-fit">01 / 05 &mdash; Demografi</span>
+                            <h3 class="playfair text-2xl font-black italic text-white leading-snug">Distribusi Jenis Kelamin Responden</h3>
+                            <div class="border border-dashed border-slate-600 rounded-2xl p-5 bg-white/5">
+                                <p class="text-[10px] text-[#D4AF37] font-black uppercase tracking-widest mb-2">&#128221; Narasi Analisis</p>
+                                <p class="text-slate-400 text-sm leading-relaxed italic">Penjelasan mengenai proporsi responden berdasarkan jenis kelamin dan implikasinya terhadap strategi distribusi manfaat program MBG akan diisi di sini.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Third Row: Trend Chart -->
-                <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl hover:shadow-2xl transition-all duration-300">
-                    <h3 class="playfair text-xl font-black italic text-[#0F172A] mb-6 text-center border-b border-slate-100 pb-4">Tren Kepuasan Program Dari Waktu ke Waktu (Skala 1-5)</h3>
-                    <div id="trend_chart" class="w-full h-96"></div>
+                <!-- Slide 1: Kebiasaan Sarapan -->
+                <div class="survey-slide" id="survey-slide-1" style="display:none;">
+                    <div class="grid md:grid-cols-2 gap-8 items-stretch">
+                        <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl">
+                            <h3 class="playfair text-xl font-black italic text-[#0F172A] mb-6 text-center border-b border-slate-100 pb-4">Kebiasaan Sarapan Responden</h3>
+                            <div id="sarapan_chart" class="w-full h-80"></div>
+                        </div>
+                        <div class="bg-gradient-to-br from-[#0F172A] to-[#1E293B] rounded-[2.5rem] p-8 border border-slate-700 shadow-xl flex flex-col justify-center gap-5">
+                            <span class="inline-block px-3 py-1 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] text-[10px] font-black uppercase tracking-widest w-fit">02 / 05 &mdash; Pola Makan</span>
+                            <h3 class="playfair text-2xl font-black italic text-white leading-snug">Kebiasaan Sarapan Responden</h3>
+                            <div class="border border-dashed border-slate-600 rounded-2xl p-5 bg-white/5">
+                                <p class="text-[10px] text-[#D4AF37] font-black uppercase tracking-widest mb-2">&#128221; Narasi Analisis</p>
+                                <p class="text-slate-400 text-sm leading-relaxed italic">Penjelasan mengenai persentase responden yang rutin sarapan dan korelasinya dengan peningkatan fokus belajar sesuai tujuan program akan diisi di sini.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Slide 2: Penilaian Indikator -->
+                <div class="survey-slide" id="survey-slide-2" style="display:none;">
+                    <div class="grid md:grid-cols-2 gap-8 items-stretch">
+                        <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl">
+                            <h3 class="playfair text-xl font-black italic text-[#0F172A] mb-6 text-center border-b border-slate-100 pb-4">Penilaian Indikator Program (Skala 1-5)</h3>
+                            <div id="mbg_chart" class="w-full h-80"></div>
+                        </div>
+                        <div class="bg-gradient-to-br from-[#0F172A] to-[#1E293B] rounded-[2.5rem] p-8 border border-slate-700 shadow-xl flex flex-col justify-center gap-5">
+                            <span class="inline-block px-3 py-1 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] text-[10px] font-black uppercase tracking-widest w-fit">03 / 05 &mdash; Kualitas</span>
+                            <h3 class="playfair text-2xl font-black italic text-white leading-snug">Penilaian Indikator Program</h3>
+                            <div class="border border-dashed border-slate-600 rounded-2xl p-5 bg-white/5">
+                                <p class="text-[10px] text-[#D4AF37] font-black uppercase tracking-widest mb-2">&#128221; Narasi Analisis</p>
+                                <p class="text-slate-400 text-sm leading-relaxed italic">Ulasan mengenai indikator kepuasan (Rasa, Porsi, Kebersihan, dll.) &mdash; area yang sudah sangat baik dan yang masih perlu perbaikan akan dijelaskan di sini.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3: Sarapan vs Semangat -->
+                <div class="survey-slide" id="survey-slide-3" style="display:none;">
+                    <div class="grid md:grid-cols-2 gap-8 items-stretch">
+                        <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl">
+                            <h3 class="playfair text-xl font-black italic text-[#0F172A] mb-6 text-center border-b border-slate-100 pb-4">Kebiasaan Sarapan vs Semangat Belajar</h3>
+                            <div id="scatter_chart" class="w-full h-80"></div>
+                        </div>
+                        <div class="bg-gradient-to-br from-[#0F172A] to-[#1E293B] rounded-[2.5rem] p-8 border border-slate-700 shadow-xl flex flex-col justify-center gap-5">
+                            <span class="inline-block px-3 py-1 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] text-[10px] font-black uppercase tracking-widest w-fit">04 / 05 &mdash; Korelasi</span>
+                            <h3 class="playfair text-2xl font-black italic text-white leading-snug">Sarapan &amp; Semangat Belajar</h3>
+                            <div class="border border-dashed border-slate-600 rounded-2xl p-5 bg-white/5">
+                                <p class="text-[10px] text-[#D4AF37] font-black uppercase tracking-widest mb-2">&#128221; Narasi Analisis</p>
+                                <p class="text-slate-400 text-sm leading-relaxed italic">Korelasi antara frekuensi sarapan dengan tingkat semangat belajar dan dampak positif program MBG terhadap performa akademik akan dijelaskan di sini.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 4: Tren Kepuasan -->
+                <div class="survey-slide" id="survey-slide-4" style="display:none;">
+                    <div class="grid md:grid-cols-2 gap-8 items-stretch">
+                        <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-xl">
+                            <h3 class="playfair text-xl font-black italic text-[#0F172A] mb-6 text-center border-b border-slate-100 pb-4">Tren Kepuasan Program Dari Waktu ke Waktu (Skala 1-5)</h3>
+                            <div id="trend_chart" class="w-full h-80"></div>
+                        </div>
+                        <div class="bg-gradient-to-br from-[#0F172A] to-[#1E293B] rounded-[2.5rem] p-8 border border-slate-700 shadow-xl flex flex-col justify-center gap-5">
+                            <span class="inline-block px-3 py-1 rounded-full bg-[#D4AF37]/20 text-[#D4AF37] text-[10px] font-black uppercase tracking-widest w-fit">05 / 05 &mdash; Tren</span>
+                            <h3 class="playfair text-2xl font-black italic text-white leading-snug">Tren Kepuasan Program</h3>
+                            <div class="border border-dashed border-slate-600 rounded-2xl p-5 bg-white/5">
+                                <p class="text-[10px] text-[#D4AF37] font-black uppercase tracking-widest mb-2">&#128221; Narasi Analisis</p>
+                                <p class="text-slate-400 text-sm leading-relaxed italic">Analisis tren indeks kepuasan dari waktu ke waktu &mdash; apakah program semakin diterima dan kepuasan meningkat secara konsisten &mdash; akan dijabarkan di sini.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             
             <div class="mt-12 text-center text-xs text-slate-400 font-bold flex flex-wrap justify-center items-center gap-6">
@@ -1152,6 +1242,7 @@
             document.getElementById('charts-grid').classList.remove('hidden');
             
             drawAllCharts();
+            initSurveySlideshow();
         }
 
         function drawAllCharts() {
@@ -1390,6 +1481,76 @@
                 chartArea: { width: '90%', height: '75%' }
             });
         }
+
+        // ========= Survey Slideshow Logic =========
+        var sIdx = 0, sTotal = 5, sPlaying = true;
+        var sTimer = null, sProgInterval = null, sStartTime = null;
+        var sInterval = 8000;
+
+        function surveyGoto(n) {
+            var prev = document.getElementById('survey-slide-' + sIdx);
+            if (prev) prev.style.display = 'none';
+            sIdx = ((n % sTotal) + sTotal) % sTotal;
+            var curr = document.getElementById('survey-slide-' + sIdx);
+            if (curr) {
+                curr.style.display = 'block';
+                setTimeout(function() { if (typeof drawAllCharts === 'function') drawAllCharts(); }, 80);
+            }
+            // Update dots
+            var dots = document.querySelectorAll('.survey-dot');
+            dots.forEach(function(d, i) {
+                if (i === sIdx) {
+                    d.style.width = '24px'; d.style.borderRadius = '4px'; d.style.backgroundColor = '#D4AF37';
+                } else {
+                    d.style.width = '8px'; d.style.borderRadius = '50%'; d.style.backgroundColor = '#CBD5E1';
+                }
+            });
+            var ctr = document.getElementById('survey-counter');
+            if (ctr) ctr.innerText = (sIdx + 1) + ' / ' + sTotal;
+            sStartTime = Date.now();
+            var pb = document.getElementById('survey-progress');
+            if (pb) pb.style.width = '0%';
+        }
+
+        function surveyNext() { surveyGoto(sIdx + 1); surveyResetTimer(); }
+        function surveyPrev() { surveyGoto(sIdx - 1); surveyResetTimer(); }
+
+        function surveyResetTimer() {
+            if (sPlaying) {
+                clearInterval(sTimer); clearInterval(sProgInterval);
+                sStartTime = Date.now();
+                sTimer = setInterval(function() { surveyGoto(sIdx + 1); }, sInterval);
+                sProgInterval = setInterval(surveyUpdateProg, 50);
+            }
+        }
+
+        function surveyUpdateProg() {
+            if (!sPlaying || !sStartTime) return;
+            var pct = Math.min(((Date.now() - sStartTime) / sInterval) * 100, 100);
+            var pb = document.getElementById('survey-progress');
+            if (pb) pb.style.width = pct + '%';
+        }
+
+        function surveyTogglePlay() {
+            var btn = document.getElementById('survey-playbtn');
+            if (sPlaying) {
+                clearInterval(sTimer); clearInterval(sProgInterval);
+                sPlaying = false;
+                if (btn) btn.innerHTML = '&#9654; Play';
+            } else {
+                sPlaying = true; sStartTime = Date.now();
+                sTimer = setInterval(function() { surveyGoto(sIdx + 1); }, sInterval);
+                sProgInterval = setInterval(surveyUpdateProg, 50);
+                if (btn) btn.innerHTML = '&#9646;&#9646; Pause';
+            }
+        }
+
+        function initSurveySlideshow() {
+            sStartTime = Date.now();
+            sTimer = setInterval(function() { surveyGoto(sIdx + 1); }, sInterval);
+            sProgInterval = setInterval(surveyUpdateProg, 50);
+        }
+        // ==========================================
 
         window.addEventListener('resize', function() {
             drawAllCharts();
