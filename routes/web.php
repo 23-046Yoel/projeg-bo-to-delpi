@@ -38,8 +38,38 @@ Route::get('/', function () {
         'tutorials_count' => \App\Models\Dish::whereNotNull('youtube_url')->count(),
         'beneficiaries_count' => $totalBeneficiaries,
     ];
-    return view('welcome', compact('stats'));
+    
+    // Calculate tomorrow's requirements
+    $tomorrow = now()->addDay()->toDateString();
+    $tomorrowMenus = \App\Models\Menu::with(['dishes.recipes.material'])->where('date', $tomorrow)->get();
+    $tomorrowRequirements = [];
+    
+    foreach ($tomorrowMenus as $menu) {
+        foreach ($menu->dishes as $dish) {
+            $portions = ($dish->pivot->porsi_besar + $dish->pivot->porsi_kecil) ?: $dish->pivot->portions;
+            foreach ($dish->recipes as $recipe) {
+                $matId = $recipe->material_id;
+                $needed = $recipe->quantity * $portions;
+                
+                if (!isset($tomorrowRequirements[$matId])) {
+                    $tomorrowRequirements[$matId] = [
+                        'name' => $recipe->material->name ?? 'Unknown',
+                        'quantity' => 0,
+                        'unit' => $recipe->unit,
+                    ];
+                }
+                $tomorrowRequirements[$matId]['quantity'] += $needed;
+            }
+        }
+    }
+    
+    uasort($tomorrowRequirements, function($a, $b) {
+        return strcmp($a['name'], $b['name']);
+    });
+    
+    return view('welcome', compact('stats', 'tomorrowRequirements', 'tomorrow'));
 });
+
 
 // Redirect standard login to WA login
 Route::get('/login', function () {

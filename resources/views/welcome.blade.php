@@ -245,6 +245,58 @@
         </div>
     </nav>
 
+    <!-- Needs for Tomorrow -->
+    @if(count($tomorrowRequirements) > 0)
+    <div class="max-w-7xl mx-auto px-6 mt-4 mb-2">
+        <div class="bg-gradient-to-r from-[#0F172A] to-[#1e293b] rounded-2xl p-6 shadow-2xl relative overflow-hidden border border-gold/20">
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-gold/10 rounded-full blur-2xl"></div>
+            <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-4">
+                        <span class="px-3 py-1 bg-[#D4AF37] text-[#0F172A] text-[10px] font-black uppercase tracking-widest rounded-full">Peluang Pemasok</span>
+                        <h3 class="text-white font-bold italic text-lg playfair">Kebutuhan Bahan Besok, {{ \Carbon\Carbon::parse($tomorrow)->translatedFormat('d F Y') }}</h3>
+                    </div>
+                    <div class="flex flex-wrap gap-2 text-sm text-gray-300 font-medium max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                        @foreach($tomorrowRequirements as $req)
+                            <span class="bg-white/5 border border-white/10 px-3 py-1.5 rounded-lg whitespace-nowrap">
+                                <span class="text-white font-bold">{{ $req['name'] }}</span> <span class="text-[#D4AF37]">{{ number_format($req['quantity'], 2) }} {{ $req['unit'] }}</span>
+                            </span>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="shrink-0 w-full md:w-auto">
+                    @php
+                        $waText = "Halo Admin, saya tertarik mengajukan penawaran untuk kebutuhan bahan tanggal " . \Carbon\Carbon::parse($tomorrow)->translatedFormat('d F Y') . ":\n\n";
+                        foreach($tomorrowRequirements as $req) {
+                            $waText .= "- " . $req['name'] . " (" . number_format($req['quantity'], 2) . " " . $req['unit'] . ")\n";
+                        }
+                        $waText .= "\nMohon info lebih lanjut.";
+                        $waLink = "https://wa.me/6285353325352?text=" . urlencode($waText);
+                    @endphp
+                    <a href="{{ $waLink }}" target="_blank" class="w-full md:w-auto flex items-center justify-center gap-2 px-6 py-4 bg-[#D4AF37] text-[#0F172A] font-black text-xs uppercase tracking-widest rounded-xl hover:bg-white hover:scale-105 transition-all shadow-xl shadow-[#D4AF37]/20">
+                        Ajukan Penawaran Anda
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(212, 175, 55, 0.5);
+            border-radius: 4px;
+        }
+    </style>
+    @endif
+
     <!-- Hero Section -->
     <section class="max-w-7xl mx-auto px-6 py-12 lg:py-24 grid lg:grid-cols-2 gap-12 items-center">
         <div>
