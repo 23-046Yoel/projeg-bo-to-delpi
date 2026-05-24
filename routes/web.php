@@ -77,7 +77,16 @@ Route::get('/', function () {
     $tomorrow = $nextMenuDate; // tanggal menu terdekat
     $allMaterials = \App\Models\Material::orderBy('name')->get(); // untuk dropdown form penawaran
 
-    return view('welcome', compact('stats', 'tomorrowRequirements', 'tomorrow', 'allMaterials'));
+    // Jadwal menu untuk beranda: dari hari ini hingga 14 hari ke depan, diurutkan terbaru di atas
+    $berandaMenus = \App\Models\Menu::with(['sppg'])
+        ->where('date', '>=', now()->toDateString())
+        ->where('date', '<=', now()->addDays(14)->toDateString())
+        ->orderByDesc('date')
+        ->get()
+        ->groupBy('date')
+        ->sortKeysDesc();
+
+    return view('welcome', compact('stats', 'tomorrowRequirements', 'tomorrow', 'allMaterials', 'berandaMenus'));
 });
 
 

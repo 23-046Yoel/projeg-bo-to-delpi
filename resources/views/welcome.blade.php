@@ -294,6 +294,140 @@
     </section>
     @endif
 
+    <!-- ===================== JADWAL MENU HARIAN ===================== -->
+    @php $today = now()->toDateString(); @endphp
+    <section class="max-w-7xl mx-auto px-6 py-12 border-b border-slate-100" id="jadwal-menu">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-8 gap-6">
+            <div>
+                <span class="inline-block px-4 py-1 rounded-full bg-[#D4AF37]/10 text-[#B8860B] font-black text-xs uppercase tracking-[0.2em] mb-4">🍱 Program MBG</span>
+                <h2 class="playfair text-3xl lg:text-4xl font-black italic text-[#0F172A] mb-3">Jadwal Menu <span class="text-[#D4AF37]">Harian</span></h2>
+                <p class="text-gray-500 max-w-xl text-sm">Menu bergizi harian yang disiapkan oleh dapur-dapur SPPG Alad Elphi untuk anak-anak generasi bangsa.</p>
+            </div>
+            <a href="{{ route('public.menu') }}" class="shrink-0 px-5 py-2.5 rounded-xl border-2 border-[#D4AF37] text-[#B8860B] font-black text-[10px] tracking-[0.2em] uppercase hover:bg-[#D4AF37] hover:text-white transition-all flex items-center gap-2">
+                Lihat Semua Jadwal
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+            </a>
+        </div>
+
+        @if(isset($berandaMenus) && $berandaMenus->count() > 0)
+            <div class="space-y-8">
+                @foreach($berandaMenus->take(3) as $date => $dayMenus)
+                    @php
+                        $isToday   = $date === $today;
+                        $tgl       = \Carbon\Carbon::parse($date)->locale('id')->isoFormat('dddd, D MMMM Y');
+                    @endphp
+                    <div>
+                        {{-- Date Header --}}
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="px-5 py-2 rounded-full font-black text-sm tracking-wide uppercase
+                                {{ $isToday ? 'bg-[#D4AF37] text-[#0F172A]' : 'bg-[#0F172A] text-[#D4AF37]' }}">
+                                {{ $tgl }}
+                            </span>
+                            @if($isToday)
+                                <span class="px-3 py-1 rounded-full bg-emerald-500 text-white text-[10px] font-black uppercase tracking-widest">📍 Hari Ini</span>
+                            @endif
+                            <div class="flex-1 h-px bg-slate-200"></div>
+                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ $dayMenus->count() }} Dapur</span>
+                        </div>
+
+                        {{-- Menu Cards --}}
+                        <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                            @foreach($dayMenus as $menu)
+                            <div class="bg-white rounded-[1.5rem] border border-slate-100 shadow-lg p-5 hover:shadow-xl hover:border-[#D4AF37]/40 hover:-translate-y-1 transition-all duration-300 group">
+                                <p class="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-2">
+                                    🍳 {{ $menu->sppg->name ?? 'Semua Dapur' }}
+                                </p>
+                                <div class="space-y-2 mt-3">
+                                    @if($menu->karbo)
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0"></span>
+                                        <div>
+                                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Karbohidrat</p>
+                                            <p class="text-sm font-bold text-[#0F172A]">{{ $menu->karbo }}</p>
+                                        </div>
+                                    </div>
+                                    @endif
+                                    @if($menu->protein_hewani)
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-red-400 shrink-0"></span>
+                                        <div>
+                                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Protein Hewani</p>
+                                            <p class="text-sm font-bold text-[#0F172A]">{{ $menu->protein_hewani }}</p>
+                                        </div>
+                                    </div>
+                                    @endif
+                                    @if($menu->protein_nabati)
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-purple-400 shrink-0"></span>
+                                        <div>
+                                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Protein Nabati</p>
+                                            <p class="text-sm font-bold text-[#0F172A]">{{ $menu->protein_nabati }}</p>
+                                        </div>
+                                    </div>
+                                    @endif
+                                    @if($menu->sayur)
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shrink-0"></span>
+                                        <div>
+                                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Sayuran</p>
+                                            <p class="text-sm font-bold text-[#0F172A]">{{ $menu->sayur }}</p>
+                                        </div>
+                                    </div>
+                                    @endif
+                                    @if($menu->buah)
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 shrink-0"></span>
+                                        <div>
+                                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Buah</p>
+                                            <p class="text-sm font-bold text-[#0F172A]">{{ $menu->buah }}</p>
+                                        </div>
+                                    </div>
+                                    @endif
+                                    @if($menu->pelengkap)
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-pink-400 shrink-0"></span>
+                                        <div>
+                                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Pelengkap</p>
+                                            <p class="text-sm font-bold text-[#0F172A]">{{ $menu->pelengkap }}</p>
+                                        </div>
+                                    </div>
+                                    @endif
+                                    @if(!$menu->karbo && !$menu->protein_hewani && !$menu->protein_nabati && !$menu->sayur && !$menu->buah && !$menu->pelengkap)
+                                    <p class="text-xs text-slate-400 italic">Detail menu belum diisi</p>
+                                    @endif
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- CTA lihat semua --}}
+            @if($berandaMenus->count() > 3)
+            <div class="mt-8 text-center">
+                <a href="{{ route('public.menu') }}" class="inline-flex items-center gap-3 px-8 py-4 bg-[#0F172A] text-[#D4AF37] font-black text-xs tracking-[0.2em] uppercase rounded-2xl shadow-xl hover:bg-[#D4AF37] hover:text-[#0F172A] transition-all duration-300">
+                    Lihat {{ $berandaMenus->count() - 3 }} Hari Lainnya
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </a>
+            </div>
+            @endif
+        @else
+            {{-- Empty state --}}
+            <div class="text-center py-16 bg-white rounded-[2rem] border border-slate-100 shadow-sm">
+                <div class="w-16 h-16 bg-[#D4AF37]/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                </div>
+                <p class="text-slate-400 font-bold mb-2">Belum ada jadwal menu yang dipublikasikan.</p>
+                <p class="text-slate-300 text-sm mb-6">Admin dapat menambahkan jadwal menu melalui dashboard.</p>
+                <a href="{{ route('public.menu') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-[#0F172A] text-[#D4AF37] font-black text-xs tracking-widest uppercase rounded-xl hover:scale-105 transition-all">
+                    Cek Halaman Jadwal Menu →
+                </a>
+            </div>
+        @endif
+    </section>
+    <!-- ============================================================= -->
+
 
     <!-- Hero Section -->
     <section class="max-w-7xl mx-auto px-6 py-12 lg:py-24 grid lg:grid-cols-2 gap-12 items-center">
@@ -810,6 +944,7 @@
             </div>
         </div>
     </section>
+
 
     <!-- Survey Program MBG Section -->
     <section class="bg-slate-50 py-24 border-t border-slate-100 relative overflow-hidden" id="survey-section">
