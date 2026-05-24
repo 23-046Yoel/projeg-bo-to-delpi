@@ -19,7 +19,7 @@ class PublicMenuController extends Controller
 
         $query = Menu::with(['sppg', 'dishes.recipes.material'])
             ->whereBetween('date', [$startOfWeek, $endOfWeek])
-            ->orderBy('date');
+            ->orderByDesc('date');
 
         if ($request->filled('sppg_id')) {
             $query->where('sppg_id', $request->sppg_id);
