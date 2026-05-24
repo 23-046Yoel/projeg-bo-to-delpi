@@ -337,63 +337,34 @@
                                 <p class="text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-2">
                                     🍳 {{ $menu->sppg->name ?? 'Semua Dapur' }}
                                 </p>
-                                <div class="space-y-2 mt-3">
-                                    @if($menu->karbo)
-                                    <div class="flex items-center gap-2">
-                                        <span class="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0"></span>
-                                        <div>
-                                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Karbohidrat</p>
-                                            <p class="text-sm font-bold text-[#0F172A]">{{ $menu->karbo }}</p>
-                                        </div>
+                                <div class="space-y-3 mt-3">
+                                    <div class="flex items-center gap-2 border-b border-slate-100 pb-2 mb-2">
+                                        <span class="text-xs">🍽️</span>
+                                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em]">Menu Hidangan</p>
                                     </div>
-                                    @endif
-                                    @if($menu->protein_hewani)
-                                    <div class="flex items-center gap-2">
-                                        <span class="w-2.5 h-2.5 rounded-full bg-red-400 shrink-0"></span>
-                                        <div>
-                                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Protein Hewani</p>
-                                            <p class="text-sm font-bold text-[#0F172A]">{{ $menu->protein_hewani }}</p>
+                                    @if($menu->dishes->count() > 0)
+                                        <div class="flex flex-col gap-2.5">
+                                            @foreach($menu->dishes as $dish)
+                                                <div class="flex items-center gap-3 bg-slate-50 hover:bg-slate-100/80 px-4 py-3 rounded-2xl border border-slate-100 hover:border-[#D4AF37]/20 transition-all duration-200 group/item">
+                                                    <div class="w-7 h-7 rounded-xl bg-[#D4AF37]/10 flex items-center justify-center text-[#B8860B] font-bold text-xs shrink-0 group-hover/item:bg-[#D4AF37] group-hover/item:text-white transition-colors duration-200">
+                                                        🍛
+                                                    </div>
+                                                    <div class="flex-1 min-w-0">
+                                                        <p class="text-xs font-black text-slate-800 truncate leading-tight">{{ $dish->name }}</p>
+                                                        @php
+                                                            $porsiKecil = $dish->pivot->porsi_kecil ?? 0;
+                                                            $porsiBesar = $dish->pivot->porsi_besar ?? 0;
+                                                            $totalPorsi = $dish->pivot->portions ?? ($porsiKecil + $porsiBesar);
+                                                        @endphp
+                                                        <p class="text-[9px] font-bold text-slate-400 mt-0.5">{{ $totalPorsi }} Porsi ({{ $porsiBesar }} B / {{ $porsiKecil }} K)</p>
+                                                    </div>
+                                                </div>
+                                            @endforeach
                                         </div>
-                                    </div>
-                                    @endif
-                                    @if($menu->protein_nabati)
-                                    <div class="flex items-center gap-2">
-                                        <span class="w-2.5 h-2.5 rounded-full bg-purple-400 shrink-0"></span>
-                                        <div>
-                                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Protein Nabati</p>
-                                            <p class="text-sm font-bold text-[#0F172A]">{{ $menu->protein_nabati }}</p>
+                                    @else
+                                        <div class="text-center py-4 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                                            <p class="text-xs text-slate-400 italic">Belum ada daftar hidangan</p>
                                         </div>
-                                    </div>
-                                    @endif
-                                    @if($menu->sayur)
-                                    <div class="flex items-center gap-2">
-                                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shrink-0"></span>
-                                        <div>
-                                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Sayuran</p>
-                                            <p class="text-sm font-bold text-[#0F172A]">{{ $menu->sayur }}</p>
-                                        </div>
-                                    </div>
-                                    @endif
-                                    @if($menu->buah)
-                                    <div class="flex items-center gap-2">
-                                        <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 shrink-0"></span>
-                                        <div>
-                                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Buah</p>
-                                            <p class="text-sm font-bold text-[#0F172A]">{{ $menu->buah }}</p>
-                                        </div>
-                                    </div>
-                                    @endif
-                                    @if($menu->pelengkap)
-                                    <div class="flex items-center gap-2">
-                                        <span class="w-2.5 h-2.5 rounded-full bg-pink-400 shrink-0"></span>
-                                        <div>
-                                            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Pelengkap</p>
-                                            <p class="text-sm font-bold text-[#0F172A]">{{ $menu->pelengkap }}</p>
-                                        </div>
-                                    </div>
-                                    @endif
-                                    @if(!$menu->karbo && !$menu->protein_hewani && !$menu->protein_nabati && !$menu->sayur && !$menu->buah && !$menu->pelengkap)
-                                    <p class="text-xs text-slate-400 italic">Detail menu belum diisi</p>
                                     @endif
                                 </div>
                             </div>

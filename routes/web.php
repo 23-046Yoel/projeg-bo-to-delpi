@@ -78,7 +78,7 @@ Route::get('/', function () {
     $allMaterials = \App\Models\Material::orderBy('name')->get(); // untuk dropdown form penawaran
 
     // Jadwal menu untuk beranda: dari hari ini hingga 14 hari ke depan, diurutkan terbaru di atas
-    $berandaMenus = \App\Models\Menu::with(['sppg'])
+    $berandaMenus = \App\Models\Menu::with(['sppg', 'dishes'])
         ->where('date', '>=', now()->toDateString())
         ->where('date', '<=', now()->addDays(14)->toDateString())
         ->orderByDesc('date')
