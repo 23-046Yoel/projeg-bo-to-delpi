@@ -25,7 +25,7 @@ class PublicMenuController extends Controller
             $query->where('sppg_id', $request->sppg_id);
         }
 
-        $menus = $query->get()->groupBy('date');
+        $menus = $query->get()->groupBy('date')->sortKeysDesc();
 
         // Fetch total portions for each SPPG to calculate material totals
         $sppgPortions = \App\Models\BeneficiaryGroup::selectRaw('sppg_id, SUM(total_beneficiaries) as total_portions')
