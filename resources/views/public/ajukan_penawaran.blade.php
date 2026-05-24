@@ -458,6 +458,22 @@
             return;
         }
 
+        // Kirim data pendaftaran ke database secara asinkron (AJAX)
+        const formData = new FormData();
+        formData.append('_token', '{{ csrf_token() }}');
+        formData.append('name', biz ? `${pic} (${biz})` : pic);
+        formData.append('phone', phone);
+        formData.append('village', addr);
+        formData.append('items', `${prod} (Penawaran: Rp ${Number(price).toLocaleString('id-ID')}/${unit || 'satuan'}, Qty: ${qty} ${unit}${notes ? `, Catatan: ${notes}` : ''})`);
+
+        fetch('{{ route("suppliers.register.store") }}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        }).catch(err => console.error('Gagal menyimpan pendaftaran ke sistem:', err));
+
         const tgl = '{{ $nextMenuDate ? \Carbon\Carbon::parse($nextMenuDate)->translatedFormat("l, d F Y") : "Segera" }}';
 
         waMessage =
