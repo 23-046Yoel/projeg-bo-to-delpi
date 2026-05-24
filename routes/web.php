@@ -38,37 +38,48 @@ Route::get('/', function () {
         'tutorials_count' => \App\Models\Dish::whereNotNull('youtube_url')->count(),
         'beneficiaries_count' => $totalBeneficiaries,
     ];
-    
-    // Calculate tomorrow's requirements
-    $tomorrow = now()->addDay()->toDateString();
-    $tomorrowMenus = \App\Models\Menu::with(['dishes.recipes.material'])->where('date', $tomorrow)->get();
+
+    // Cari tanggal menu terdekat ke depan (mulai dari hari ini+1, max 14 hari ke depan)
+    $nextMenuDate = null;
     $tomorrowRequirements = [];
-    
-    foreach ($tomorrowMenus as $menu) {
-        foreach ($menu->dishes as $dish) {
-            $portions = ($dish->pivot->porsi_besar + $dish->pivot->porsi_kecil) ?: $dish->pivot->portions;
-            foreach ($dish->recipes as $recipe) {
-                $matId = $recipe->material_id;
-                $needed = $recipe->quantity * $portions;
-                
-                if (!isset($tomorrowRequirements[$matId])) {
-                    $tomorrowRequirements[$matId] = [
-                        'name' => $recipe->material->name ?? 'Unknown',
-                        'quantity' => 0,
-                        'unit' => $recipe->unit,
-                    ];
+
+    $candidateMenus = \App\Models\Menu::with(['dishes.recipes.material'])
+        ->where('date', '>=', now()->addDay()->toDateString())
+        ->where('date', '<=', now()->addDays(14)->toDateString())
+        ->orderBy('date')
+        ->get()
+        ->groupBy('date');
+
+    if ($candidateMenus->count() > 0) {
+        $nextMenuDate = $candidateMenus->keys()->first();
+        $nextMenus = $candidateMenus->first();
+
+        foreach ($nextMenus as $menu) {
+            foreach ($menu->dishes as $dish) {
+                $portions = ($dish->pivot->porsi_besar + $dish->pivot->porsi_kecil) ?: $dish->pivot->portions;
+                foreach ($dish->recipes as $recipe) {
+                    $matId = $recipe->material_id;
+                    $needed = $recipe->quantity * $portions;
+                    if (!isset($tomorrowRequirements[$matId])) {
+                        $tomorrowRequirements[$matId] = [
+                            'name'     => $recipe->material->name ?? 'Unknown',
+                            'quantity' => 0,
+                            'unit'     => $recipe->unit,
+                        ];
+                    }
+                    $tomorrowRequirements[$matId]['quantity'] += $needed;
                 }
-                $tomorrowRequirements[$matId]['quantity'] += $needed;
             }
         }
+        uasort($tomorrowRequirements, fn($a, $b) => strcmp($a['name'], $b['name']));
     }
-    
-    uasort($tomorrowRequirements, function($a, $b) {
-        return strcmp($a['name'], $b['name']);
-    });
-    
-    return view('welcome', compact('stats', 'tomorrowRequirements', 'tomorrow'));
+
+    $tomorrow = $nextMenuDate; // tanggal menu terdekat
+    $allMaterials = \App\Models\Material::orderBy('name')->get(); // untuk dropdown form penawaran
+
+    return view('welcome', compact('stats', 'tomorrowRequirements', 'tomorrow', 'allMaterials'));
 });
+
 
 
 // Redirect standard login to WA login
@@ -178,6 +189,34 @@ Route::post('/complaints', [\App\Http\Controllers\ComplaintController::class, 's
 
 Route::get('/pendaftaran-pemasok', [SupplierRegistrationController::class, 'index'])->name('suppliers.register');
 Route::post('/pendaftaran-pemasok', [SupplierRegistrationController::class, 'store'])->name('suppliers.register.store');
+
+// Form Penawaran Bahan (Public)
+Route::get('/ajukan-penawaran', function () {
+    $materials = \App\Models\Material::orderBy('name')->get();
+    $nextMenuDate = \App\Models\Menu::where('date', '>=', now()->addDay()->toDateString())
+        ->orderBy('date')->value('date');
+    // Requirements untuk tanggal terdekat
+    $requirements = [];
+    if ($nextMenuDate) {
+        $menus = \App\Models\Menu::with(['dishes.recipes.material'])->where('date', $nextMenuDate)->get();
+        foreach ($menus as $menu) {
+            foreach ($menu->dishes as $dish) {
+                $portions = ($dish->pivot->porsi_besar + $dish->pivot->porsi_kecil) ?: $dish->pivot->portions;
+                foreach ($dish->recipes as $recipe) {
+                    $matId = $recipe->material_id;
+                    $needed = $recipe->quantity * $portions;
+                    if (!isset($requirements[$matId])) {
+                        $requirements[$matId] = ['name' => $recipe->material->name ?? 'Unknown', 'quantity' => 0, 'unit' => $recipe->unit];
+                    }
+                    $requirements[$matId]['quantity'] += $needed;
+                }
+            }
+        }
+        uasort($requirements, fn($a,$b) => strcmp($a['name'], $b['name']));
+    }
+    return view('public.ajukan_penawaran', compact('materials', 'nextMenuDate', 'requirements'));
+})->name('offers.form');
+
 
 // AI Chat Bot Route (Public)
 Route::post('/chat/query', [\App\Http\Controllers\AiChatController::class, 'query'])->name('chat.query');
