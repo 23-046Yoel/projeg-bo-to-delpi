@@ -33,9 +33,8 @@
         }
         .ticker-container {
             width: 100%;
-            overflow: hidden;
             background: #0F172A;
-            height: 44px;
+            height: 40px;
             display: flex;
             align-items: center;
             position: sticky;
@@ -46,88 +45,72 @@
         .ticker-header {
             background: #D4AF37;
             color: #0F172A;
-            padding: 0 20px;
+            padding: 0 16px;
             height: 100%;
             display: flex;
             align-items: center;
             font-weight: 900;
-            font-size: 11px;
-            letter-spacing: 0.2em;
+            font-size: 10px;
+            letter-spacing: 0.15em;
             z-index: 2;
             position: relative;
-            box-shadow: 10px 0 30px rgba(0,0,0,0.3);
+            box-shadow: 5px 0 15px rgba(0,0,0,0.3);
+            flex-shrink: 0;
         }
         .ticker-header::after {
             content: '';
             position: absolute;
-            right: -15px;
+            right: -12px;
             top: 0;
-            border-left: 15px solid #D4AF37;
-            border-bottom: 44px solid transparent;
+            border-left: 12px solid #D4AF37;
+            border-bottom: 40px solid transparent;
         }
         .ticker-content-wrap {
             flex: 1;
-            overflow: hidden;
             position: relative;
             height: 100%;
-            display: flex;
-            align-items: center;
-        }
-        .ticker-content-wrap::before,
-        .ticker-content-wrap::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            width: 60px;
-            height: 100%;
-            z-index: 1;
-        }
-        .ticker-content-wrap::before {
-            left: 0;
-            background: linear-gradient(to right, #0F172A 0%, transparent 100%);
-        }
-        .ticker-content-wrap::after {
-            right: 0;
-            background: linear-gradient(to left, #0F172A 0%, transparent 100%);
-        }
-        .ticker-track {
-            display: inline-block;
-            white-space: nowrap;
-            padding-right: 100%;
-            animation: ticker-premium 70s linear infinite;
+            overflow: hidden;
         }
         .ticker-item {
-            display: inline-flex;
+            position: absolute;
+            inset: 0;
+            display: flex;
             align-items: center;
-            padding: 0 40px;
-            color: rgba(255,255,255,0.8);
+            padding: 0 20px;
+            color: rgba(255,255,255,0.9);
             font-size: 13px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            pointer-events: none;
+        }
+        .ticker-item.active {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
         }
         .ticker-label {
-            font-weight: 900;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-size: 11px;
+            letter-spacing: 0.08em;
+            font-size: 10px;
             margin-right: 12px;
-            padding: 2px 10px;
+            padding: 2px 8px;
             border-radius: 4px;
-            background: rgba(255,255,255,0.05);
+            display: inline-flex;
+            align-items: center;
         }
         .ticker-dot {
-            width: 4px;
-            height: 4px;
-            border-radius: circle;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
             background: currentColor;
-            margin-right: 8px;
+            margin-right: 6px;
             display: inline-block;
         }
         .ticker-item strong {
             color: #fff;
             font-weight: 700;
-        }
-        @keyframes ticker-premium {
-            0% { transform: translate3d(0, 0, 0); }
-            100% { transform: translate3d(-100%, 0, 0); }
         }
         .animate-pulse-slow {
             animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -197,25 +180,14 @@
             <span class="animate-pulse-slow">UPDATE TERKINI</span>
         </div>
         <div class="ticker-content-wrap">
-            <div class="ticker-track">
-                @foreach($ticker_items as $item)
-                    <div class="ticker-item">
-                        <span class="ticker-label" style="color: {{ $item['color'] }}; background: {{ $item['color'] }}15">
-                            <span class="ticker-dot"></span> {{ $item['label'] }}
-                        </span>
-                        <span>{!! $item['content'] !!}</span>
-                    </div>
-                @endforeach
-                {{-- Duplicate for seamless loop --}}
-                @foreach($ticker_items as $item)
-                    <div class="ticker-item">
-                        <span class="ticker-label" style="color: {{ $item['color'] }}; background: {{ $item['color'] }}15">
-                            <span class="ticker-dot"></span> {{ $item['label'] }}
-                        </span>
-                        <span>{!! $item['content'] !!}</span>
-                    </div>
-                @endforeach
-            </div>
+            @foreach($ticker_items as $index => $item)
+                <div class="ticker-item {{ $index === 0 ? 'active' : '' }}">
+                    <span class="ticker-label" style="color: {{ $item['color'] }}; background: {{ $item['color'] }}15">
+                        <span class="ticker-dot"></span> {{ $item['label'] }}
+                    </span>
+                    <span>{!! $item['content'] !!}</span>
+                </div>
+            @endforeach
         </div>
     </div>
     @endif
@@ -274,7 +246,7 @@
                             <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-4 py-2 rounded-2xl hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/5 transition-all duration-200">
                                 <span class="w-2 h-2 rounded-full bg-[#D4AF37] shrink-0"></span>
                                 <span class="text-sm font-bold text-[#0F172A]">{{ $req['name'] }}</span>
-                                <span class="text-xs font-black text-[#B8860B] bg-[#D4AF37]/10 px-2 py-0.5 rounded-full">{{ number_format($req['quantity'], 2) }} {{ $req['unit'] }}</span>
+                                <span class="text-xs font-black text-[#B8860B] bg-[#D4AF37]/10 px-2 py-0.5 rounded-full">{{ number_format($req['quantity'], 0, ',', '.') }} {{ $req['unit'] }}</span>
                             </div>
                         @endforeach
                     </div>
@@ -1711,6 +1683,17 @@
         window.addEventListener('resize', function() {
             drawAllCharts();
         });
+
+        // Ticker Fade Transition
+        const tickerItems = document.querySelectorAll('.ticker-item');
+        if (tickerItems.length > 1) {
+            let currentIndex = 0;
+            setInterval(() => {
+                tickerItems[currentIndex].classList.remove('active');
+                currentIndex = (currentIndex + 1) % tickerItems.length;
+                tickerItems[currentIndex].classList.add('active');
+            }, 5000); // Ganti update setiap 5 detik
+        }
     </script>
 </body>
 </html>

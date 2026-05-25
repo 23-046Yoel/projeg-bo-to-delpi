@@ -286,7 +286,7 @@
                             <span class="w-2 h-2 rounded-full bg-[#D4AF37] shrink-0"></span>
                             <span class="text-sm font-bold text-[#0F172A]">{{ $req['name'] }}</span>
                         </div>
-                        <span class="text-xs font-black text-[#B8860B] bg-[#D4AF37]/10 px-2 py-0.5 rounded-full whitespace-nowrap">{{ number_format($req['quantity'], 2) }} {{ $req['unit'] }}</span>
+                        <span class="text-xs font-black text-[#B8860B] bg-[#D4AF37]/10 px-2 py-0.5 rounded-full whitespace-nowrap">{{ number_format($req['quantity'], 0, ',', '.') }} {{ $req['unit'] }}</span>
                     </div>
                     @endforeach
                 </div>
@@ -339,8 +339,8 @@
                             <select id="product" required class="input-field" style="cursor:pointer;">
                                 <option value="">-- Pilih Bahan Baku --</option>
                                 @foreach($requirements as $req)
-                                    <option value="{{ $req['name'] }}" data-unit="{{ $req['unit'] }}" data-needed="{{ number_format($req['quantity'],2) }} {{ $req['unit'] }}">
-                                        {{ $req['name'] }} (dibutuhkan: {{ number_format($req['quantity'],2) }} {{ $req['unit'] }})
+                                    <option value="{{ $req['name'] }}" data-unit="{{ $req['unit'] }}" data-needed="{{ number_format($req['quantity'], 0, ',', '.') }} {{ $req['unit'] }}">
+                                        {{ $req['name'] }} (dibutuhkan: {{ number_format($req['quantity'], 0, ',', '.') }} {{ $req['unit'] }})
                                     </option>
                                 @endforeach
                                 @if(count($requirements) > 0)
