@@ -48,11 +48,18 @@ class DistributionController extends Controller
 
     public function create()
     {
-        $drivers = User::where('sppg_id', auth()->user()->sppg_id)
-            ->where('role', User::ROLE_DRIVER)
-            ->get();
-            
-        $groups = \App\Models\BeneficiaryGroup::where('sppg_id', auth()->user()->sppg_id)->get();
+        $user = auth()->user();
+        $sppgId = $user->sppg_id;
+
+        if ($user->isAdmin() && !$sppgId) {
+            $drivers = User::where('role', User::ROLE_DRIVER)->get();
+            $groups = \App\Models\BeneficiaryGroup::all();
+        } else {
+            $drivers = User::where('sppg_id', $sppgId)
+                ->where('role', User::ROLE_DRIVER)
+                ->get();
+            $groups = \App\Models\BeneficiaryGroup::where('sppg_id', $sppgId)->get();
+        }
         
         return view('distributions.create', compact('drivers', 'groups'));
     }
@@ -67,11 +74,24 @@ class DistributionController extends Controller
             'group_ids.*' => 'exists:beneficiary_groups,id',
         ]);
 
+        $driverSppgId = null;
+        if ($request->filled('driver_id')) {
+            $driver = User::find($request->driver_id);
+            $driverSppgId = $driver ? $driver->sppg_id : null;
+        }
+
+        $sppgId = auth()->user()->sppg_id ?? $driverSppgId;
+
+        if (!$sppgId && !empty($validated['group_ids'])) {
+            $firstGroup = \App\Models\BeneficiaryGroup::find($validated['group_ids'][0]);
+            $sppgId = $firstGroup ? $firstGroup->sppg_id : null;
+        }
+
         $route = DistributionRoute::create([
             'assistant_id' => auth()->id(),
             'driver_id' => $validated['driver_id'] ?? null,
             'driver_phone' => $validated['driver_phone'] ?? null,
-            'sppg_id' => auth()->user()->sppg_id,
+            'sppg_id' => $sppgId,
             'date' => $validated['date'],
             'status' => 'planned',
         ]);

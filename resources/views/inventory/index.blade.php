@@ -52,12 +52,12 @@
 
                         <div class="p-6 lg:p-8 bg-emerald-50 rounded-3xl lg:rounded-[2rem] relative overflow-hidden group text-emerald-600">
                                 <div class="text-[10px] font-black uppercase tracking-widest mb-1 lg:mb-2 opacity-60">Total Inbound</div>
-                                <div class="text-2xl lg:text-3xl font-black">+{{ number_format($total_masuk, 1) }}</div>
+                                <div class="text-2xl lg:text-3xl font-black">+{{ number_format($total_masuk, 0, ',', '.') }}</div>
                         </div>
 
                         <div class="p-6 lg:p-8 bg-rose-50 rounded-3xl lg:rounded-[2rem] relative overflow-hidden group text-rose-600">
                                 <div class="text-[10px] font-black uppercase tracking-widest mb-1 lg:mb-2 opacity-60">Total Outbound</div>
-                                <div class="text-2xl lg:text-3xl font-black">-{{ number_format($total_keluar, 1) }}</div>
+                                <div class="text-2xl lg:text-3xl font-black">-{{ number_format($total_keluar, 0, ',', '.') }}</div>
                         </div>
 
                         <div class="p-6 lg:p-8 bg-royal-navy rounded-3xl lg:rounded-[2rem] relative overflow-hidden group shadow-xl">
@@ -194,17 +194,17 @@
                                             </div>
                                         </td>
                                         <td class="px-6 py-6 whitespace-nowrap text-right font-bold text-gray-400 text-sm">
-                                            {{ number_format($item['saldo_awal'], 2) }} <span class="text-[10px] uppercase font-black ml-1 text-slate-300">{{ $item['unit'] }}</span>
+                                            {{ number_format($item['saldo_awal'], 0, ',', '.') }} <span class="text-[10px] uppercase font-black ml-1 text-slate-300">{{ $item['unit'] }}</span>
                                         </td>
                                         <td class="px-6 py-6 whitespace-nowrap text-right font-black text-emerald-500 text-sm">
-                                            +{{ number_format($item['masuk'], 2) }} <span class="text-[10px] uppercase font-black ml-1 text-emerald-300">{{ $item['unit'] }}</span>
+                                            +{{ number_format($item['masuk'], 0, ',', '.') }} <span class="text-[10px] uppercase font-black ml-1 text-emerald-300">{{ $item['unit'] }}</span>
                                         </td>
                                         <td class="px-6 py-6 whitespace-nowrap text-right font-black text-rose-500 text-sm">
-                                            -{{ number_format($item['keluar'], 2) }} <span class="text-[10px] uppercase font-black ml-1 text-rose-300">{{ $item['unit'] }}</span>
+                                            -{{ number_format($item['keluar'], 0, ',', '.') }} <span class="text-[10px] uppercase font-black ml-1 text-rose-300">{{ $item['unit'] }}</span>
                                         </td>
                                         <td class="px-6 py-6 whitespace-nowrap text-right">
                                             <div class="inline-block px-4 py-2 rounded-xl {{ $item['saldo_akhir'] < 0 ? 'bg-rose-50 text-rose-600' : 'bg-royal-navy text-gold' }} text-lg font-black font-playfair">
-                                                {{ number_format($item['saldo_akhir'], 2) }} <span class="text-[10px] uppercase font-black ml-1 opacity-60">{{ $item['unit'] }}</span>
+                                                {{ number_format($item['saldo_akhir'], 0, ',', '.') }} <span class="text-[10px] uppercase font-black ml-1 opacity-60">{{ $item['unit'] }}</span>
                                             </div>
                                         </td>
                                     </tr>
@@ -259,7 +259,7 @@
                                                 @endif
                                             </td>
                                             <td class="px-6 py-5 whitespace-nowrap text-right text-sm font-black text-royal-navy">
-                                                {{ number_format($log->quantity, 2) }} <span class="text-[9px] text-gray-400 uppercase ml-1">{{ $log->material->unit ?? '' }}</span>
+                                                {{ number_format($log->quantity, 0, ',', '.') }} <span class="text-[9px] text-gray-400 uppercase ml-1">{{ $log->material->unit ?? '' }}</span>
                                             </td>
                                             <td class="px-6 py-5 text-xs text-gray-500 max-w-xs truncate">
                                                 {{ $log->notes ?? '-' }}
