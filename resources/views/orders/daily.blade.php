@@ -54,7 +54,7 @@
                                             <p class="text-[9px] font-bold text-gray-300 uppercase tracking-widest">Komponen Resep MBG</p>
                                         </td>
                                         <td class="py-6 text-center">
-                                            <span class="font-black text-royal-navy">{{ number_format($item['total'], 2) }}</span>
+                                            <span class="font-black text-royal-navy">{{ number_format($item['total'], 0, ',', '.') }}</span>
                                             <span class="text-[10px] font-bold text-gray-400 uppercase ml-1">{{ $item['unit'] }}</span>
                                         </td>
                                         <td class="py-6 text-right text-gray-500 font-medium">
