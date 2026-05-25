@@ -241,8 +241,12 @@
                     <p class="text-gray-500 text-sm mb-6 max-w-xl">Dapur SPPG membutuhkan bahan-bahan berikut. Jika Anda seorang pemasok, klik tombol di samping untuk mengajukan penawaran harga Anda secara instan.</p>
 
                     {{-- Ingredients chips --}}
+                    @php
+                        $visibleRequirements = collect($tomorrowRequirements)->take(6);
+                        $hiddenRequirements = collect($tomorrowRequirements)->slice(6);
+                    @endphp
                     <div class="flex flex-wrap gap-2">
-                        @foreach($tomorrowRequirements as $req)
+                        @foreach($visibleRequirements as $req)
                             <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-4 py-2 rounded-2xl hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/5 transition-all duration-200">
                                 <span class="w-2 h-2 rounded-full bg-[#D4AF37] shrink-0"></span>
                                 <span class="text-sm font-bold text-[#0F172A]">{{ $req['name'] }}</span>
@@ -250,6 +254,29 @@
                             </div>
                         @endforeach
                     </div>
+
+                    @if($hiddenRequirements->count() > 0)
+                        <div id="hidden-ingredients" class="max-h-0 overflow-hidden transition-all duration-500 ease-in-out mt-2">
+                            <div class="flex flex-wrap gap-2 pt-2">
+                                @foreach($hiddenRequirements as $req)
+                                    <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-4 py-2 rounded-2xl hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/5 transition-all duration-200">
+                                        <span class="w-2 h-2 rounded-full bg-[#D4AF37] shrink-0"></span>
+                                        <span class="text-sm font-bold text-[#0F172A]">{{ $req['name'] }}</span>
+                                        <span class="text-xs font-black text-[#B8860B] bg-[#D4AF37]/10 px-2 py-0.5 rounded-full">{{ number_format($req['quantity'], 0, ',', '.') }} {{ $req['unit'] }}</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button id="toggle-ingredients-btn" onclick="toggleIngredients()" class="inline-flex items-center gap-2 text-xs font-black text-[#B8860B] hover:text-[#0F172A] transition-colors focus:outline-none bg-[#D4AF37]/10 px-4 py-2.5 rounded-xl border border-[#D4AF37]/20 hover:bg-[#D4AF37]/20">
+                                <span id="toggle-text">Lihat Seluruh Bahan (+{{ $hiddenRequirements->count() }} Bahan Lainnya)</span>
+                                <svg id="toggle-icon" class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+                        </div>
+                    @endif
                 </div>
 
                 {{-- Right: CTA button --}}
@@ -1693,6 +1720,24 @@
                 currentIndex = (currentIndex + 1) % tickerItems.length;
                 tickerItems[currentIndex].classList.add('active');
             }, 5000); // Ganti update setiap 5 detik
+        }
+
+        // Toggle Ingredients Collapse
+        function toggleIngredients() {
+            const container = document.getElementById('hidden-ingredients');
+            const btnText = document.getElementById('toggle-text');
+            const icon = document.getElementById('toggle-icon');
+            const hiddenCount = {{ isset($hiddenRequirements) ? $hiddenRequirements->count() : 0 }};
+
+            if (container.style.maxHeight && container.style.maxHeight !== '0px') {
+                container.style.maxHeight = '0px';
+                btnText.textContent = `Lihat Seluruh Bahan (+${hiddenCount} Bahan Lainnya)`;
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                container.style.maxHeight = container.scrollHeight + 'px';
+                btnText.textContent = 'Sembunyikan Sebagian';
+                icon.style.transform = 'rotate(180deg)';
+            }
         }
     </script>
 </body>
