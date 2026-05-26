@@ -24,6 +24,9 @@ class User extends Authenticatable
     const ROLE_QC = 'qc';
     const ROLE_DRIVER = 'driver'; // Existing role
     const ROLE_PERWAKILAN_YAYASAN = 'perwakilan_yayasan';
+    const ROLE_STAFF_PREP = 'staff_prep';
+    const ROLE_STAFF_PROC = 'staff_proc';
+    const ROLE_STAFF_PORT = 'staff_port';
 
     public function isAdmin()
     {
@@ -43,6 +46,9 @@ class User extends Authenticatable
             self::ROLE_QC => 'QUALITY CONTROL',
             self::ROLE_DRIVER => 'DRIVER OPERASIONAL',
             self::ROLE_PERWAKILAN_YAYASAN => 'PERWAKILAN YAYASAN',
+            self::ROLE_STAFF_PREP => 'STAF PERSIAPAN',
+            self::ROLE_STAFF_PROC => 'STAF PENGOLAHAN',
+            self::ROLE_STAFF_PORT => 'STAF PEMORSIAN',
         ][$this->role] ?? 'PENGGUNA';
     }
 

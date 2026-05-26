@@ -20,6 +20,7 @@ class ProductionController extends Controller
 
     public function preparationIndex(Request $request)
     {
+        $this->authorize('access-preparation');
         $user = auth()->user();
         $query = Menu::with('sppg')->orderBy('date', 'desc');
 
@@ -43,6 +44,7 @@ class ProductionController extends Controller
 
     public function preparationShow(Menu $menu)
     {
+        $this->authorize('access-preparation');
         $menu->load(['dishes.recipes.material', 'preparations.material', 'productionLog']);
         
         // Aggregate materials needed
@@ -66,6 +68,7 @@ class ProductionController extends Controller
 
     public function preparationStore(Request $request, Menu $menu)
     {
+        $this->authorize('access-preparation');
         $request->validate([
             'prep_start' => 'nullable|date',
             'prep_end' => 'nullable|date',
@@ -113,6 +116,7 @@ class ProductionController extends Controller
 
     public function processingIndex(Request $request)
     {
+        $this->authorize('access-processing');
         $user = auth()->user();
         $query = Menu::with('sppg')->orderBy('date', 'desc');
 
@@ -136,12 +140,14 @@ class ProductionController extends Controller
 
     public function processingShow(Menu $menu)
     {
+        $this->authorize('access-processing');
         $menu->load(['dishes', 'processings.dish', 'productionLog']);
         return view('production.processing.show', compact('menu'));
     }
 
     public function processingStore(Request $request, Menu $menu)
     {
+        $this->authorize('access-processing');
         $request->validate([
             'proc_start' => 'nullable|date',
             'proc_end' => 'nullable|date',
@@ -193,6 +199,7 @@ class ProductionController extends Controller
 
     public function portioningIndex(Request $request)
     {
+        $this->authorize('access-portioning');
         $user = auth()->user();
         $query = Menu::with('sppg')->orderBy('date', 'desc');
 
@@ -216,12 +223,14 @@ class ProductionController extends Controller
 
     public function portioningShow(Menu $menu)
     {
+        $this->authorize('access-portioning');
         $menu->load(['sppg.beneficiaryGroups', 'portionings.beneficiaryGroup', 'productionLog']);
         return view('production.portioning.show', compact('menu'));
     }
 
     public function portioningStore(Request $request, Menu $menu)
     {
+        $this->authorize('access-portioning');
         $request->validate([
             'port_start' => 'nullable|date',
             'port_end' => 'nullable|date',

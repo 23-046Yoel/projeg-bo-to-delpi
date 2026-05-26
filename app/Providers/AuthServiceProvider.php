@@ -35,6 +35,37 @@ class AuthServiceProvider extends ServiceProvider
             ]);
         });
 
+        // 2.1. Gates for Production Modules
+        \Illuminate\Support\Facades\Gate::define('access-preparation', function ($user) {
+            return in_array($user->role, [
+                \App\Models\User::ROLE_ADMIN,
+                \App\Models\User::ROLE_KA_SPPG,
+                \App\Models\User::ROLE_PENGAWAS_GIZI,
+                \App\Models\User::ROLE_ASLAP,
+                \App\Models\User::ROLE_STAFF_PREP,
+            ]);
+        });
+
+        \Illuminate\Support\Facades\Gate::define('access-processing', function ($user) {
+            return in_array($user->role, [
+                \App\Models\User::ROLE_ADMIN,
+                \App\Models\User::ROLE_KA_SPPG,
+                \App\Models\User::ROLE_PENGAWAS_GIZI,
+                \App\Models\User::ROLE_ASLAP,
+                \App\Models\User::ROLE_STAFF_PROC,
+            ]);
+        });
+
+        \Illuminate\Support\Facades\Gate::define('access-portioning', function ($user) {
+            return in_array($user->role, [
+                \App\Models\User::ROLE_ADMIN,
+                \App\Models\User::ROLE_KA_SPPG,
+                \App\Models\User::ROLE_PENGAWAS_GIZI,
+                \App\Models\User::ROLE_ASLAP,
+                \App\Models\User::ROLE_STAFF_PORT,
+            ]);
+        });
+
         // 3. Manajemen Penerima Manfaat: Aslap
         \Illuminate\Support\Facades\Gate::define('manage-distribution', function ($user) {
             return in_array($user->role, [\App\Models\User::ROLE_ADMIN, \App\Models\User::ROLE_ASLAP]);
