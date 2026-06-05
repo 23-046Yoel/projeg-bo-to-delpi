@@ -127,7 +127,7 @@
                                     <div>
                                         <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">2. Jumlah (Kuantitas)</label>
                                         <div class="relative group">
-                                            <input type="number" step="0.01" name="quantity" required class="w-full px-6 py-4 bg-white border-none rounded-2xl text-lg font-black text-royal-navy focus:ring-2 focus:ring-gold transition-all shadow-sm" placeholder="0.00" />
+                                            <input type="number" step="1" min="1" name="quantity" required class="w-full px-6 py-4 bg-white border-none rounded-2xl text-lg font-black text-royal-navy focus:ring-2 focus:ring-gold transition-all shadow-sm" placeholder="0" />
                                             <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none text-[10px] font-black text-gold-dark uppercase tracking-widest opacity-40">Unit</div>
                                         </div>
                                     </div>
