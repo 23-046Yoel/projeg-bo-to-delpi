@@ -65,6 +65,7 @@
                 </a>
 
                 <!-- Payments -->
+                @if(auth()->user()->role !== \App\Models\User::ROLE_PEMASOK)
                 <div class="bg-royal-navy p-6 sm:p-8 rounded-[1.5rem] sm:rounded-[2rem] shadow-[0_20px_50px_rgba(15,23,42,0.1)] border border-royal-navy transition-all duration-500 group relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-white/5 -mr-12 sm:-mr-16 -mt-12 sm:-mt-16 rounded-full"></div>
                     <div class="relative">
@@ -79,9 +80,29 @@
                         </div>
                     </div>
                 </div>
+                @endif
             </div>
 
+            <!-- Welcome/Action Box for Suppliers -->
+            @if(auth()->user()->role === \App\Models\User::ROLE_PEMASOK)
+            <div class="bg-white rounded-[2rem] p-8 sm:p-10 border border-gray-100 shadow-[0_20px_50px_rgba(0,0,0,0.02)] mb-8 text-center relative overflow-hidden">
+                <div class="absolute -top-12 -right-12 w-40 h-40 bg-gold/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10 max-w-2xl mx-auto">
+                    <div class="w-16 h-16 bg-gold/10 text-gold rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                    </div>
+                    <h4 class="font-playfair font-black text-2xl text-royal-navy mb-3">Selamat Datang, Mitra Pemasok Resmi! 👋</h4>
+                    <p class="text-sm text-gray-500 mb-8 max-w-lg mx-auto">Sistem mendeteksi Anda masuk sebagai Pemasok Resmi untuk program Makan Bergizi Gratis (MBG) Yayasan Alad Delphi. Anda dapat mengajukan penawaran bahan makanan terbaru langsung di sistem ini.</p>
+                    <a href="{{ route('offers.form') }}" class="inline-flex items-center gap-3 px-8 py-4 bg-royal-navy text-gold font-bold text-xs uppercase tracking-[0.2em] rounded-2xl hover:bg-royal-navy/90 hover:-translate-y-0.5 active:translate-y-0 shadow-lg shadow-royal-navy/15 transition-all duration-300">
+                        <span>Ajukan Penawaran Bahan Sekarang</span>
+                        <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+            @endif
+
             <!-- Data Lists Section -->
+            @if(auth()->user()->role !== \App\Models\User::ROLE_PEMASOK)
             <div class="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
                 
                 <!-- Latest Suppliers -->
@@ -179,6 +200,7 @@
                 </div>
 
             </div>
+            @endif
         </div>
     </div>
 </x-app-layout>

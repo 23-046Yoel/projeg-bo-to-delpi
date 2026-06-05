@@ -14,6 +14,9 @@ class Kernel extends ConsoleKernel
     {
         // Scrape berita BGN setiap 6 jam sekali
         $schedule->command('bgn:scrape')->everySixHours();
+
+        // Broadcast kebutuhan bahan ke pemasok setiap hari pukul 08:00
+        $schedule->command('supplier:broadcast-requirements')->dailyAt('08:00');
     }
 
     /**

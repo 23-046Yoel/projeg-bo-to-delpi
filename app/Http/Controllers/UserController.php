@@ -41,6 +41,7 @@ class UserController extends Controller
             User::ROLE_STAFF_PREP => 'STAF PERSIAPAN',
             User::ROLE_STAFF_PROC => 'STAF PENGOLAHAN',
             User::ROLE_STAFF_PORT => 'STAF PEMORSIAN',
+            User::ROLE_PEMASOK => 'PEMASOK / SUPPLIER',
         ];
         return view('users.create', compact('sppgs', 'roles'));
     }
@@ -95,6 +96,7 @@ class UserController extends Controller
             User::ROLE_STAFF_PREP => 'STAF PERSIAPAN',
             User::ROLE_STAFF_PROC => 'STAF PENGOLAHAN',
             User::ROLE_STAFF_PORT => 'STAF PEMORSIAN',
+            User::ROLE_PEMASOK => 'PEMASOK / SUPPLIER',
         ];
         return view('users.edit', compact('user', 'sppgs', 'roles'));
     }

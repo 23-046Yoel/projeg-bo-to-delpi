@@ -27,6 +27,7 @@ class User extends Authenticatable
     const ROLE_STAFF_PREP = 'staff_prep';
     const ROLE_STAFF_PROC = 'staff_proc';
     const ROLE_STAFF_PORT = 'staff_port';
+    const ROLE_PEMASOK = 'pemasok';
 
     public function isAdmin()
     {
@@ -49,6 +50,7 @@ class User extends Authenticatable
             self::ROLE_STAFF_PREP => 'STAF PERSIAPAN',
             self::ROLE_STAFF_PROC => 'STAF PENGOLAHAN',
             self::ROLE_STAFF_PORT => 'STAF PEMORSIAN',
+            self::ROLE_PEMASOK => 'PEMASOK / SUPPLIER',
         ][$this->role] ?? 'PENGGUNA';
     }
 
