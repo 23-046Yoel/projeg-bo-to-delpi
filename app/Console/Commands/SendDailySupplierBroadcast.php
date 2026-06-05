@@ -31,47 +31,17 @@ class SendDailySupplierBroadcast extends Command
     public function handle()
     {
         $tomorrowDate = Carbon::now()->addDay()->toDateString();
-        $twoDaysLaterDate = Carbon::now()->addDays(2)->toDateString();
+        
+        // Ambil semua menu besok beserta SPPG, hidangan, resep, dan bahan makanan
+        $menus = Menu::with(['sppg', 'dishes.recipes.material'])
+            ->whereDate('date', $tomorrowDate)
+            ->get();
 
-        $tomorrowRequirements = $this->getRequirementsForDate($tomorrowDate);
-        $twoDaysLaterRequirements = $this->getRequirementsForDate($twoDaysLaterDate);
-
-        // Jika kedua tanggal tidak memiliki kebutuhan, log info dan lewati broadcast
-        if (empty($tomorrowRequirements) && empty($twoDaysLaterRequirements)) {
-            $this->info('Tidak ada kebutuhan bahan baku untuk besok dan lusa. Broadcast dibatalkan.');
-            \Log::info('Supplier broadcast skipped: no requirements for tomorrow and two days later.');
+        if ($menus->isEmpty()) {
+            $this->info('Tidak ada jadwal menu / kebutuhan bahan baku untuk besok. Broadcast dilewati.');
+            \Log::info('Supplier broadcast skipped: no menus for tomorrow.');
             return;
         }
-
-        // Format pesan broadcast
-        $message = "*[INFORMASI KEBUTUHAN BAHAN]*\n";
-        $message .= "Halo Bapak/Ibu Pemasok 👋\n\n";
-        $message .= "Berikut adalah daftar kebutuhan bahan makanan untuk program Makan Bergizi Gratis (MBG) Alad Delphi:\n\n";
-
-        // Kebutuhan besok
-        $message .= "📅 *Besok (" . Carbon::parse($tomorrowDate)->translatedFormat('l, d F Y') . ")*:\n";
-        if (!empty($tomorrowRequirements)) {
-            foreach ($tomorrowRequirements as $req) {
-                $message .= "- " . $req['name'] . ": " . number_format($req['quantity'], 0, ',', '.') . " " . $req['unit'] . "\n";
-            }
-        } else {
-            $message .= "_Tidak ada jadwal menu / kebutuhan bahan._\n";
-        }
-        $message .= "\n";
-
-        // Kebutuhan lusa (2 hari setelahnya)
-        $message .= "📅 *Lusa (" . Carbon::parse($twoDaysLaterDate)->translatedFormat('l, d F Y') . ")*:\n";
-        if (!empty($twoDaysLaterRequirements)) {
-            foreach ($twoDaysLaterRequirements as $req) {
-                $message .= "- " . $req['name'] . ": " . number_format($req['quantity'], 0, ',', '.') . " " . $req['unit'] . "\n";
-            }
-        } else {
-            $message .= "_Tidak ada jadwal menu / kebutuhan bahan._\n";
-        }
-        $message .= "\n";
-
-        $message .= "Jika anda memiliki bahan harap kirim wa ke 085355039822\n\n";
-        $message .= "Terima kasih atas kerjasamanya! 🙏";
 
         // Himpun semua nomor HP unik dari Pemasok (tabel suppliers & users ber-role pemasok)
         $supplierPhones = Supplier::whereNotNull('phone')->pluck('phone')->toArray();
@@ -101,16 +71,64 @@ class SendDailySupplierBroadcast extends Command
         }
 
         $wa = app(WhatsAppService::class);
-        $count = 0;
+        $broadcastCount = 0;
 
-        foreach ($normalizedPhones as $phone) {
-            $this->info("Mengirim kebutuhan bahan ke +{$phone}...");
-            $wa->sendMessage($phone, $message);
-            $count++;
+        foreach ($menus as $menu) {
+            $sppgName = $menu->sppg ? $menu->sppg->name : 'Master Office';
+            
+            // Hitung kebutuhan bahan untuk menu ini
+            $requirements = [];
+            foreach ($menu->dishes as $dish) {
+                $portions = ($dish->pivot->porsi_besar + $dish->pivot->porsi_kecil) ?: $dish->pivot->portions;
+                foreach ($dish->recipes as $recipe) {
+                    if (!$recipe->material) continue;
+                    $matId = $recipe->material_id;
+                    $needed = $recipe->quantity * $portions;
+                    if (!isset($requirements[$matId])) {
+                        $requirements[$matId] = [
+                            'name'     => $recipe->material->name,
+                            'quantity' => 0,
+                            'unit'     => $recipe->unit,
+                        ];
+                    }
+                    $requirements[$matId]['quantity'] += $needed;
+                }
+            }
+
+            if (empty($requirements)) {
+                continue;
+            }
+
+            // Urutkan bahan baku secara alfabetis
+            uasort($requirements, fn($a, $b) => strcmp($a['name'], $b['name']));
+
+            // Format pesan sesuai dengan template dari client
+            $formattedDate = Carbon::parse($tomorrowDate)->translatedFormat('d F Y');
+            $message = "Hallo besok ({$formattedDate}) {$sppgName} membutuhkan pasokan bahan sbb :\n";
+            
+            $i = 1;
+            foreach ($requirements as $req) {
+                $message .= "{$i}. {$req['name']} " . number_format($req['quantity'], 0, ',', '.') . " {$req['unit']}\n";
+                $i++;
+            }
+            
+            $message .= "\n";
+            $message .= "WA kan ke no 085355039822\n";
+            $message .= "Nama bahan :\n";
+            $message .= "Qty yang dapat dipasok :\n";
+            $message .= "Harga yang anda tawarkan:\n\n";
+            $message .= "Terima kasih";
+
+            // Kirim ke semua pemasok yang terdaftar
+            foreach ($normalizedPhones as $phone) {
+                $this->info("Mengirim kebutuhan {$sppgName} ke +{$phone}...");
+                $wa->sendMessage($phone, $message);
+                $broadcastCount++;
+            }
         }
 
-        $this->info("Broadcast selesai. Berhasil mengirim ke {$count} nomor pemasok.");
-        \Log::info("Supplier broadcast completed. Sent to {$count} suppliers.");
+        $this->info("Broadcast selesai. Total pesan terkirim: {$broadcastCount}.");
+        \Log::info("Supplier broadcast completed. Sent total {$broadcastCount} messages.");
     }
 
     /**
