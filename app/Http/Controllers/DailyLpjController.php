@@ -54,6 +54,7 @@ class DailyLpjController extends Controller
         $materialReceipts = [];
         $haccpPreparation = [];
         $haccpProcessing = [];
+        $haccpPortioning = [];
         $distributionData = [];
 
         if ($menu) {
@@ -80,6 +81,14 @@ class DailyLpjController extends Controller
                     'qty_received' => $proc->qty_received, 'qty_result' => $proc->qty_produced,
                     'start_time' => $proc->start_time ? Carbon::parse($proc->start_time)->format('H:i') : '-',
                     'end_time' => $proc->end_time ? Carbon::parse($proc->end_time)->format('H:i') : '-',
+                ])->toArray();
+
+            $haccpPortioning = \App\Models\ProductionPortioning::with('beneficiaryGroup')
+                ->where('menu_id', $menu->id)->get()->map(fn($port) => [
+                    'group_name' => $port->beneficiaryGroup->name ?? '-',
+                    'qty_received' => $port->qty_received, 'qty_result' => $port->qty_received,
+                    'start_time' => $port->start_time ? Carbon::parse($port->start_time)->format('H:i') : '-',
+                    'end_time' => $port->end_time ? Carbon::parse($port->end_time)->format('H:i') : '-',
                 ])->toArray();
         }
 
@@ -121,6 +130,7 @@ class DailyLpjController extends Controller
             'material_receipts'              => $materialReceipts,
             'haccp_preparation'              => $haccpPreparation,
             'haccp_processing'               => $haccpProcessing,
+            'haccp_portioning'               => $haccpPortioning,
             'distribution_data'              => $distributionData,
             'initial_balance_virtual'        => $initialBalance,
             'expenditure_materials_virtual'  => $expMaterials,
@@ -157,6 +167,7 @@ class DailyLpjController extends Controller
             'material_receipts' => 'nullable|array',
             'haccp_preparation' => 'nullable|array',
             'haccp_processing' => 'nullable|array',
+            'haccp_portioning' => 'nullable|array',
             'distribution_data' => 'nullable|array',
             'initial_balance_virtual' => 'required|numeric',
             'initial_balance_cash' => 'required|numeric',
@@ -206,6 +217,7 @@ class DailyLpjController extends Controller
             'material_receipts' => 'nullable|array',
             'haccp_preparation' => 'nullable|array',
             'haccp_processing' => 'nullable|array',
+            'haccp_portioning' => 'nullable|array',
             'distribution_data' => 'nullable|array',
             'initial_balance_virtual' => 'required|numeric',
             'initial_balance_cash' => 'required|numeric',

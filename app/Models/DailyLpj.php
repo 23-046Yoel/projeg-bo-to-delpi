@@ -16,6 +16,7 @@ class DailyLpj extends Model
         'material_receipts' => 'array',
         'haccp_preparation' => 'array',
         'haccp_processing' => 'array',
+        'haccp_portioning' => 'array',
         'distribution_data' => 'array',
         'signatures' => 'array',
     ];

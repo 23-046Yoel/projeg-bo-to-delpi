@@ -29,9 +29,21 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
+        if ($request->filled('phone')) {
+            $phone = preg_replace('/[^0-9]/', '', $request->phone);
+            if (str_starts_with($phone, '620')) {
+                $phone = '62' . substr($phone, 3);
+            } elseif (str_starts_with($phone, '0')) {
+                $phone = '62' . substr($phone, 1);
+            } elseif (str_starts_with($phone, '8')) {
+                $phone = '62' . $phone;
+            }
+            $request->merge(['phone' => $phone]);
+        }
+
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:20',
+            'name' => 'required|string|max:255|unique:suppliers,name',
+            'phone' => 'nullable|string|max:20|unique:suppliers,phone',
             'price' => 'numeric|min:0',
             'village' => 'nullable|string|max:255',
             'items' => 'nullable|string',
@@ -63,9 +75,21 @@ class SupplierController extends Controller
      */
     public function update(Request $request, Supplier $supplier)
     {
+        if ($request->filled('phone')) {
+            $phone = preg_replace('/[^0-9]/', '', $request->phone);
+            if (str_starts_with($phone, '620')) {
+                $phone = '62' . substr($phone, 3);
+            } elseif (str_starts_with($phone, '0')) {
+                $phone = '62' . substr($phone, 1);
+            } elseif (str_starts_with($phone, '8')) {
+                $phone = '62' . $phone;
+            }
+            $request->merge(['phone' => $phone]);
+        }
+
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:20',
+            'name' => 'required|string|max:255|unique:suppliers,name,' . $supplier->id,
+            'phone' => 'nullable|string|max:20|unique:suppliers,phone,' . $supplier->id,
             'price' => 'numeric|min:0',
             'village' => 'nullable|string|max:255',
             'items' => 'nullable|string',

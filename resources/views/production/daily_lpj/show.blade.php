@@ -96,7 +96,7 @@
     </table>
 
     <h2>HACCP PRODUKSI</h2>
-    <div class="grid">
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
         <table>
             <thead><tr><th colspan="3">Persiapan</th></tr><tr><th>Item</th><th>Hasil</th><th>Jam</th></tr></thead>
             <tbody>
@@ -110,6 +110,14 @@
             <tbody>
                 @foreach($dailyLpj->haccp_processing ?? [] as $item)
                     <tr><td>{{ $item['dish'] }}</td><td>{{ $item['qty_result'] }}</td><td>{{ $item['start_time'] }}</td></tr>
+                @endforeach
+            </tbody>
+        </table>
+        <table>
+            <thead><tr><th colspan="3">Pemorsian</th></tr><tr><th>Sekolah</th><th>Hasil</th><th>Jam</th></tr></thead>
+            <tbody>
+                @foreach($dailyLpj->haccp_portioning ?? [] as $item)
+                    <tr><td>{{ $item['group_name'] }}</td><td>{{ $item['qty_result'] }}</td><td>{{ $item['start_time'] }}</td></tr>
                 @endforeach
             </tbody>
         </table>

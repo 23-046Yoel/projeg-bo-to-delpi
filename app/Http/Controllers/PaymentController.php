@@ -13,14 +13,34 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $payments = Payment::with('beneficiary')->latest()->paginate(10);
+        $user = auth()->user();
+        $sppgId = $user->sppg_id;
+
+        $payments = Payment::with('beneficiary')
+            ->when($sppgId, function ($query, $sppgId) {
+                return $query->where('sppg_id', $sppgId);
+            })
+            ->latest()
+            ->paginate(10);
+
         return view('payments.index', compact('payments'));
     }
 
     public function create()
     {
-        $beneficiaries = Beneficiary::all();
-        return view('payments.create', compact('beneficiaries'));
+        $user = auth()->user();
+        $sppgId = $user->sppg_id;
+
+        $beneficiaries = Beneficiary::when($sppgId, function ($query, $sppgId) {
+            return $query->where('sppg_id', $sppgId);
+        })->get();
+
+        $sppgs = collect();
+        if ($user->isAdmin() && !$sppgId) {
+            $sppgs = \App\Models\Sppg::orderBy('name')->get();
+        }
+
+        return view('payments.create', compact('beneficiaries', 'sppgs'));
     }
 
     public function store(Request $request)
@@ -32,10 +52,16 @@ class PaymentController extends Controller
             'cash_type' => 'required|string',
             'amount_in' => 'nullable|numeric|min:0',
             'amount_out' => 'nullable|numeric|min:0',
-            'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120'
+            'file' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'sppg_id' => 'nullable|exists:sppgs,id',
+            'beneficiary_id' => 'nullable|exists:beneficiaries,id',
         ]);
 
-        $sppgId = auth()->user()->sppg_id;
+        $user = auth()->user();
+        $sppgId = $user->sppg_id;
+        if ($user->isAdmin() && !$sppgId && $request->filled('sppg_id')) {
+            $sppgId = $request->sppg_id;
+        }
         
         // Check for saldo awal (any existing payment records for this SPPG)
         $paymentExists = Payment::where('sppg_id', $sppgId)->exists();
@@ -58,6 +84,7 @@ class PaymentController extends Controller
 
         $payment = Payment::create([
             'sppg_id' => $sppgId,
+            'beneficiary_id' => $request->beneficiary_id ?: null,
             'date' => $request->date,
             'description' => $request->description,
             'transaction_type' => $request->transaction_type,

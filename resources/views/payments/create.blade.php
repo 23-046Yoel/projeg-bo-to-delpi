@@ -21,6 +21,18 @@
                         @csrf
                         <div class="space-y-8">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                @if(auth()->user()->isAdmin() && !auth()->user()->sppg_id && isset($sppgs) && $sppgs->isNotEmpty())
+                                <div class="col-span-1 md:col-span-2">
+                                    <label class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Dapur SPPG (Terkait)</label>
+                                    <select name="sppg_id" required class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold outline-none transition-all">
+                                        <option value="">-- Pilih Dapur SPPG --</option>
+                                        @foreach($sppgs as $sppg)
+                                            <option value="{{ $sppg->id }}">{{ $sppg->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                @endif
+
                                 <div>
                                     <label class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Tanggal Transaksi</label>
                                     <input type="date" name="date" required value="{{ date('Y-m-d') }}"

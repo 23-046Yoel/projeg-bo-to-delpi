@@ -147,7 +147,7 @@
                 <!-- HACCP PRODUKSI -->
                 <div class="premium-card p-8 mb-8">
                     <h3 class="text-xs font-black text-royal-navy uppercase tracking-[0.2em] mb-6">HACCP PRODUKSI</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         <div>
                             <h4 class="text-[10px] font-black text-gold-dark uppercase tracking-widest mb-4">1. Persiapan</h4>
                             <table class="w-full text-[10px]" id="prepTable">
@@ -189,6 +189,29 @@
                                             <td class="py-2"><input type="number" step="0.01" name="haccp_processing[{{ $index }}][qty_received]" value="{{ $item['qty_received'] }}" class="w-full bg-transparent border-none p-0 text-right font-bold focus:ring-0"></td>
                                             <td class="py-2"><input type="number" step="0.01" name="haccp_processing[{{ $index }}][qty_result]" value="{{ $item['qty_result'] }}" class="w-full bg-transparent border-none p-0 text-right font-bold focus:ring-0"></td>
                                             <td class="py-2"><input type="text" name="haccp_processing[{{ $index }}][start_time]" value="{{ $item['start_time'] }}" class="w-full bg-transparent border-none p-0 text-center font-bold focus:ring-0"></td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <h4 class="text-[10px] font-black text-gold-dark uppercase tracking-widest mb-4">3. Pemorsian</h4>
+                            <table class="w-full text-[10px]" id="portTable">
+                                <thead>
+                                    <tr class="border-b border-gray-200">
+                                        <th class="py-2 text-left text-gray-400 uppercase">Sekolah</th>
+                                        <th class="py-2 text-right text-gray-400 uppercase">Terima</th>
+                                        <th class="py-2 text-right text-gray-400 uppercase">Hasil</th>
+                                        <th class="py-2 text-center text-gray-400 uppercase">Jam</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($dailyLpj->haccp_portioning ?? [] as $index => $item)
+                                        <tr class="border-b border-gray-50">
+                                            <td class="py-2"><input type="text" name="haccp_portioning[{{ $index }}][group_name]" value="{{ $item['group_name'] }}" class="w-full bg-transparent border-none p-0 font-bold focus:ring-0"></td>
+                                            <td class="py-2"><input type="number" step="0.01" name="haccp_portioning[{{ $index }}][qty_received]" value="{{ $item['qty_received'] }}" class="w-full bg-transparent border-none p-0 text-right font-bold focus:ring-0"></td>
+                                            <td class="py-2"><input type="number" step="0.01" name="haccp_portioning[{{ $index }}][qty_result]" value="{{ $item['qty_result'] }}" class="w-full bg-transparent border-none p-0 text-right font-bold focus:ring-0"></td>
+                                            <td class="py-2"><input type="text" name="haccp_portioning[{{ $index }}][start_time]" value="{{ $item['start_time'] }}" class="w-full bg-transparent border-none p-0 text-center font-bold focus:ring-0"></td>
                                         </tr>
                                     @endforeach
                                 </tbody>
