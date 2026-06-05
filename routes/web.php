@@ -327,4 +327,16 @@ Route::get('/force-pull-public', function() {
     return "<pre>$output</pre><br><a href='/login'>Ke Halaman Login</a>";
 });
 
+Route::get('/temp-supplier-list-xyz', function() {
+    return \App\Models\Supplier::with('sppg')->get()->map(function($s) {
+        return [
+            'name' => $s->name,
+            'phone' => $s->phone,
+            'village' => $s->village,
+            'items' => $s->items,
+            'sppg' => $s->sppg->name ?? 'N/A'
+        ];
+    });
+});
+
 require __DIR__.'/auth.php';
