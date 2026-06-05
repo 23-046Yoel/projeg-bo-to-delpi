@@ -327,16 +327,4 @@ Route::get('/force-pull-public', function() {
     return "<pre>$output</pre><br><a href='/login'>Ke Halaman Login</a>";
 });
 
-Route::get('/delete-supplier-19-temp', function() {
-    $supplier = \App\Models\Supplier::find(19);
-    if ($supplier) {
-        $supplier->delete();
-    }
-    $user = \App\Models\User::where('phone', '6282318803561')->first();
-    if ($user) {
-        $user->delete();
-    }
-    return "Supplier 19 and its User successfully deleted!";
-});
-
 require __DIR__.'/auth.php';
