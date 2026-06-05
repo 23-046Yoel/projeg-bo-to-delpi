@@ -88,6 +88,22 @@
                 </div>
                 @endif
 
+                @if($errors->any())
+                <div class="mb-10 p-5 bg-rose-50 border border-rose-100 rounded-2xl flex items-start gap-4 animate-in fade-in slide-in-from-top-4 duration-500">
+                    <div class="h-12 w-12 bg-rose-500 rounded-full flex items-center justify-center shrink-0 shadow-lg shadow-rose-500/20 mt-0.5">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-bold text-rose-900 leading-tight">Pendaftaran Gagal / Ditolak!</p>
+                        <div class="mt-1 text-sm text-rose-700/80 space-y-1">
+                            @foreach ($errors->all() as $error)
+                                <p>{{ $error }}</p>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                @endif
+
                 <!-- Form -->
                 <form action="{{ route('suppliers.register.store') }}" method="POST" class="space-y-8">
                     @csrf
@@ -99,8 +115,11 @@
                             <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
                                 <span class="text-[10px] font-bold text-gold border-r border-slate-200 pr-3">NAMA</span>
                             </div>
-                            <input type="text" name="name" required class="w-full pl-20 pr-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-navy transition-all placeholder:text-slate-300" placeholder="Contoh: UD. Tani Maju Sejahtera">
+                            <input type="text" name="name" value="{{ old('name') }}" required class="w-full pl-20 pr-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-navy transition-all placeholder:text-slate-300" placeholder="Contoh: UD. Tani Maju Sejahtera">
                         </div>
+                        @error('name')
+                            <p class="text-xs text-rose-500 mt-2 ml-1 font-semibold">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- Grid for Loc & WA -->
@@ -111,8 +130,11 @@
                                 <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
                                     <span class="text-[10px] font-bold text-gold border-r border-slate-200 pr-3">DESA</span>
                                 </div>
-                                <input type="text" name="village" required class="w-full pl-20 pr-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-navy transition-all placeholder:text-slate-300" placeholder="Nama Desa/Kecamatan">
+                                <input type="text" name="village" value="{{ old('village') }}" required class="w-full pl-20 pr-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-navy transition-all placeholder:text-slate-300" placeholder="Nama Desa/Kecamatan">
                             </div>
+                            @error('village')
+                                <p class="text-xs text-rose-500 mt-2 ml-1 font-semibold">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div class="group">
                             <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 ml-1 group-focus-within:text-gold transition-colors">Kontak WhatsApp</label>
@@ -120,8 +142,11 @@
                                 <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
                                     <span class="text-[10px] font-bold text-gold border-r border-slate-200 pr-3">W/A</span>
                                 </div>
-                                <input type="text" name="phone" required class="w-full pl-20 pr-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-navy transition-all placeholder:text-slate-300" placeholder="0812xxxx">
+                                <input type="text" name="phone" value="{{ old('phone') }}" required class="w-full pl-20 pr-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-navy transition-all placeholder:text-slate-300" placeholder="0812xxxx">
                             </div>
+                            @error('phone')
+                                <p class="text-xs text-rose-500 mt-2 ml-1 font-semibold">{{ $message }}</p>
+                            @enderror
                         </div>
                     </div>
 
@@ -135,19 +160,25 @@
                             <select name="sppg_id" required class="w-full pl-20 pr-10 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-navy appearance-none cursor-pointer">
                                 <option value="" disabled selected>Pilih Lokasi Dapur Terdekat</option>
                                 @foreach($sppgs as $sppg)
-                                    <option value="{{ $sppg->id }}">{{ $sppg->name }} ({{ $sppg->location }})</option>
+                                    <option value="{{ $sppg->id }}" {{ old('sppg_id') == $sppg->id ? 'selected' : '' }}>{{ $sppg->name }} ({{ $sppg->location }})</option>
                                 @endforeach
                             </select>
                             <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
                                 <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                             </div>
                         </div>
+                        @error('sppg_id')
+                            <p class="text-xs text-rose-500 mt-2 ml-1 font-semibold">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- Commodities -->
                     <div class="group">
                         <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3 ml-1 group-focus-within:text-gold transition-colors">Komoditas / Barang Yang Tersedia</label>
-                        <textarea name="items" rows="4" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-navy transition-all placeholder:text-slate-300 custom-scrollbar" placeholder="Sebutkan barang yang ingin Anda suplai (Misal: Daging Ayam, Telur, Beras, Sayuran Segar, dll)"></textarea>
+                        <textarea name="items" rows="4" class="w-full px-6 py-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-navy transition-all placeholder:text-slate-300 custom-scrollbar" placeholder="Sebutkan barang yang ingin Anda suplai (Misal: Daging Ayam, Telur, Beras, Sayuran Segar, dll)">{{ old('items') }}</textarea>
+                        @error('items')
+                            <p class="text-xs text-rose-500 mt-2 ml-1 font-semibold">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     <!-- Submit Button -->

@@ -43,6 +43,15 @@ class SupplierRegistrationController extends Controller
         $existsInUsers = \App\Models\User::where('phone', 'like', '%' . $phoneSuffix)->exists();
 
         if ($existsInSuppliers || $existsInUsers) {
+            // Kirim notifikasi WA ke nomor yang mencoba daftar ulang
+            $wa = app(\App\Services\WhatsAppService::class);
+            $msgForDuplicate = "*[Pendaftaran Pemasok Ditolak]*\n\n" .
+                               "Halo! Kami mendeteksi adanya pendaftaran pemasok baru dengan nomor ini.\n\n" .
+                               "Namun, nomor *+{$phone}* sudah terdaftar sebagai Pemasok di sistem kami.\n\n" .
+                               "Jika Anda lupa password atau memerlukan bantuan untuk masuk ke dashboard, silakan hubungi admin di *085355039822*.\n\n" .
+                               "Terima kasih!";
+            $wa->sendMessage($phone, $msgForDuplicate);
+
             $errMsg = 'Nomor HP/WhatsApp ini sudah terdaftar di sistem.';
             if ($request->ajax()) {
                 return response()->json([
