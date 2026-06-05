@@ -100,7 +100,7 @@
                                         </td>
                                         <td class="px-6 py-6 whitespace-nowrap text-right">
                                             <div class="text-lg font-black font-playfair {{ $log->type == 'in' ? 'text-emerald-600' : 'text-rose-600' }}">
-                                                {{ $log->type == 'in' ? '+' : '-' }} {{ number_format($log->quantity, 2) }}
+                                                {{ $log->type == 'in' ? '+' : '-' }} {{ number_format($log->quantity, 0, ',', '.') }}
                                                 <span class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter ml-1">{{ $log->material->unit ?? 'Unit' }}</span>
                                             </div>
                                         </td>

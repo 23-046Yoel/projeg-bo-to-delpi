@@ -76,7 +76,7 @@
                                         <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-gray-300 group-focus-within:text-gold transition-colors font-black text-xs">
                                             <span id="unit-label">{{ $materialLog->material->unit ?? 'UNIT' }}</span>
                                         </div>
-                                        <x-text-input id="quantity" class="pl-16 w-full" type="number" step="0.01" name="quantity" :value="old('quantity', $materialLog->quantity)" required />
+                                        <x-text-input id="quantity" class="pl-16 w-full" type="number" step="1" min="1" name="quantity" :value="old('quantity', (int)$materialLog->quantity)" required placeholder="0" />
                                     </div>
                                     <x-input-error :messages="$errors->get('quantity')" class="mt-2" />
                                 </div>
