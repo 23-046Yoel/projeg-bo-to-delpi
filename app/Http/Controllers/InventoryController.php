@@ -8,11 +8,18 @@ class InventoryController extends Controller
 {
     public function index(Request $request)
     {
+        $user = auth()->user();
         $startDate = $request->input('start_date', now()->startOfMonth()->toDateString());
         $endDate = $request->input('end_date', now()->toDateString());
         $search = $request->input('search');
-        $sppgId = $request->input('sppg_id');
-        
+
+        // Non-admin: force their SPPG; admin: use filter or all
+        if (!$user->isAdmin() && $user->sppg_id) {
+            $sppgId = $user->sppg_id;
+        } else {
+            $sppgId = $request->input('sppg_id');
+        }
+
         $query = \App\Models\Material::query();
         if ($search) {
             $query->where('name', 'like', "%{$search}%");

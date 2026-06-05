@@ -42,11 +42,26 @@
                             </select>
                         </div>
 
+                        @if(auth()->user()->isAdmin())
+                        <div class="flex items-center gap-3">
+                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest">SPPG:</label>
+                            <select name="sppg_id" onchange="this.form.submit()" 
+                                class="bg-[#0a192f] border-none text-xs font-bold text-[#d4af37] rounded-lg focus:ring-1 focus:ring-[#d4af37] outline-none px-4 py-2 min-w-[160px]">
+                                <option value="">Semua SPPG</option>
+                                @foreach($sppgs as $s)
+                                    <option value="{{ $s->id }}" {{ request('sppg_id') == $s->id ? 'selected' : '' }}>
+                                        {{ $s->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @endif
+
                         <div class="flex items-center gap-4">
                             <button type="submit" class="px-6 py-2 bg-[#d4af37]/10 text-[#d4af37] text-[10px] font-bold uppercase rounded-lg hover:bg-[#d4af37]/20 transition-all">
                                 Cari
                             </button>
-                            @if(request('date') || request('supplier_id'))
+                            @if(request('date') || request('supplier_id') || request('sppg_id'))
                                 <a href="{{ route('orders.index') }}" class="text-[10px] font-bold text-red-400/50 uppercase hover:text-red-400 transition-colors">Reset</a>
                             @endif
                         </div>

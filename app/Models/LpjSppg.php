@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class LpjSppg extends Model
 {
     protected $fillable = [
+        'sppg_id',
         'period_start',
         'period_end',
         'target_peserta',
@@ -39,4 +40,9 @@ class LpjSppg extends Model
         'buku_bantu_bahan' => 'array',
         'buku_bantu_ops' => 'array',
     ];
+
+    public function sppg()
+    {
+        return $this->belongsTo(Sppg::class);
+    }
 }

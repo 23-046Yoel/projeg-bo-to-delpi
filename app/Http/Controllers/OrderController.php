@@ -11,8 +11,16 @@ class OrderController extends Controller
 {
     public function index(Request $request)
     {
+        $user = auth()->user();
         $query = \App\Models\Order::with('supplier', 'items.material');
-        
+
+        // Scope to user's SPPG for non-admins
+        if (!$user->isAdmin() && $user->sppg_id) {
+            $query->where('sppg_id', $user->sppg_id);
+        } elseif ($request->filled('sppg_id')) {
+            $query->where('sppg_id', $request->sppg_id);
+        }
+
         if ($request->filled('date')) {
             $query->whereDate('order_date', $request->date);
         }
@@ -23,8 +31,9 @@ class OrderController extends Controller
 
         $orders = $query->latest()->get();
         $suppliers = \App\Models\Supplier::orderBy('name')->get();
+        $sppgs = \App\Models\Sppg::orderBy('name')->get();
 
-        return view('orders.index', compact('orders', 'suppliers'));
+        return view('orders.index', compact('orders', 'suppliers', 'sppgs'));
     }
 
     public function show(Order $order)

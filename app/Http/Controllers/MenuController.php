@@ -16,14 +16,19 @@ class MenuController extends Controller
     
     public function index(Request $request)
     {
+        $user = auth()->user();
         $query = Menu::with('sppg');
 
-        if ($request->has('sppg_id') && $request->sppg_id != '') {
+        if (!$user->isAdmin() && $user->sppg_id) {
+            // Non-admin hanya lihat menu SPPG sendiri
+            $query->where('sppg_id', $user->sppg_id);
+        } elseif ($request->filled('sppg_id')) {
+            // Admin bisa filter
             $query->where('sppg_id', $request->sppg_id);
         }
 
         $menus = $query->orderBy('date', 'desc')->paginate(15)->withQueryString();
-        $sppgs = Sppg::all();
+        $sppgs = $user->isAdmin() ? Sppg::all() : collect();
         return view('menus.index', compact('menus', 'sppgs'));
     }
 

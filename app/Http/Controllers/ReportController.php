@@ -232,7 +232,14 @@ class ReportController extends Controller
 
     public function lpjSppgIndex()
     {
-        $lpjs = \App\Models\LpjSppg::latest()->get();
+        $user = auth()->user();
+        $query = \App\Models\LpjSppg::latest();
+
+        if (!$user->isAdmin() && $user->sppg_id) {
+            $query->where('sppg_id', $user->sppg_id);
+        }
+
+        $lpjs = $query->get();
         return view('reports.lpj_sppg.index', compact('lpjs'));
     }
 
@@ -315,6 +322,9 @@ class ReportController extends Controller
             'buku_bantu_bahan' => 'array|nullable',
             'buku_bantu_ops' => 'array|nullable',
         ]);
+
+        // Otomatis attach sppg_id dari user yang login
+        $validated['sppg_id'] = auth()->user()->sppg_id;
 
         \App\Models\LpjSppg::create($validated);
 

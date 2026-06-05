@@ -10,6 +10,7 @@
             
             <div class="flex flex-col md:flex-row items-stretch md:items-center gap-3">
                 <form action="{{ route('inventory.index') }}" method="GET" class="flex flex-wrap items-center gap-3 bg-silk p-2 rounded-2xl border border-gray-100 shadow-sm">
+                    @if(auth()->user()->isAdmin())
                     <div class="flex items-center px-4 space-x-2 border-r border-gray-100">
                         <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Dapur:</span>
                         <select name="sppg_id" class="bg-transparent border-none focus:ring-0 text-xs font-bold text-royal-navy p-0 w-32" onchange="this.form.submit()">
@@ -19,6 +20,9 @@
                             @endforeach
                         </select>
                     </div>
+                    @else
+                    <input type="hidden" name="sppg_id" value="{{ auth()->user()->sppg_id }}">
+                    @endif
                     <div class="flex items-center px-4 space-x-2 border-r border-gray-100">
                         <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Dari:</span>
                         <input name="start_date" type="date" value="{{ $startDate }}" class="bg-transparent border-none focus:ring-0 text-xs font-bold text-royal-navy p-0 w-28">
@@ -107,12 +111,19 @@
                                     <div class="lg:col-span-2">
                                         <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">1. Pilih Dapur & Bahan Baku</label>
                                         <div class="grid grid-cols-1 gap-4">
+                                            @if(auth()->user()->isAdmin())
                                             <select name="sppg_id" required class="w-full bg-white border-none rounded-2xl py-4 px-6 text-sm font-bold text-royal-navy shadow-sm focus:ring-2 focus:ring-gold transition-all">
                                                 <option value="">-- Pilih Dapur --</option>
                                                 @foreach($sppgs as $s)
-                                                    <option value="{{ $s->id }}" {{ (auth()->user()->sppg_id == $s->id || $sppgId == $s->id) ? 'selected' : '' }}>{{ $s->name }}</option>
+                                                    <option value="{{ $s->id }}" {{ ($sppgId == $s->id) ? 'selected' : '' }}>{{ $s->name }}</option>
                                                 @endforeach
                                             </select>
+                                            @else
+                                            <div class="w-full bg-silk border-none rounded-2xl py-4 px-6 text-sm font-bold text-royal-navy">
+                                                {{ auth()->user()->sppg->name ?? 'SPPG Anda' }}
+                                            </div>
+                                            <input type="hidden" name="sppg_id" value="{{ auth()->user()->sppg_id }}">
+                                            @endif
                                             <div class="relative">
                                                 <select name="material_id" required id="select2-adj-input" class="w-full select2">
                                                     <option value=""></option>

@@ -10,7 +10,13 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
+        $user = auth()->user();
         $query = User::with('sppg');
+
+        // Non-admin hanya lihat staff SPPG sendiri
+        if (!$user->isAdmin() && $user->sppg_id) {
+            $query->where('sppg_id', $user->sppg_id);
+        }
 
         if ($request->has('search')) {
             $search = $request->search;
