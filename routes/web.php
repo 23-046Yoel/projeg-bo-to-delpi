@@ -339,4 +339,48 @@ Route::get('/temp-supplier-list-xyz', function() {
     });
 });
 
+Route::get('/clean-phones-temp', function() {
+    $suppliers = \App\Models\Supplier::all();
+    $updatedSuppliers = [];
+    foreach ($suppliers as $s) {
+        $old = $s->phone;
+        $new = preg_replace('/[^0-9]/', '', $old);
+        if (str_starts_with($new, '620')) {
+            $new = '62' . substr($new, 3);
+        } elseif (str_starts_with($new, '0')) {
+            $new = '62' . substr($new, 1);
+        } elseif (str_starts_with($new, '8')) {
+            $new = '62' . $new;
+        }
+        if ($old !== $new) {
+            $s->update(['phone' => $new]);
+            $updatedSuppliers[] = "$old -> $new";
+        }
+    }
+
+    $users = \App\Models\User::all();
+    $updatedUsers = [];
+    foreach ($users as $u) {
+        $old = $u->phone;
+        if (empty($old)) continue;
+        $new = preg_replace('/[^0-9]/', '', $old);
+        if (str_starts_with($new, '620')) {
+            $new = '62' . substr($new, 3);
+        } elseif (str_starts_with($new, '0')) {
+            $new = '62' . substr($new, 1);
+        } elseif (str_starts_with($new, '8')) {
+            $new = '62' . $new;
+        }
+        if ($old !== $new) {
+            $u->update(['phone' => $new]);
+            $updatedUsers[] = "$old -> $new";
+        }
+    }
+
+    return response()->json([
+        'updated_suppliers' => $updatedSuppliers,
+        'updated_users' => $updatedUsers,
+    ]);
+});
+
 require __DIR__.'/auth.php';

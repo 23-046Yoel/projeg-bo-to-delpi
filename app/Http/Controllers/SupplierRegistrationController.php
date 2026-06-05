@@ -37,9 +37,10 @@ class SupplierRegistrationController extends Controller
             'sppg_id' => 'nullable|exists:sppgs,id',
         ]);
 
-        // 2. Cek apakah nomor HP sudah terdaftar di suppliers atau users
-        $existsInSuppliers = Supplier::where('phone', $phone)->exists();
-        $existsInUsers = \App\Models\User::where('phone', $phone)->exists();
+        // 2. Cek apakah nomor HP sudah terdaftar di suppliers atau users (menggunakan pencocokan akhiran 9 digit terakhir untuk menghindari perbedaan format 08/62)
+        $phoneSuffix = substr($phone, -9);
+        $existsInSuppliers = Supplier::where('phone', 'like', '%' . $phoneSuffix)->exists();
+        $existsInUsers = \App\Models\User::where('phone', 'like', '%' . $phoneSuffix)->exists();
 
         if ($existsInSuppliers || $existsInUsers) {
             $errMsg = 'Nomor HP/WhatsApp ini sudah terdaftar di sistem.';
