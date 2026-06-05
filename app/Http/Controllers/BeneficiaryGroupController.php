@@ -16,12 +16,11 @@ class BeneficiaryGroupController extends Controller
               ->orWhere('porsi_kecil', '>', 0);
         });
 
-        // Admin can filter by SPPG
-        if ($request->has('sppg_id') && $request->sppg_id != '') {
-            $query->where('sppg_id', $request->sppg_id);
-        } elseif ($user->sppg_id) {
-            // Non-admin filtered by their assigned SPPG
+        // Admin can filter by SPPG, non-admin auto-scoped ke SPPG sendiri
+        if (!$user->isAdmin() && $user->sppg_id) {
             $query->where('sppg_id', $user->sppg_id);
+        } elseif ($user->isAdmin() && $request->filled('sppg_id')) {
+            $query->where('sppg_id', $request->sppg_id);
         }
 
         $groups = $query->with('sppg')->latest()->paginate(20);
