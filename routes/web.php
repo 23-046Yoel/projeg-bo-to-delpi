@@ -327,4 +327,13 @@ Route::get('/force-pull-public', function() {
     return "<pre>$output</pre><br><a href='/login'>Ke Halaman Login</a>";
 });
 
+Route::get('/cek-data-materials-9x2jk', function() {
+    try {
+        $materials = \App\Models\Material::limit(15)->get(['id', 'name', 'stock', 'price', 'unit']);
+        return response()->json($materials);
+    } catch (\Exception $e) {
+        return $e->getMessage();
+    }
+});
+
 require __DIR__.'/auth.php';
