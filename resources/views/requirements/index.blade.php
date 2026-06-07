@@ -84,7 +84,7 @@
                                     </td>
                                     <td class="px-8 py-6">
                                         <span class="inline-block px-3 py-1 bg-royal-navy/5 text-royal-navy rounded-lg font-black text-sm">
-                                            {{ number_format($req['total_quantity'], 1) }} {{ $req['unit'] }}
+                                            {{ number_format($req['total_quantity'], 0, ',', '.') }} {{ $req['unit'] }}
                                         </span>
                                     </td>
                                     <td class="px-8 py-6 text-right">

@@ -214,7 +214,7 @@
                                                                 @endphp
                                                                 <li style="font-size: 11px; color: #64748b; display: flex; justify-content: space-between; padding: 2px 0;">
                                                                     <span>• {{ $recipe->material->name ?? 'Bahan' }}</span>
-                                                                    <span style="font-weight: 700; color: #1a2540;">{{ number_format($totalQty, 2) }} {{ $recipe->unit }}</span>
+                                                                    <span style="font-weight: 700; color: #1a2540;">{{ number_format($totalQty, 0, ',', '.') }} {{ $recipe->unit }}</span>
                                                                 </li>
                                                             @endforeach
                                                         </ul>

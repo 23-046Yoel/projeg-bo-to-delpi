@@ -7,35 +7,7 @@
                 </h2>
                 <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1">Catatan Saldo Bahan Gudang: {{ \Carbon\Carbon::parse($startDate)->format('d/m/y') }} - {{ \Carbon\Carbon::parse($endDate)->format('d/m/y') }}</p>
             </div>
-            
-            <div class="flex flex-col md:flex-row items-stretch md:items-center gap-3">
-                <form action="{{ route('inventory.index') }}" method="GET" class="flex flex-wrap items-center gap-3 bg-silk p-2 rounded-2xl border border-gray-100 shadow-sm">
-                    @if(auth()->user()->isAdmin())
-                    <div class="flex items-center px-4 space-x-2 border-r border-gray-100">
-                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Dapur:</span>
-                        <select name="sppg_id" class="bg-transparent border-none focus:ring-0 text-xs font-bold text-royal-navy p-0 w-32" onchange="this.form.submit()">
-                            <option value="">Semua Dapur</option>
-                            @foreach($sppgs as $s)
-                                <option value="{{ $s->id }}" {{ $sppgId == $s->id ? 'selected' : '' }}>{{ $s->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    @else
-                    <input type="hidden" name="sppg_id" value="{{ auth()->user()->sppg_id }}">
-                    @endif
-                    <div class="flex items-center px-4 space-x-2 border-r border-gray-100">
-                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Dari:</span>
-                        <input name="start_date" type="date" value="{{ $startDate }}" class="bg-transparent border-none focus:ring-0 text-xs font-bold text-royal-navy p-0 w-28">
-                    </div>
-                    <div class="flex items-center px-4 space-x-2">
-                        <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Ke:</span>
-                        <input name="end_date" type="date" value="{{ $endDate }}" class="bg-transparent border-none focus:ring-0 text-xs font-bold text-royal-navy p-0 w-28">
-                    </div>
-                    <button type="submit" class="bg-royal-navy text-gold text-[10px] font-black uppercase tracking-widest px-6 py-2.5 rounded-xl hover:bg-royal-navy/90 transition-all">
-                        Filter
-                    </button>
-                </form>
-            </div>
+
         </div>
     </x-slot>
 
