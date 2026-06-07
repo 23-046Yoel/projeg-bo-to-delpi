@@ -332,9 +332,9 @@ Route::get('/reset-stok-nol-7k2xp', function () {
         \Illuminate\Support\Facades\DB::table('material_logs')->delete();
         \Illuminate\Support\Facades\DB::table('materials')->update(['stock' => 0]);
         $count = \Illuminate\Support\Facades\DB::table('materials')->count();
-        return "<pre style='font-family:monospace;padding:20px;background:#0F172A;color:#D4AF37'>✅ BERHASIL! Stok {\$count} bahan sudah di-nolkan semua.\n\n<a href='/inventory' style='color:white'>Lihat Halaman Inventory</a></pre>";
+        return "<pre style='font-family:monospace;padding:20px;background:#0F172A;color:#D4AF37'>✅ BERHASIL! Stok {$count} bahan sudah di-nolkan semua.\n\n<a href='/inventory' style='color:white'>Lihat Halaman Inventory</a></pre>";
     } catch (\Exception $e) {
-        return "<pre style='color:red;padding:20px'>❌ Gagal: " . \$e->getMessage() . "</pre>";
+        return "<pre style='color:red;padding:20px'>❌ Gagal: " . $e->getMessage() . "</pre>";
     }
 });
 
