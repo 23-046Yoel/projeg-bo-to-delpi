@@ -141,6 +141,7 @@
                                             <input type="number" step="1" min="1" name="quantity" required class="w-full px-6 py-4 bg-white border-none rounded-2xl text-lg font-black text-royal-navy focus:ring-2 focus:ring-gold transition-all shadow-sm" placeholder="0" />
                                             <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none text-[10px] font-black text-gold-dark uppercase tracking-widest opacity-40">Unit</div>
                                         </div>
+                                        <p class="mt-2 text-[8px] text-amber-600 font-bold uppercase tracking-wider ml-2">*Masukkan jumlah barang (misal: 10), BUKAN harga barang (misal: Rp 15.000).*</p>
                                     </div>
 
                                     <div>

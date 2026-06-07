@@ -83,9 +83,10 @@
                                 </div>
 
                                 <div class="col-span-1 md:col-span-2">
-                                    <label for="stock" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Stok Awal</label>
+                                    <label for="stock" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Stok Awal (Jumlah Fisik Barang)</label>
                                     <input type="number" step="0.01" name="stock" id="stock" value="{{ old('stock', 0) }}" required
                                         class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
+                                    <p class="mt-2 text-[10px] text-amber-600 font-bold uppercase tracking-wider">*PENTING: Masukkan JUMLAH barang (misal: 10), BUKAN harga barang (misal: Rp 15.000).*</p>
                                     @error('stock') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
                                 </div>
 
