@@ -327,4 +327,33 @@ Route::get('/force-pull-public', function() {
     return "<pre>$output</pre><br><a href='/login'>Ke Halaman Login</a>";
 });
 
+Route::get('/rename-sppg-aman-sari-8k2mx', function() {
+    try {
+        $sppg = \App\Models\Sppg::where('name', 'like', '%dolog%')
+            ->orWhere('name', 'like', '%Dolog%')
+            ->orWhere('name', 'like', '%batunanggar%')
+            ->orWhere('name', 'like', '%Batunanggar%')
+            ->first();
+
+        if (!$sppg) {
+            return "<pre style='color:orange;padding:20px'>⚠️ SPPG Dolog Batunanggar tidak ditemukan di database.<br><br>Daftar SPPG yang ada:<br>" 
+                . \App\Models\Sppg::all()->pluck('name')->implode('<br>') 
+                . "</pre>";
+        }
+
+        $namaBaru = 'SPPG Aman Sari';
+        $namaLama = $sppg->name;
+        $sppg->update(['name' => $namaBaru]);
+
+        return "<pre style='font-family:monospace;padding:20px;background:#0F172A;color:#D4AF37'>
+✅ BERHASIL!
+Nama lama : $namaLama
+Nama baru : $namaBaru
+<a href='/dashboard' style='color:white'>← Kembali ke Dashboard</a>
+</pre>";
+    } catch (\Exception $e) {
+        return "<pre style='color:red;padding:20px'>❌ Gagal: " . $e->getMessage() . "</pre>";
+    }
+});
+
 require __DIR__.'/auth.php';
