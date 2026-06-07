@@ -5,7 +5,7 @@
                 <h2 class="font-black text-2xl text-royal-navy leading-tight tracking-tight uppercase font-playfair">
                     {{ __('Laporan Stok Gudang') }}
                 </h2>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1">Audit Saldo Bahan Baku: {{ \Carbon\Carbon::parse($startDate)->format('d/m/y') }} - {{ \Carbon\Carbon::parse($endDate)->format('d/m/y') }}</p>
+                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em] mt-1">Catatan Saldo Bahan Gudang: {{ \Carbon\Carbon::parse($startDate)->format('d/m/y') }} - {{ \Carbon\Carbon::parse($endDate)->format('d/m/y') }}</p>
             </div>
             
             <div class="flex flex-col md:flex-row items-stretch md:items-center gap-3">
@@ -50,17 +50,17 @@
                             $items_count = count($report);
                         @endphp
                         <div class="p-6 lg:p-8 bg-silk rounded-3xl lg:rounded-[2rem] relative overflow-hidden group">
-                                <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 lg:mb-2">Total Materials</div>
-                                <div class="text-2xl lg:text-3xl font-black text-royal-navy">{{ $items_count }} Items</div>
+                                <div class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 lg:mb-2">Total Macam Bahan</div>
+                                <div class="text-2xl lg:text-3xl font-black text-royal-navy">{{ $items_count }} Jenis</div>
                         </div>
 
                         <div class="p-6 lg:p-8 bg-emerald-50 rounded-3xl lg:rounded-[2rem] relative overflow-hidden group text-emerald-600">
-                                <div class="text-[10px] font-black uppercase tracking-widest mb-1 lg:mb-2 opacity-60">Total Inbound</div>
+                                <div class="text-[10px] font-black uppercase tracking-widest mb-1 lg:mb-2 opacity-60">Total Barang Masuk</div>
                                 <div class="text-2xl lg:text-3xl font-black">+{{ number_format($total_masuk, 0, ',', '.') }}</div>
                         </div>
 
                         <div class="p-6 lg:p-8 bg-rose-50 rounded-3xl lg:rounded-[2rem] relative overflow-hidden group text-rose-600">
-                                <div class="text-[10px] font-black uppercase tracking-widest mb-1 lg:mb-2 opacity-60">Total Outbound</div>
+                                <div class="text-[10px] font-black uppercase tracking-widest mb-1 lg:mb-2 opacity-60">Total Barang Keluar</div>
                                 <div class="text-2xl lg:text-3xl font-black">-{{ number_format($total_keluar, 0, ',', '.') }}</div>
                         </div>
 
@@ -96,7 +96,7 @@
                                         </div>
                                         <div>
                                             <h3 class="text-xl lg:text-3xl font-black text-royal-navy uppercase tracking-tighter" x-text="type === 'in' ? 'Penambahan Stok' : 'Pengurangan Stok'"></h3>
-                                            <p class="text-[9px] lg:text-[11px] font-bold text-gray-400 uppercase tracking-[0.3em] mt-1 lg:mt-2">Lengkapi data audit bahan baku</p>
+                                            <p class="text-[9px] lg:text-[11px] font-bold text-gray-400 uppercase tracking-[0.3em] mt-1 lg:mt-2">Lengkapi data masuk/keluar barang</p>
                                         </div>
                                     </div>
                                     <button @click="openAdjustment = false" class="text-rose-500">
@@ -109,7 +109,7 @@
                                     <input type="hidden" name="type" :value="type">
                                     
                                     <div class="lg:col-span-2">
-                                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">1. Pilih Dapur & Bahan Baku</label>
+                                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">1. Pilih Dapur & Nama Bahan</label>
                                         <div class="grid grid-cols-1 gap-4">
                                             @if(auth()->user()->isAdmin())
                                             <select name="sppg_id" required class="w-full bg-white border-none rounded-2xl py-4 px-6 text-sm font-bold text-royal-navy shadow-sm focus:ring-2 focus:ring-gold transition-all">
@@ -136,7 +136,7 @@
                                     </div>
 
                                     <div>
-                                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">2. Jumlah (Kuantitas)</label>
+                                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">2. Jumlah Barang</label>
                                         <div class="relative group">
                                             <input type="number" step="1" min="1" name="quantity" required class="w-full px-6 py-4 bg-white border-none rounded-2xl text-lg font-black text-royal-navy focus:ring-2 focus:ring-gold transition-all shadow-sm" placeholder="0" />
                                             <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none text-[10px] font-black text-gold-dark uppercase tracking-widest opacity-40">Unit</div>
@@ -155,13 +155,13 @@
                                     </div>
 
                                     <div class="lg:col-span-3">
-                                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">4. Catatan / Alasan (Opsional)</label>
+                                        <label class="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-3 ml-2">4. Keterangan / Alasan (Opsional)</label>
                                         <input type="text" name="note" class="w-full px-6 py-4 bg-white border-none rounded-2xl text-sm font-bold text-royal-navy focus:ring-2 focus:ring-gold transition-all shadow-sm" placeholder="Contoh: Stok rusak, bonus supplier, opname..." />
                                     </div>
 
                                     <div class="flex items-end">
                                         <button type="submit" class="w-full py-4 lg:py-5 bg-royal-navy text-gold text-[11px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-royal-navy/90 transition-all shadow-xl">
-                                            Proses Audit
+                                            Simpan Perubahan
                                         </button>
                                     </div>
                                 </form>
@@ -173,7 +173,7 @@
                     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                         <h3 class="text-[11px] font-black text-royal-navy uppercase tracking-[0.3em] flex items-center">
                             <svg class="w-4 h-4 mr-2 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
-                            Daftar Saldo Bahan Baku
+                            Daftar Jumlah Bahan
                         </h3>
                         
                         <form action="{{ route('inventory.index') }}" method="GET" class="relative w-full md:w-80 group">
@@ -188,11 +188,11 @@
                         <table class="min-w-full">
                             <thead>
                                 <tr class="border-b border-gray-50">
-                                    <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Material Name</th>
-                                    <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Initial Balance</th>
-                                    <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Total In</th>
-                                    <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Total Out</th>
-                                    <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Current Balance</th>
+                                    <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Nama Bahan</th>
+                                    <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Stok Awal</th>
+                                    <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Barang Masuk</th>
+                                    <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Barang Keluar</th>
+                                    <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Stok Sekarang</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-50">
@@ -234,9 +234,9 @@
                             <div>
                                 <h3 class="text-[11px] font-black text-royal-navy uppercase tracking-[0.3em] flex items-center">
                                     <svg class="w-4 h-4 mr-2 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                    Riwayat Audit Bahan Baku (Terkini)
+                                    Riwayat Keluar Masuk Bahan (Terbaru)
                                 </h3>
-                                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1">Daftar penyesuaian stok terbaru dengan bukti foto</p>
+                                <p class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-1">Catatan keluar masuk stok terbaru dengan bukti foto</p>
                             </div>
                         </div>
 
@@ -244,11 +244,11 @@
                             <table class="min-w-full">
                                 <thead>
                                     <tr class="bg-silk/50">
-                                        <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Waktu & Dapur</th>
+                                        <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Tanggal & Dapur</th>
                                         <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Bahan Baku</th>
                                         <th class="px-6 py-4 text-center text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Tipe</th>
-                                        <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Kuantitas</th>
-                                        <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Catatan</th>
+                                        <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Jumlah</th>
+                                        <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Keterangan</th>
                                         <th class="px-6 py-4 text-center text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Foto Bukti</th>
                                     </tr>
                                 </thead>
@@ -281,13 +281,13 @@
                                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                                     </a>
                                                 @else
-                                                    <span class="text-[9px] font-bold text-gray-300 uppercase italic">No Photo</span>
+                                                    <span class="text-[9px] font-bold text-gray-300 uppercase italic">Tanpa Foto</span>
                                                 @endif
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="6" class="px-6 py-12 text-center text-gray-400 text-[10px] font-black uppercase tracking-widest">Belum ada riwayat audit baru</td>
+                                            <td colspan="6" class="px-6 py-12 text-center text-gray-400 text-[10px] font-black uppercase tracking-widest">Belum ada riwayat stok masuk/keluar</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
