@@ -184,6 +184,11 @@ Route::middleware('auth')->group(function () {
 
     // Admin: List of consultation registrations
     Route::get('/admin/konsultasi-gizi', [\App\Http\Controllers\NutritionController::class, 'consultationList'])->name('nutrition.consultation.list');
+
+    // Assets & Impersonation Routes
+    Route::resource('assets', \App\Http\Controllers\AssetController::class);
+    Route::post('/impersonate', [\App\Http\Controllers\ImpersonateController::class, 'impersonate'])->name('impersonate.start');
+    Route::post('/impersonate/stop', [\App\Http\Controllers\ImpersonateController::class, 'stop'])->name('impersonate.stop');
 });
 
 // Public Accessibility Routes

@@ -288,6 +288,15 @@
             <span class="font-bold tracking-tight">{{ __('Data Pendaftar Gizi') }}</span>
         </x-nav-link>
 
+        @can('manage-assets')
+        <x-nav-link :href="route('assets.index')" :active="request()->routeIs('assets.*')" class="py-3">
+            <svg class="w-5 h-5 mr-4" :class="active ? 'text-gold' : 'text-gray-400 group-hover:text-gold'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+            <span class="font-bold tracking-tight">{{ __('Manajemen Aset') }}</span>
+        </x-nav-link>
+        @endcan
+
         @can('manage-system')
         <div class="px-8 mt-4 mb-2">
             <p class="text-[9px] font-black text-gray-400 uppercase tracking-[0.3em]">System Admin</p>
@@ -336,15 +345,44 @@
     <!-- User Profile & Footer Section -->
     <div class="p-8 border-t border-gold/10 bg-silk">
         @auth
-        <div class="flex items-center space-x-4 mb-8">
+        <div class="flex items-center space-x-4 mb-6">
             <div class="w-12 h-12 rounded-2xl bg-royal-navy flex items-center justify-center text-white font-bold shadow-lg ring-4 ring-gold/10">
                 {{ substr(Auth::user()->name, 0, 2) }}
             </div>
-            <div class="overflow-hidden">
+            <div class="overflow-hidden flex-1">
                 <p class="text-sm font-black text-royal-navy truncate uppercase tracking-tight">{{ Auth::user()->name }}</p>
                 <p class="text-[10px] text-gold-dark font-bold uppercase tracking-widest">{{ Auth::user()->role_title }}</p>
             </div>
         </div>
+
+        @if(Auth::user()->isRealAdmin())
+            <div class="mb-6 bg-gold/5 p-4 rounded-2xl border border-gold/15">
+                <p class="text-[9px] font-black text-gold-dark uppercase tracking-widest mb-2">Simulasi Role</p>
+                <form action="{{ route('impersonate.start') }}" method="POST" class="flex gap-2">
+                    @csrf
+                    <select name="role" onchange="this.form.submit()" class="flex-1 bg-white border border-gold/20 rounded-xl px-2.5 py-1.5 text-[10px] font-bold text-royal-navy focus:outline-none focus:ring-1 focus:ring-gold">
+                        @foreach([
+                            \App\Models\User::ROLE_ADMIN => 'MASTER ADMIN',
+                            \App\Models\User::ROLE_KA_SPPG => 'KA SPPG',
+                            \App\Models\User::ROLE_PENGAWAS_GIZI => 'PENGAWAS GIZI',
+                            \App\Models\User::ROLE_PENGAWAS_KEUANGAN => 'PENGAWAS KEUANGAN',
+                            \App\Models\User::ROLE_ASLAP => 'ASISTEN LAPANGAN',
+                            \App\Models\User::ROLE_VOLUNTEER => 'PUBLIK / RELAWAN',
+                            \App\Models\User::ROLE_WAREHOUSE => 'STAF GUDANG',
+                            \App\Models\User::ROLE_QC => 'QUALITY CONTROL',
+                            \App\Models\User::ROLE_DRIVER => 'DRIVER OPERASIONAL',
+                            \App\Models\User::ROLE_PERWAKILAN_YAYASAN => 'PERWAKILAN YAYASAN',
+                            \App\Models\User::ROLE_STAFF_PREP => 'STAF PERSIAPAN',
+                            \App\Models\User::ROLE_STAFF_PROC => 'STAF PENGOLAHAN',
+                            \App\Models\User::ROLE_STAFF_PORT => 'STAF PEMORSIAN',
+                            \App\Models\User::ROLE_PEMASOK => 'PEMASOK / SUPPLIER',
+                        ] as $val => $title)
+                            <option value="{{ $val }}" {{ Auth::user()->role === $val ? 'selected' : '' }}>{{ $title }}</option>
+                        @endforeach
+                    </select>
+                </form>
+            </div>
+        @endif
 
         <div class="space-y-3">
             <a href="{{ route('profile.edit') }}" class="flex items-center px-4 py-3 text-xs font-black text-gray-700 hover:text-gold hover:bg-white rounded-xl shadow-sm hover:shadow-md transition-all border border-transparent hover:border-gold/10 uppercase tracking-widest">

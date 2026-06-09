@@ -32,9 +32,27 @@
                                 {{ $activeRoute->status }}
                             </span>
                         </div>
-                        <div class="flex items-center space-x-3 text-xs opacity-80">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-                            <span class="font-bold">Asisten: {{ $activeRoute->assistant->name }}</span>
+                        <div class="mt-4 pt-4 border-t border-white/10 space-y-2 text-xs opacity-90">
+                            <div class="flex items-center space-x-2">
+                                <span class="font-black text-gold-light">Driver 1:</span>
+                                <span>{{ $activeRoute->driver->name ?? '-' }}</span>
+                            </div>
+                            @if($activeRoute->driver2)
+                                <div class="flex items-center space-x-2">
+                                    <span class="font-black text-gold-light">Driver 2:</span>
+                                    <span>{{ $activeRoute->driver2->name }}</span>
+                                </div>
+                            @endif
+                            @if($activeRoute->vehicle_name)
+                                <div class="flex items-center space-x-2">
+                                    <span class="font-black text-gold-light">Kendaraan:</span>
+                                    <span>{{ $activeRoute->vehicle_name }}</span>
+                                </div>
+                            @endif
+                            <div class="flex items-center space-x-2 pt-1">
+                                <span class="font-black text-gold-light">Asisten:</span>
+                                <span>{{ $activeRoute->assistant->name ?? '-' }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -94,7 +112,14 @@
                                 </div>
 
                                 <div class="glass p-5 rounded-2xl border border-gold/10 {{ $stop->status == 'completed' ? 'opacity-60 grayscale' : 'shadow-lg shadow-gold/5' }}">
-                                    <h5 class="font-black text-royal-navy text-sm uppercase leading-tight">{{ $stop->beneficiaryGroup->name ?? 'Sekolah Tidak Ditemukan' }}</h5>
+                                    <div class="flex justify-between items-start">
+                                        <h5 class="font-black text-royal-navy text-sm uppercase leading-tight">{{ $stop->beneficiaryGroup->name ?? 'Sekolah Tidak Ditemukan' }}</h5>
+                                        @if($stop->scheduled_time)
+                                            <span class="px-2 py-0.5 bg-gold/10 text-gold-dark text-[9px] font-black uppercase rounded-lg border border-gold/15 shrink-0 ml-2">
+                                                ⏱️ {{ $stop->scheduled_time }}
+                                            </span>
+                                        @endif
+                                    </div>
                                     @if($stop->beneficiaryGroup->latitude && $stop->beneficiaryGroup->longitude)
                                         <a href="https://www.google.com/maps?q={{ $stop->beneficiaryGroup->latitude }},{{ $stop->beneficiaryGroup->longitude }}" target="_blank" class="text-[10px] font-bold text-gold-dark mt-1 mb-4 flex items-center hover:underline">
                                             <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>

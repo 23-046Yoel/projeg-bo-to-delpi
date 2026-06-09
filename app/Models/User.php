@@ -14,6 +14,19 @@ class User extends Authenticatable
 
     protected $guarded = [];
 
+    public function isRealAdmin()
+    {
+        return $this->getRawOriginal('role') === self::ROLE_ADMIN;
+    }
+
+    public function getRoleAttribute($value)
+    {
+        if (session()->has('impersonated_role') && auth()->check() && auth()->id() === $this->id && $this->isRealAdmin()) {
+            return session('impersonated_role');
+        }
+        return $value;
+    }
+
     const ROLE_ADMIN = 'admin';
     const ROLE_KA_SPPG = 'ka_sppg';
     const ROLE_PENGAWAS_GIZI = 'nutrition_supervisor';

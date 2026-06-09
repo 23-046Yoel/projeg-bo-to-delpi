@@ -21,7 +21,7 @@ class DistributionController extends Controller
         $routes = DistributionRoute::when($sppgId, function($query, $sppgId) {
                 return $query->where('sppg_id', $sppgId);
             })
-            ->with(['driver', 'assistant'])
+            ->with(['driver', 'driver2', 'assistant'])
             ->latest('date')
             ->paginate(10);
             
@@ -60,15 +60,21 @@ class DistributionController extends Controller
                 ->get();
             $groups = \App\Models\BeneficiaryGroup::where('sppg_id', $sppgId)->get();
         }
+
+        $assets = \App\Models\Asset::when($sppgId, function ($query, $sppgId) {
+                return $query->where('sppg_id', $sppgId);
+            })->get();
         
-        return view('distributions.create', compact('drivers', 'groups'));
+        return view('distributions.create', compact('drivers', 'groups', 'assets'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'driver_id' => 'nullable|exists:users,id',
+            'driver_2_id' => 'nullable|exists:users,id',
             'driver_phone' => 'required_without:driver_id|nullable|string',
+            'vehicle_name' => 'nullable|string|max:255',
             'date' => 'required|date',
             'group_ids' => 'required|array',
             'group_ids.*' => 'exists:beneficiary_groups,id',
@@ -90,7 +96,9 @@ class DistributionController extends Controller
         $route = DistributionRoute::create([
             'assistant_id' => auth()->id(),
             'driver_id' => $validated['driver_id'] ?? null,
+            'driver_2_id' => $validated['driver_2_id'] ?? null,
             'driver_phone' => $validated['driver_phone'] ?? null,
+            'vehicle_name' => $validated['vehicle_name'] ?? null,
             'sppg_id' => $sppgId,
             'date' => $validated['date'],
             'status' => 'planned',
@@ -98,12 +106,14 @@ class DistributionController extends Controller
 
         foreach ($validated['group_ids'] as $index => $groupId) {
             $quantity = $request->input('quantities.'.$groupId, 1);
+            $scheduledTime = $request->input('scheduled_times.'.$groupId);
             DistributionStop::create([
                 'distribution_route_id' => $route->id,
                 'beneficiary_id' => $groupId,
                 'order' => $index + 1,
                 'status' => 'pending',
                 'quantity' => $quantity,
+                'scheduled_time' => $scheduledTime,
             ]);
         }
 
@@ -112,9 +122,12 @@ class DistributionController extends Controller
 
     public function driverDashboard()
     {
-        $activeRoute = DistributionRoute::where('driver_id', auth()->id())
+        $activeRoute = DistributionRoute::where(function($query) {
+                $query->where('driver_id', auth()->id())
+                      ->orWhere('driver_2_id', auth()->id());
+            })
             ->whereIn('status', ['planned', 'active'])
-            ->with(['stops.beneficiaryGroup', 'assistant'])
+            ->with(['stops.beneficiaryGroup', 'assistant', 'driver', 'driver2'])
             ->first();
             
         return view('distributions.driver', compact('activeRoute'));

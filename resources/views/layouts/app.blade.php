@@ -81,6 +81,21 @@
         </script>
     </head>
     <body class="font-jakarta antialiased text-slate-900 bg-silk-premium min-h-screen" x-data="{ sidebarOpen: false }">
+        @if(session()->has('impersonated_role'))
+            <div class="bg-amber-600 text-white font-bold text-xs uppercase tracking-widest px-6 py-4 flex items-center justify-between shadow-lg relative z-[999] no-print">
+                <div class="flex items-center space-x-2">
+                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                    <span>Mode Simulasi Aktif: Anda sedang melihat sebagai <strong>{{ auth()->user()->role_title }}</strong></span>
+                </div>
+                <form action="{{ route('impersonate.stop') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="bg-white text-amber-700 hover:bg-amber-50 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-sm transition-all">
+                        Kembali ke Admin
+                    </button>
+                </form>
+            </div>
+        @endif
+
         <!-- Mobile Header -->
         <header class="lg:hidden bg-white/70 backdrop-blur-xl border-b border-gold/10 sticky top-0 z-50 flex items-center justify-between px-6 h-20 shadow-sm no-print">
             <div class="flex items-center space-x-3">

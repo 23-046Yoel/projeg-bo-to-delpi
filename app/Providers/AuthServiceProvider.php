@@ -105,5 +105,10 @@ class AuthServiceProvider extends ServiceProvider
         \Illuminate\Support\Facades\Gate::define('view-general-reports', function ($user) {
             return $user->role !== \App\Models\User::ROLE_WAREHOUSE;
         });
+
+        // 10. Assets Management
+        \Illuminate\Support\Facades\Gate::define('manage-assets', function ($user) {
+            return in_array($user->role, [\App\Models\User::ROLE_ADMIN, \App\Models\User::ROLE_KA_SPPG]);
+        });
     }
 }

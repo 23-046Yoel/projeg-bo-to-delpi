@@ -29,19 +29,44 @@
 
                                 <div>
                                     <div class="flex justify-between items-center mb-3">
-                                        <label for="driver_id" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em]">Pilih Driver</label>
+                                        <label for="driver_id" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em]">Pilih Driver Utama</label>
                                         <a href="{{ route('users.create') }}" class="text-[9px] font-black text-gold-dark hover:text-gold uppercase tracking-wider flex items-center transition-colors">
                                             <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"/></svg>
                                             Tambah Driver Baru
                                         </a>
                                     </div>
                                     <select id="driver_id" name="driver_id" required class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
-                                        <option value="">-- Pilih Driver --</option>
+                                        <option value="">-- Pilih Driver Utama --</option>
                                         @foreach($drivers as $driver)
                                             <option value="{{ $driver->id }}" {{ old('driver_id') == $driver->id ? 'selected' : '' }}>{{ $driver->name }}</option>
                                         @endforeach
                                     </select>
                                     @error('driver_id') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div>
+                                    <label for="driver_2_id" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Pilih Driver Kedua (Opsional)</label>
+                                    <select id="driver_2_id" name="driver_2_id" class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
+                                        <option value="">-- Pilih Driver Kedua --</option>
+                                        @foreach($drivers as $driver)
+                                            <option value="{{ $driver->id }}" {{ old('driver_2_id') == $driver->id ? 'selected' : '' }}>{{ $driver->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('driver_2_id') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
+                                </div>
+
+                                <div>
+                                    <label for="vehicle_name" class="block text-[10px] font-black text-royal-navy uppercase tracking-[0.2em] mb-3">Nama / Plat Kendaraan (Opsional)</label>
+                                    <input list="vehicles_list" name="vehicle_name" id="vehicle_name" value="{{ old('vehicle_name') }}" placeholder="Pilih dari Aset atau ketik manual..."
+                                        class="w-full px-6 py-4 bg-silk border-2 border-transparent rounded-2xl text-sm font-bold text-royal-navy focus:bg-white focus:border-gold transition-all outline-none">
+                                    <datalist id="vehicles_list">
+                                        @foreach($assets as $asset)
+                                            <option value="{{ $asset->name }} ({{ $asset->code }})"></option>
+                                        @endforeach
+                                    </datalist>
+                                    @error('vehicle_name') <p class="mt-2 text-[10px] font-bold text-red-500 uppercase tracking-widest">{{ $message }}</p> @enderror
                                 </div>
                             </div>
 
@@ -57,10 +82,16 @@
                                                     <span class="text-[10px] font-bold text-slate-400 group-hover:text-slate-500 uppercase tracking-widest">{{ $group->location ?? 'No Address' }} - {{ $group->total_beneficiaries }} Penerima</span>
                                                 </div>
                                             </label>
-                                            <div class="w-32">
-                                                <input type="number" name="quantities[{{ $group->id }}]" value="{{ $group->total_beneficiaries }}" min="1"
-                                                    placeholder="Qty Porsi"
-                                                    class="w-full px-4 py-2 bg-white border border-gold/20 rounded-xl text-xs font-black text-royal-navy focus:border-gold outline-none">
+                                            <div class="flex items-center space-x-2 shrink-0">
+                                                <div class="w-32">
+                                                    <input type="text" name="scheduled_times[{{ $group->id }}]" placeholder="Jam (cth: 08:30)"
+                                                        class="w-full px-4 py-2 bg-white border border-gold/20 rounded-xl text-xs font-bold text-royal-navy focus:border-gold outline-none">
+                                                </div>
+                                                <div class="w-28">
+                                                    <input type="number" name="quantities[{{ $group->id }}]" value="{{ $group->total_beneficiaries }}" min="1"
+                                                        placeholder="Qty Porsi"
+                                                        class="w-full px-4 py-2 bg-white border border-gold/20 rounded-xl text-xs font-black text-royal-navy focus:border-gold outline-none">
+                                                </div>
                                             </div>
                                         </div>
                                     @endforeach

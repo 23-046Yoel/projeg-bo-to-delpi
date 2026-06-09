@@ -19,6 +19,11 @@ class DistributionRoute extends Model
         return $this->belongsTo(User::class, 'driver_id');
     }
 
+    public function driver2()
+    {
+        return $this->belongsTo(User::class, 'driver_2_id');
+    }
+
     public function sppg()
     {
         return $this->belongsTo(Sppg::class);

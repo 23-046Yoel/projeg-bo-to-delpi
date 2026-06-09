@@ -124,9 +124,10 @@
                 <div class="overflow-x-auto custom-scrollbar">
                     <table class="min-w-full divide-y divide-slate-100">
                         <thead>
-                            <tr class="bg-royal-navy">
+                             <tr class="bg-royal-navy">
                                 <th class="px-8 py-6 text-left text-[10px] font-black text-gold-light uppercase tracking-[0.2em]">Tanggal</th>
                                 <th class="px-8 py-6 text-left text-[10px] font-black text-gold-light uppercase tracking-[0.2em]">Driver</th>
+                                <th class="px-8 py-6 text-left text-[10px] font-black text-gold-light uppercase tracking-[0.2em]">Kendaraan</th>
                                 <th class="px-8 py-6 text-left text-[10px] font-black text-gold-light uppercase tracking-[0.2em]">Assistant</th>
                                 <th class="px-8 py-6 text-left text-[10px] font-black text-gold-light uppercase tracking-[0.2em]">Stops</th>
                                 <th class="px-8 py-6 text-left text-[10px] font-black text-gold-light uppercase tracking-[0.2em]">Total Porsi</th>
@@ -141,15 +142,28 @@
                                         <span class="text-sm font-bold text-royal-navy">{{ Carbon\Carbon::parse($route->date)->format('d M Y') }}</span>
                                     </td>
                                     <td class="px-8 py-5 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div class="w-8 h-8 rounded-full bg-silk border border-gold/20 flex items-center justify-center mr-3">
-                                                <svg class="w-4 h-4 text-gold-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                                        <div class="flex flex-col">
+                                            <div class="flex items-center">
+                                                <div class="w-6 h-6 rounded-full bg-silk border border-gold/20 flex items-center justify-center mr-2">
+                                                    <span class="text-[8px] font-black text-royal-navy">D1</span>
+                                                </div>
+                                                <span class="text-sm font-bold text-royal-navy">{{ $route->driver->name ?? '-' }}</span>
                                             </div>
-                                            <span class="text-sm font-bold text-royal-navy">{{ $route->driver->name }}</span>
+                                            @if($route->driver2)
+                                                <div class="flex items-center mt-1.5">
+                                                    <div class="w-6 h-6 rounded-full bg-silk border border-gold/20 flex items-center justify-center mr-2">
+                                                        <span class="text-[8px] font-black text-royal-navy">D2</span>
+                                                    </div>
+                                                    <span class="text-xs font-bold text-slate-500">{{ $route->driver2->name }}</span>
+                                                </div>
+                                            @endif
                                         </div>
                                     </td>
                                     <td class="px-8 py-5 whitespace-nowrap">
-                                        <span class="text-xs font-bold text-slate-600">{{ $route->assistant->name }}</span>
+                                        <span class="text-xs font-bold text-slate-700 bg-silk px-2.5 py-1.5 rounded-xl border border-gold/10">{{ $route->vehicle_name ?? '-' }}</span>
+                                    </td>
+                                    <td class="px-8 py-5 whitespace-nowrap">
+                                        <span class="text-xs font-bold text-slate-600">{{ $route->assistant->name ?? '-' }}</span>
                                     </td>
                                     <td class="px-8 py-5 whitespace-nowrap">
                                         <span class="px-2 py-1 rounded-lg bg-silk text-[10px] font-black text-royal-navy border border-gold/10">
